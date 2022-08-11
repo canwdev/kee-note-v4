@@ -345,6 +345,13 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/fs-extra@^9.0.13":
+  version "9.0.13"
+  resolved "https://registry.npmmirror.com/@types/fs-extra/-/fs-extra-9.0.13.tgz#7594fbae04fe7f1918ce8b3d213f74ff44ac1f45"
+  integrity sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/json-schema@*", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
   version "7.0.11"
   resolved "https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
@@ -608,6 +615,11 @@
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
+
+"@xmldom/xmldom@^0.7.4":
+  version "0.7.5"
+  resolved "https://registry.npmmirror.com/@xmldom/xmldom/-/xmldom-0.7.5.tgz#09fa51e356d07d0be200642b0e4f91d8e6dd408d"
+  integrity sha512-V3BIhmY36fXZ1OtVcI9W+FxQqxVLsPKcNjWigIaa81dLC9IolJl5Mt4Cvhmr0flUnjSpTdrbMTSbXqYqV5dT6A==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -1457,6 +1469,11 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
+fflate@^0.7.1:
+  version "0.7.3"
+  resolved "https://registry.npmmirror.com/fflate/-/fflate-0.7.3.tgz#288b034ff0e9c380eaa2feff48c787b8371b7fa5"
+  integrity sha512-0Zz1jOzJWERhyhsimS54VTqOteCNwRtIlh8isdL0AXLo0g7xNTfTL7oWrkmCnPhZGocKIkWHBistBrrpoNH3aw==
+
 figures@^3.0.0:
   version "3.2.0"
   resolved "https://registry.npmmirror.com/figures/-/figures-3.2.0.tgz#625c18bd293c604dc4a8ddb2febf0c88341746af"
@@ -1558,7 +1575,7 @@ fresh@0.5.2:
   resolved "https://registry.npmmirror.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==
 
-fs-extra@10.1.0, fs-extra@^10.0.0:
+fs-extra@10.1.0, fs-extra@^10.0.0, fs-extra@^10.1.0:
   version "10.1.0"
   resolved "https://registry.npmmirror.com/fs-extra/-/fs-extra-10.1.0.tgz#02873cfbc4084dde127eaa5f9905eef2325d1abf"
   integrity sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==
@@ -1941,6 +1958,14 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+kdbxweb@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/kdbxweb/-/kdbxweb-2.1.1.tgz#d30c6db3741dbc596a84860c46d491c2309f59c6"
+  integrity sha512-z+a2+BEzyK2kUh0xDekY7gwc9CkbzSetUyvc78NKVawxV06UG1KYbg9W9hZCJdQPYizIVePTvQsYUXIO1qtAhQ==
+  dependencies:
+    "@xmldom/xmldom" "^0.7.4"
+    fflate "^0.7.1"
 
 levn@^0.4.1:
   version "0.4.1"
