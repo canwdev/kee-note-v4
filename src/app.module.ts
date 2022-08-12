@@ -2,10 +2,22 @@ import {Module} from '@nestjs/common'
 import {AppController} from './app.controller'
 import {AppService} from './app.service'
 import {KeepassModule} from './keepass/keepass.module'
+import {AuthModule} from './auth/auth.module'
+import {UsersModule} from './users/users.module'
+import {APP_GUARD} from '@nestjs/core'
+import {JwtAuthGuard} from './auth/guards/jwt-auth.guard'
 
 @Module({
-  imports: [KeepassModule],
+  imports: [KeepassModule, AuthModule, UsersModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // 在当前 module 下都开启路由守卫
+    // 若要开启一个路由都访问权限，请使用 @SkipAuth() 装饰器
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

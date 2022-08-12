@@ -1,10 +1,12 @@
 import {Controller, Get} from '@nestjs/common'
 import {KeepassService} from './keepass.service'
+import {SkipAuth} from '../auth/skip-auth'
 
 @Controller('keepass')
 export class KeepassController {
   constructor(private keepassService: KeepassService) {}
 
+  @SkipAuth()
   @Get()
   test() {
     return 'ok'
@@ -16,11 +18,7 @@ export class KeepassController {
 
   @Get('open')
   async openDatabase() {
-    return this.kdbxHelper.open({
-      dbPath: 'D:\\Work\\test\\keepass-temp\\test\\databases\\test[123456].kdbx',
-      password: '123456',
-      keyPath: 'D:\\Work\\test\\keepass-temp\\test\\databases\\test[123456].key',
-    })
+    return 'fake open'
   }
 
   closeDatabase() {

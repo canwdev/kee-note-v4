@@ -1,5 +1,8 @@
 import {Injectable} from '@nestjs/common'
 import {KdbxHelper, KdbxOpenOptions} from './enum/kdbx'
+import * as Path from 'path'
+
+const testPath = Path.join(__dirname, '../../test/databases')
 
 @Injectable()
 export class KeepassService {
@@ -7,11 +10,11 @@ export class KeepassService {
 
   constructor() {
     this.kdbxHelper = new KdbxHelper()
-    this.openDatabase({
-      dbPath: 'D:\\Work\\test\\keepass-temp\\test\\databases\\test[123456].kdbx',
-      password: '123456',
-      keyPath: 'D:\\Work\\test\\keepass-temp\\test\\databases\\test[123456].key',
-    })
+    // this.openDatabase({
+    //   dbPath: Path.join(testPath, 'test[123456].kdbx'),
+    //   password: '123456',
+    //   keyPath: Path.join(testPath, 'test[123456].key'),
+    // })
   }
 
   openDatabase(options: KdbxOpenOptions) {
