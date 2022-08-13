@@ -4,16 +4,22 @@ import {UsersModule} from '../users/users.module'
 import {PassportModule} from '@nestjs/passport'
 import {LocalStrategy} from './strategies/local.strategy'
 import {JwtModule} from '@nestjs/jwt'
-import {jwtConstants} from './constants'
 import {JwtStrategy} from './strategies/jwt.strategy'
+import {ConfigModule} from '@nestjs/config'
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      // ignoreEnvFile: true,
+      isGlobal: true,
+      envFilePath: ['.env.development.local', '.env.development', '.env'],
+    }),
     UsersModule,
     PassportModule,
+    // https://github.com/auth0/node-jsonwebtoken#usage
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: {expiresIn: jwtConstants.expiresIn},
+      secret: process.env.JWT_SECRET,
+      signOptions: {expiresIn: process.env.JWT_EXPIRES_IN || '1d'},
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
