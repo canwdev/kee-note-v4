@@ -25,7 +25,7 @@ export class AppController {
 
   /// curl http://localhost:3000/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJzdWIiOjEsImlhdCI6MTY2MDM2NTcwNywiZXhwIjoxNjYwNDUyMTA3fQ.r840CJr-76OLIwNzmhLmk4ZKdwiFwlYD-Ax5if5GRko"
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
+  @Get('auth/profile')
   getProfile(@Request() req) {
     return req.user
   }

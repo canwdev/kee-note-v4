@@ -1,14 +1,16 @@
 <script lang="ts" setup>
-import HelloWorld from '@/components/HelloWorld.vue'
+import {darkTheme} from 'naive-ui'
+import AppContent from './AppContent.vue'
 </script>
 
 <template>
-  <div class="page-craft-root">
-    <n-message-provider>
-      <n-button type="primary">OK</n-button>
-      <HelloWorld />
-    </n-message-provider>
-  </div>
+  <n-config-provider :theme="darkTheme">
+    <n-dialog-provider>
+      <n-notification-provider>
+        <n-message-provider>
+          <AppContent />
+        </n-message-provider>
+      </n-notification-provider>
+    </n-dialog-provider>
+  </n-config-provider>
 </template>
-
-<style scoped></style>
