@@ -1,4 +1,4 @@
-import {Controller, Get, HttpException, HttpStatus, Post, Query} from '@nestjs/common'
+import {Body, Controller, Get, HttpException, HttpStatus, Post, Query} from '@nestjs/common'
 import {KeepassService} from './keepass.service'
 import {SkipAuth} from '../auth/skip-auth'
 
@@ -74,7 +74,7 @@ export class KeepassController {
   }
 
   @Post('update-entry')
-  updateEntry(params) {
+  updateEntry(@Body() params) {
     return this.kdbxHelper.updateEntry(params)
   }
 

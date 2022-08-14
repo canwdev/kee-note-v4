@@ -100,7 +100,7 @@ export class KdbxHelper {
 
   /**
    * 获取某群组的条目列表
-   * @param groupUuid 群组 Uuid 对象，而不是字符串
+   * @param groupUuid 群组 Uuid
    * @return {[]}
    */
   getGroupEntries(groupUuid) {
@@ -124,7 +124,7 @@ export class KdbxHelper {
   }
 
   /**
-   * 在 curEntryMap 哈希表中获取 entry
+   * 在 curEntryMap 中获取 entry
    * @param uuid
    * @returns {*}
    */

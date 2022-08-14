@@ -1,18 +1,8 @@
-type KeeStore = {
-  currentGroupUuid: string | null
-}
+type KeeStore = {}
 
 export const useKeeStore = defineStore('keeStore', {
   state: (): KeeStore => {
-    return {
-      currentGroupUuid: null,
-    }
+    return {}
   },
-  // could also be defined as
-  // state: () => ({ count: 0 })
-  actions: {
-    setCurrentGroupUuid(uuid: string | null) {
-      this.currentGroupUuid = uuid
-    },
-  },
+  actions: {},
 })

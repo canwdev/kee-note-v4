@@ -24,7 +24,7 @@ const constantRoutes = [
           {
             name: 'NoteListView',
             path: 'list',
-            component: () => import('@/views/Note/ListView'),
+            component: () => import('@/views/Note/ListView.vue'),
           },
           {
             name: 'NoteCalendarView',

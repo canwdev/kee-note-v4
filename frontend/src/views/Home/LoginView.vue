@@ -24,8 +24,8 @@ export default defineComponent({
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const modelRef = ref<ModelType>({
-      username: null,
-      password: null,
+      username: 'test',
+      password: '__REPLACE_ME__',
     })
 
     const rules: FormRules = {
@@ -52,10 +52,13 @@ export default defineComponent({
       })
       localStorage.setItem(LS_KEY_AUTHORIZATION, access_token)
 
-      message.success('Login Success!')
+      checkProfile()
     }
 
     const checkProfile = async () => {
+      if (!localStorage.getItem(LS_KEY_AUTHORIZATION)) {
+        return
+      }
       const data = await userProfile()
 
       window.$notification.success({
@@ -65,16 +68,13 @@ export default defineComponent({
         keepAliveOnHover: true,
       })
 
-      return true
+      router.replace({
+        name: 'NoteView',
+      })
     }
 
     onMounted(async () => {
-      const isLoggedIn = await checkProfile()
-      if (isLoggedIn) {
-        router.replace({
-          name: 'NoteView',
-        })
-      }
+      await checkProfile()
     })
 
     return {

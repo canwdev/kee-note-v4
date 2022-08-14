@@ -3,10 +3,18 @@ import {kService} from '@/api'
 import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
+import AutoRouterView from '@/components/AutoRouterView.vue'
+import {useRoute, useRouter} from 'vue-router'
 
 export default defineComponent({
   name: 'NoteLayout',
+  components: {
+    AutoRouterView,
+  },
   setup() {
+    const router = useRouter()
+    const route = useRoute()
+
     onMounted(async () => {
       await getGroupTree()
     })
@@ -14,16 +22,23 @@ export default defineComponent({
     const keeStore = useKeeStore()
     const selectedKeys = computed({
       get(): string[] {
-        if (!keeStore.currentGroupUuid) {
+        if (!route.query.groupUuid) {
           return []
         }
-        return [keeStore.currentGroupUuid]
+        return [String(route.query.groupUuid)]
       },
       set(val: string[]) {
         if (!val) {
           val = []
         }
-        keeStore.setCurrentGroupUuid(val[0])
+
+        const query = {
+          ...route.query,
+          groupUuid: val[0],
+        }
+        router.replace({
+          query,
+        })
       },
     })
 
@@ -33,10 +48,86 @@ export default defineComponent({
       groupTree.value = res
     }
 
+    const menuOptionsBase = [
+      {
+        type: 'divider',
+        label: 'd0',
+      },
+      {
+        label: 'Others',
+        children: [
+          {
+            label: 'About',
+            props: {
+              onClick: () => {
+                window.$message.success('Good!')
+              },
+            },
+          },
+        ],
+      },
+    ]
+
+    const menuOptions = computed(() => {
+      if (keeStore.currentGroupUuid) {
+        return [
+          {
+            label: 'Create Entry',
+            props: {
+              onClick: () => {
+                window.$message.success('Good!')
+              },
+            },
+          },
+          {
+            type: 'divider',
+            label: 'd1',
+          },
+          {
+            label: 'Create Group',
+            props: {
+              onClick: () => {
+                window.$message.success('Good!')
+              },
+            },
+          },
+          {
+            label: 'Edit Group',
+            props: {
+              onClick: () => {
+                window.$message.success('Good!')
+              },
+            },
+          },
+          {
+            label: 'Move Group...',
+            disabled: true,
+          },
+          {
+            label: 'Delete Group',
+            props: {
+              onClick: () => {
+                window.$message.success('Good!')
+              },
+            },
+          },
+          ...menuOptionsBase,
+        ]
+      }
+      return [
+        {
+          label: 'Select a group first',
+          disabled: true,
+        },
+        ...menuOptionsBase,
+      ]
+    })
+
     return {
       groupTree,
       keeStore,
       selectedKeys,
+      menuOptions,
     }
   },
 })
@@ -45,9 +136,22 @@ export default defineComponent({
 <template>
   <div class="note-layout">
     <n-layout class="layout-inner-root">
-      <n-layout-header style="height: 64px; padding: 24px" bordered>
-        KeeNote {{ keeStore.currentGroupUuid }}</n-layout-header
-      >
+      <n-layout-header bordered>
+        <n-space
+          align="center"
+          style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
+        >
+          KeeNote
+          <n-dropdown
+            :options="menuOptions"
+            key-field="label"
+            placement="bottom-start"
+            trigger="click"
+          >
+            <n-button>Menu</n-button>
+          </n-dropdown>
+        </n-space>
+      </n-layout-header>
 
       <n-layout has-sider>
         <n-layout-sider
@@ -55,7 +159,6 @@ export default defineComponent({
           :collapsed-width="50"
           :width="240"
           show-trigger="arrow-circle"
-          content-style="padding: 24px;"
           bordered
         >
           <n-tree
@@ -64,13 +167,14 @@ export default defineComponent({
             key-field="uuid"
             label-field="title"
             children-field="children"
+            class="content-padding"
             selectable
             default-expand-all
             v-model:selected-keys="selectedKeys"
           />
         </n-layout-sider>
-        <n-layout-content content-style="padding: 24px;">
-          <router-view :selected-key="selectedKeys[0]"></router-view>
+        <n-layout-content>
+          <AutoRouterView />
         </n-layout-content>
       </n-layout>
     </n-layout>
