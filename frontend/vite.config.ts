@@ -4,6 +4,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import {fileURLToPath, URL} from 'url'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 // https://vitejs.dev/config/
 export default ({mode}) => {
@@ -17,7 +18,10 @@ export default ({mode}) => {
       },
     },
     plugins: [
-      vue(),
+      vueJsx(),
+      vue({
+        reactivityTransform: true,
+      }),
       AutoImport({
         dts: './src/auto-import.d.ts',
         imports: [
@@ -26,6 +30,7 @@ export default ({mode}) => {
             'naive-ui': ['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'],
           },
           'pinia',
+          '@vueuse/core',
         ],
       }),
       Components({
@@ -40,6 +45,11 @@ export default ({mode}) => {
           rewrite: (path) => path.replace(/^\/api_server/, ''),
         },
       },
+    },
+    esbuild: {
+      jsxFactory: 'h',
+      jsxInject: 'import {h,Fragment} from "vue"',
+      jsxFragment: 'Fragment',
     },
   })
 }

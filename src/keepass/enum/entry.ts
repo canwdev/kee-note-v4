@@ -6,23 +6,18 @@ function getMapValue(obj, val) {
 }
 
 export interface GroupItem {
+  uuid: string
+  icon: number
   title: string
   children: GroupItem[]
-  data: {
-    uuid: string
-    icon: number
-  }
 }
 
 export class GroupItem {
   constructor(group, children?) {
+    this.uuid = group.uuid.id
+    this.icon = group.icon
     this.title = group.name
     this.children = children || null
-    this.data = {
-      uuid: group.uuid.id,
-      icon: group.icon,
-      // _origin: group
-    }
   }
 }
 
@@ -49,7 +44,7 @@ export class EntryItem {
     this.lastModTime = entry.times.lastModTime
     if (isDetailed) {
       this.notes = getMapValue(entry.fields, 'Notes')
-      this._origin = entry
+      // this._origin = entry
     }
   }
 }

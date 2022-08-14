@@ -5,10 +5,9 @@ import {LS_KEY_AUTHORIZATION} from '@/enum'
 const constantRoutes = [
   {name: 'HomeView', path: '/', component: LoginView},
   {
-    name: 'NoteView',
+    name: 'NoteRoot',
     path: '/note',
-    redirect: '/note/list',
-    component: () => import('@/components/NoteLayout/index.vue'),
+    redirect: '/note/view/list',
     beforeEnter: () => {
       if (!localStorage.getItem(LS_KEY_AUTHORIZATION)) {
         // reject the navigation
@@ -17,9 +16,30 @@ const constantRoutes = [
     },
     children: [
       {
-        name: 'NoteListView',
-        path: 'list',
-        component: () => import('@/views/Note/ListView.vue'),
+        name: 'NoteView',
+        path: 'view',
+        redirect: '/note/view/list',
+        component: () => import('@/components/NoteLayout/index.vue'),
+        children: [
+          {
+            name: 'NoteListView',
+            path: 'list',
+            component: () => import('@/views/Note/ListView'),
+          },
+          {
+            name: 'NoteCalendarView',
+            path: 'calendar',
+            component: () => import('@/views/Note/CalendarView.vue'),
+          },
+        ],
+        meta: {
+          keepAlive: true,
+        },
+      },
+      {
+        name: 'NoteDetailView',
+        path: 'detail',
+        component: () => import('@/views/Note/DetailView.vue'),
       },
     ],
   },

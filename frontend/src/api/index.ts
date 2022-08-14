@@ -1,5 +1,6 @@
 import Service from '@/utils/service'
 import {API_PROXY_BASE} from '@/enum'
+export * as kService from './keepass'
 
 const service = Service({
   baseURL: API_PROXY_BASE,

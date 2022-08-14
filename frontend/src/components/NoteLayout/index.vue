@@ -1,10 +1,43 @@
 <script lang="ts">
+import {kService} from '@/api'
+import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
+import {useKeeStore} from '@/store/kee-store'
 
 export default defineComponent({
   name: 'NoteLayout',
   setup() {
-    return {}
+    onMounted(async () => {
+      await getGroupTree()
+    })
+    const groupTree = ref<GroupItem[]>([])
+    const keeStore = useKeeStore()
+    const selectedKeys = computed({
+      get(): string[] {
+        if (!keeStore.currentGroupUuid) {
+          return []
+        }
+        return [keeStore.currentGroupUuid]
+      },
+      set(val: string[]) {
+        if (!val) {
+          val = []
+        }
+        keeStore.setCurrentGroupUuid(val[0])
+      },
+    })
+
+    const getGroupTree = async () => {
+      const res: GroupItem[] = await kService.getGroupTree()
+      console.log(res)
+      groupTree.value = res
+    }
+
+    return {
+      groupTree,
+      keeStore,
+      selectedKeys,
+    }
   },
 })
 </script>
@@ -12,7 +45,9 @@ export default defineComponent({
 <template>
   <div class="note-layout">
     <n-layout class="layout-inner-root">
-      <n-layout-header style="height: 64px; padding: 24px" bordered> KeeNote </n-layout-header>
+      <n-layout-header style="height: 64px; padding: 24px" bordered>
+        KeeNote {{ keeStore.currentGroupUuid }}</n-layout-header
+      >
 
       <n-layout has-sider>
         <n-layout-sider
@@ -23,10 +58,19 @@ export default defineComponent({
           content-style="padding: 24px;"
           bordered
         >
-          <p>海淀桥 海淀桥 海淀桥 海淀桥 海淀桥</p>
+          <n-tree
+            block-line
+            :data="groupTree"
+            key-field="uuid"
+            label-field="title"
+            children-field="children"
+            selectable
+            default-expand-all
+            v-model:selected-keys="selectedKeys"
+          />
         </n-layout-sider>
         <n-layout-content content-style="padding: 24px;">
-          <router-view></router-view>
+          <router-view :selected-key="selectedKeys[0]"></router-view>
         </n-layout-content>
       </n-layout>
     </n-layout>

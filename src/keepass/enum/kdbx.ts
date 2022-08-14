@@ -10,7 +10,7 @@ import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../../u
  * usage: getGroupTree(db.groups)
  * return: customized group list
  */
-function traverseGroupTree(node, counter = 0) {
+function traverseGroupTree(node, counter = 0): GroupItem[] {
   const list = []
   if (!node || node.length === 0) return list
 
@@ -135,7 +135,7 @@ export class KdbxHelper {
     }
 
     if (!this.curEntryMap[uuid]) {
-      throw new Error('entry not found in current map')
+      throw new Error(`entry ${uuid} not found in current map (Have you open the entry list?)`)
     }
     return this.curEntryMap[uuid]
   }
