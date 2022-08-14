@@ -11,6 +11,7 @@ import {
 import {userLogin, userProfile} from '@/api'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import cookies from 'js-cookie'
+import {useRouter} from 'vue-router'
 
 interface ModelType {
   username: string | null
@@ -19,6 +20,7 @@ interface ModelType {
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const modelRef = ref<ModelType>({
@@ -62,7 +64,18 @@ export default defineComponent({
         duration: 3000,
         keepAliveOnHover: true,
       })
+
+      return true
     }
+
+    onMounted(async () => {
+      const isLoggedIn = await checkProfile()
+      if (isLoggedIn) {
+        router.replace({
+          name: 'NoteView',
+        })
+      }
+    })
 
     return {
       formRef,
