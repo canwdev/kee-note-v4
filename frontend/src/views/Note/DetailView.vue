@@ -51,7 +51,6 @@ export default defineComponent({
           {path: 'fields.Title', value: entryDetail.value.title},
           {path: 'fields.Notes', value: entryDetail.value.notes},
           {path: 'times.creationTime', value: times[0]},
-          {path: 'times.lastModTime', value: new Date().getTime()},
         ],
       })
       await getEntryDetail()

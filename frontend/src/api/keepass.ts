@@ -5,20 +5,20 @@ const service = Service({
   baseURL: API_PROXY_BASE + '/keepass',
 })
 
-export const closeDatabase = (params: any) => {
-  return service.post('close-database', params)
+export const closeDatabase = () => {
+  return service.post('close-database')
 }
-export const saveDatabase = (params: any) => {
-  return service.post('save-database', params)
+export const saveDatabase = () => {
+  return service.post('save-database')
 }
-export const checkIsOpen = (params: any) => {
-  return service.get('check-is-open', {params})
+export const checkIsOpen = () => {
+  return service.get('check-is-open')
 }
-export const checkIsChanged = (params: any) => {
-  return service.get('check-is-changed', {params})
+export const checkIsChanged = () => {
+  return service.get('check-is-changed')
 }
-export const getMeta = (params: any) => {
-  return service.get('get-meta', {params})
+export const getMeta = () => {
+  return service.get('get-meta')
 }
 export const getGroupTree = (params?: any) => {
   return service.get('get-group-tree', {params})

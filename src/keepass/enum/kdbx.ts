@@ -165,7 +165,12 @@ export class KdbxHelper {
     console.log(`[db] updateEntry ${uuid}`)
     const entry = this.getEntry(uuid)
     updates.forEach((obj) => {
-      const {path, value} = obj
+      // eslint-disable-next-line prefer-const
+      let {path, value} = obj
+      if (path.indexOf('creationTime') > 0) {
+        // need convert time format to Date!
+        value = new Date(value)
+      }
       setValDot(entry, path, value)
     })
     entry.times.update()

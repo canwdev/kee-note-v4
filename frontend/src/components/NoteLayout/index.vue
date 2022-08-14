@@ -57,6 +57,14 @@ export default defineComponent({
         label: 'Others',
         children: [
           {
+            label: 'Save Database',
+            props: {
+              onClick: () => {
+                kService.saveDatabase()
+              },
+            },
+          },
+          {
             label: 'About',
             props: {
               onClick: () => {
@@ -69,7 +77,7 @@ export default defineComponent({
     ]
 
     const menuOptions = computed(() => {
-      if (keeStore.currentGroupUuid) {
+      if (route.query.groupUuid) {
         return [
           {
             label: 'Create Entry',
