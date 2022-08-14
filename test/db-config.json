@@ -1,0 +1,8 @@
+{
+ "kdbxOpenOptions": {
+  "dbPath": "databases/test[123456].kdbx",
+  "password": "123456",
+  "keyPath": "databases/test[123456].key"
+ },
+ "isRelativeBase": true
+}
