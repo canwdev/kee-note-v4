@@ -61,11 +61,12 @@ const getEntryList = async () => {
   entryList.value = list
 }
 
-onMounted(() => {})
-
-onActivated(() => {
+onMounted(() => {
   getEntryList()
 })
+
+// onActivated(() => {
+// })
 
 const paginationReactive = reactive({
   page: 1,
@@ -86,7 +87,7 @@ const rowProps = (row: RowData) => {
   return {
     style: 'cursor: pointer;',
     onClick: () => {
-      console.log(row)
+      // console.log(row)
       router.push({
         name: 'NoteDetailView',
         query: {uuid: row.uuid},

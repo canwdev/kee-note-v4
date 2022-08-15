@@ -14,12 +14,12 @@ import {CryptInterceptor} from './crypt.interceptor'
   controllers: [AppController],
   providers: [
     AppService,
-    // 在当前 module 下都开启路由守卫
-    // 若要开启一个路由都访问权限，请使用 @SkipAuth() 装饰器
     {
       provide: APP_INTERCEPTOR,
       useClass: CryptInterceptor,
     },
+    // 在当前 module 下都开启路由守卫
+    // 若要开启一个路由都访问权限，请使用 @SkipAuth() 装饰器
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

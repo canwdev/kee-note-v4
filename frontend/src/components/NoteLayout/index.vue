@@ -44,7 +44,7 @@ export default defineComponent({
 
     const getGroupTree = async () => {
       const res: GroupItem[] = await kService.getGroupTree()
-      console.log(res)
+      // console.log(res)
       groupTree.value = res
     }
 

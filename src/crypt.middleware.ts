@@ -22,8 +22,7 @@ export class CryptMiddleware implements NestMiddleware {
       const {ie, main} = req.query
       if (ie && main) {
         req.query = JSON.parse(myCrypt.decrypt(main))
-        // TODO: Fix getEntry twice
-        console.log('GET', req.query)
+        // console.log('GET', req.query)
       }
     }
     next()
