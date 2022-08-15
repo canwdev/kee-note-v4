@@ -22,11 +22,11 @@ yarn start:dev
 cd frontend
 yarn dev
 
-# Generate user
+# Generate a user (password with hashed)
 yarn gen:user
 ```
 
-You can create a `.env` file in project root folder as production config, the contents is like `.env.development`.
+You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`.
 
 ## Windows install bcrypt
 

@@ -6,8 +6,8 @@ export class AppService {
   private readonly myCrypt: MyCrypt
 
   constructor() {
-    if (process.env.MY_ENCRYPT_KEY) {
-      this.myCrypt = new MyCrypt(process.env.MY_ENCRYPT_KEY)
+    if (process.env.MY_CRYPT_KEY) {
+      this.myCrypt = new MyCrypt(process.env.MY_CRYPT_KEY)
     }
   }
 
