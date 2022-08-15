@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {MyCrypt} from '@/utils/my-crypt'
 
 function Service(config: any) {
   const {
@@ -10,7 +11,13 @@ function Service(config: any) {
     isAuth = true,
     isToast = true,
     isRawResponse = false,
+    encryptionKey = import.meta.env.VITE_MY_ENCRYPT_KEY,
   } = config || {}
+
+  let myCrypt: MyCrypt
+  if (encryptionKey) {
+    myCrypt = new MyCrypt(encryptionKey)
+  }
 
   // 创建 axios 实例
   const service = axios.create({
@@ -30,6 +37,25 @@ function Service(config: any) {
           config.headers.Authorization = 'bearer ' + Authorization
         }
       }
+
+      if (myCrypt) {
+        // 加密请求
+        // console.log('config1',config)
+        if (/post/gi.test(<string>config.method) && config.data) {
+          config.data = {
+            ie: true,
+            main: myCrypt.encrypt(JSON.stringify(config.data)),
+          }
+        }
+        if (/get/gi.test(<string>config.method) && config.params) {
+          // console.log(config.params)
+          config.params = {
+            ie: true,
+            main: myCrypt.encrypt(JSON.stringify(config.params)),
+          }
+        }
+      }
+
       return config
     },
     (error) => Promise.reject(error)
@@ -41,7 +67,18 @@ function Service(config: any) {
       if (isRawResponse) {
         return response
       }
-      return response.data
+      let {data} = response
+      try {
+        // 解密请求
+        if (myCrypt && data.ie) {
+          data = JSON.parse(myCrypt.decrypt(data.main))
+          // console.log('dd', data)
+        }
+      } catch (error: any) {
+        window.$message.error(error.message)
+        return Promise.reject(error)
+      }
+      return data
     },
     (error) => {
       let message = error.message

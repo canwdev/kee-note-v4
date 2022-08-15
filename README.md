@@ -27,3 +27,12 @@ yarn gen:user
 ```
 
 You can create a `.env` file in project root folder as production config, the contents is like `.env.development`.
+
+## Windows install bcrypt
+
+run cmd as Administrator:
+
+```sh
+npm i -g node-gyp
+npm i -g --production windows-build-tools
+```

@@ -7,7 +7,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AutoKeepAlive: typeof import('./src/components/AutoKeepAlive.vue')['default']
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
@@ -23,11 +22,9 @@ declare module '@vue/runtime-core' {
     NLayoutContent: typeof import('naive-ui')['NLayoutContent']
     NLayoutHeader: typeof import('naive-ui')['NLayoutHeader']
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
-    NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NoteLayout: typeof import('./src/components/NoteLayout/index.vue')['default']
-    NPopselect: typeof import('naive-ui')['NPopselect']
     NSpace: typeof import('naive-ui')['NSpace']
     NTree: typeof import('naive-ui')['NTree']
     RouterLink: typeof import('vue-router')['RouterLink']

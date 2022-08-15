@@ -52,5 +52,6 @@ export default ({mode}) => {
       jsxInject: 'import {h,Fragment} from "vue"',
       jsxFragment: 'Fragment',
     },
+    build: {},
   })
 }

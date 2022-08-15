@@ -1,4 +1,4 @@
-import {Module, Global} from '@nestjs/common'
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common'
 import {AppController} from './app.controller'
 import {AppService} from './app.service'
 import {KeepassModule} from './keepass/keepass.module'
@@ -6,7 +6,7 @@ import {AuthModule} from './auth/auth.module'
 import {UsersModule} from './users/users.module'
 import {APP_GUARD} from '@nestjs/core'
 import {JwtAuthGuard} from './auth/guards/jwt-auth.guard'
-import {ConfigModule} from '@nestjs/config'
+import {EncryptMiddleware} from './encrypt.middleware'
 
 @Module({
   imports: [UsersModule, AuthModule, KeepassModule],
@@ -21,4 +21,8 @@ import {ConfigModule} from '@nestjs/config'
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(EncryptMiddleware).forRoutes('*')
+  }
+}
