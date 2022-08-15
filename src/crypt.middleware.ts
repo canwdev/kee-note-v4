@@ -2,7 +2,7 @@ import {Injectable, NestMiddleware} from '@nestjs/common'
 import {AppService} from './app.service'
 
 @Injectable()
-export class EncryptMiddleware implements NestMiddleware {
+export class CryptMiddleware implements NestMiddleware {
   constructor(private readonly appService: AppService) {}
 
   use(req: any, res: any, next: () => void) {
@@ -14,15 +14,16 @@ export class EncryptMiddleware implements NestMiddleware {
     if (/post/gi.test(req.method) && req.body) {
       const {ie, main} = req.body
       if (ie && main) {
-        // console.log('POST', req.body)
         req.body = JSON.parse(myCrypt.decrypt(main))
+        // console.log('POST', req.body)
       }
     }
     if (/get/gi.test(req.method) && req.query) {
       const {ie, main} = req.query
       if (ie && main) {
-        // console.log('GET', req.query)
         req.query = JSON.parse(myCrypt.decrypt(main))
+        // TODO: Fix getEntry twice
+        console.log('GET', req.query)
       }
     }
     next()

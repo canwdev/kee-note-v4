@@ -4,9 +4,10 @@ import {AppService} from './app.service'
 import {KeepassModule} from './keepass/keepass.module'
 import {AuthModule} from './auth/auth.module'
 import {UsersModule} from './users/users.module'
-import {APP_GUARD} from '@nestjs/core'
+import {APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core'
 import {JwtAuthGuard} from './auth/guards/jwt-auth.guard'
-import {EncryptMiddleware} from './encrypt.middleware'
+import {CryptMiddleware} from './crypt.middleware'
+import {CryptInterceptor} from './crypt.interceptor'
 
 @Module({
   imports: [UsersModule, AuthModule, KeepassModule],
@@ -16,6 +17,10 @@ import {EncryptMiddleware} from './encrypt.middleware'
     // 在当前 module 下都开启路由守卫
     // 若要开启一个路由都访问权限，请使用 @SkipAuth() 装饰器
     {
+      provide: APP_INTERCEPTOR,
+      useClass: CryptInterceptor,
+    },
+    {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
@@ -23,6 +28,6 @@ import {EncryptMiddleware} from './encrypt.middleware'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(EncryptMiddleware).forRoutes('*')
+    consumer.apply(CryptMiddleware).forRoutes('*')
   }
 }

@@ -7,7 +7,6 @@ export class MyCrypt {
   constructor(key: string) {
     // Must be 256 bits (32 characters)
     this.encryptionKey = key
-    console.log('crypto', crypto)
   }
 
   encrypt(text: string) {

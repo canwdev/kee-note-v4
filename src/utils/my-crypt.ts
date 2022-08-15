@@ -1,3 +1,6 @@
+/**
+ * https://github.com/brix/crypto-js/issues/195
+ */
 import * as crypto from 'crypto-js'
 
 const IV_LENGTH = 16 // For AES, this is always 16
@@ -7,7 +10,6 @@ export class MyCrypt {
   constructor(key: string) {
     // Must be 256 bits (32 characters)
     this.encryptionKey = key
-    console.log('crypto', crypto)
   }
 
   encrypt(text: string) {
