@@ -12,6 +12,7 @@ import {userLogin, userProfile} from '@/api'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import cookies from 'js-cookie'
 import {useRouter} from 'vue-router'
+import globalEventBus, {GlobalEvents} from '@/utils/bus'
 
 interface ModelType {
   username: string | null
@@ -92,39 +93,47 @@ export default defineComponent({
         })
       },
       checkProfile,
+      handleSettings() {
+        globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <div class="login-view">
-    <n-card class="card-wrap" title="Login">
-      <n-form ref="formRef" :model="model" :rules="rules">
-        <n-form-item path="username" label="Username">
-          <n-input v-model:value="model.username" @keydown.enter.prevent />
-        </n-form-item>
-        <n-form-item path="password" label="Password">
-          <n-input v-model:value="model.password" type="password" />
-        </n-form-item>
-        <n-space style="display: flex; justify-content: flex-end">
-          <n-button round @click="checkProfile"> Profile </n-button>
-          <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
-        </n-space>
-      </n-form>
-    </n-card>
-  </div>
+  <n-layout class="login-view">
+    <n-layout-content>
+      <n-card class="card-wrap" title="Login" hoverable>
+        <n-form ref="formRef" :model="model" :rules="rules">
+          <n-form-item path="username" label="Username">
+            <n-input v-model:value="model.username" @keydown.enter.prevent />
+          </n-form-item>
+          <n-form-item path="password" label="Password">
+            <n-input v-model:value="model.password" type="password" />
+          </n-form-item>
+          <n-space style="display: flex; justify-content: flex-end">
+            <n-button round @click="handleSettings"> Settings </n-button>
+            <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
+          </n-space>
+        </n-form>
+      </n-card>
+    </n-layout-content>
+  </n-layout>
 </template>
 
 <style lang="scss" scoped>
 .login-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
 
+  :deep(.n-layout-scroll-container) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .card-wrap {
     max-width: 500px;
+    margin: 20px;
   }
 }
 </style>

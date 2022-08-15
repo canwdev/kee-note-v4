@@ -5,6 +5,8 @@ import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import AutoRouterView from '@/components/AutoRouterView.vue'
 import {useRoute, useRouter} from 'vue-router'
+import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import {LS_KEY_AUTHORIZATION} from '@/enum'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -61,6 +63,25 @@ export default defineComponent({
             props: {
               onClick: () => {
                 kService.saveDatabase()
+              },
+            },
+          },
+          {
+            label: 'Logout',
+            props: {
+              onClick: () => {
+                localStorage.removeItem(LS_KEY_AUTHORIZATION)
+                router.replace({
+                  name: 'HomeView',
+                })
+              },
+            },
+          },
+          {
+            label: 'Settings',
+            props: {
+              onClick: () => {
+                globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
               },
             },
           },

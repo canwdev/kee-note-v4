@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {LS_KEY_AUTHORIZATION, LS_KEY_MY_CRYPT_KEY} from '@/enum'
 import {MyCrypt} from '@/utils/my-crypt'
 
 function Service(config: any) {
@@ -11,7 +11,7 @@ function Service(config: any) {
     isAuth = true,
     isToast = true,
     isRawResponse = false,
-    encryptionKey = import.meta.env.VITE_MY_ENCRYPT_KEY,
+    encryptionKey = import.meta.env.VITE_MY_CRYPT_KEY || localStorage.getItem(LS_KEY_MY_CRYPT_KEY),
   } = config || {}
 
   let myCrypt: MyCrypt
