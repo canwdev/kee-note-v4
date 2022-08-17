@@ -79,37 +79,37 @@ export class KeepassController {
   }
 
   @Post('update-group')
-  updateGroup(params) {
+  updateGroup(@Body() params) {
     return this.kdbxHelper.updateGroup(params)
   }
 
   @Post('create-entry')
-  createEntry(params) {
+  createEntry(@Body() params) {
     return this.kdbxHelper.createEntry(params)
   }
 
   @Post('create-group')
-  createGroup(params) {
+  createGroup(@Body() params) {
     return this.kdbxHelper.createGroup(params)
   }
 
   @Post('remove-group')
-  removeGroup(params) {
+  removeGroup(@Body() params) {
     return this.kdbxHelper.removeGroup(params)
   }
 
   @Post('remove-entry')
-  removeEntry(params) {
+  removeEntry(@Body() params) {
     this.kdbxHelper.removeEntry(params)
   }
 
   @Post('move-group')
-  moveGroup(params) {
+  moveGroup(@Body() params) {
     return this.kdbxHelper.moveGroup(params)
   }
 
   @Post('move-entry')
-  moveEntry(params) {
+  moveEntry(@Body() params) {
     return this.kdbxHelper.moveEntry(params)
   }
 }

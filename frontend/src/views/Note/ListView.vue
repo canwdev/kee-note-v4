@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import {useKeeStore} from '@/store/kee-store'
-import {DataTableColumns, NDataTable} from 'naive-ui'
+import {DataTableColumns, NButton, NDataTable, NDropdown} from 'naive-ui'
 import {EntryItem} from '@/enum/kdbx'
 import {kService} from '@/api'
 import {RowData} from 'naive-ui/es/data-table/src/interface'
 import keepassIcons from '@/assets/icons'
 import {useRoute, useRouter} from 'vue-router'
+import {formatDate} from '@/utils'
+import {saveDatabaseAsync} from '@/utils/bus'
 
 const router = useRouter()
 const route = useRoute()
@@ -19,6 +21,14 @@ watch(
     getEntryList()
   }
 )
+
+const handleDeleteEntry = async (uuid: string) => {
+  await kService.removeEntry({
+    uuid: uuid,
+  })
+  await saveDatabaseAsync()
+  await getEntryList()
+}
 
 const createColumns = (): DataTableColumns<EntryItem> => {
   return [
@@ -41,10 +51,67 @@ const createColumns = (): DataTableColumns<EntryItem> => {
     {
       title: 'creationTime',
       key: 'creationTime',
+      render(row, index) {
+        return h('span', {}, formatDate(new Date(row.creationTime)))
+      },
     },
     {
       title: 'lastModTime',
       key: 'lastModTime',
+      render(row, index) {
+        return h('span', {}, formatDate(new Date(row.lastModTime)))
+      },
+    },
+    {
+      title: 'Action',
+      key: 'actions',
+      render(row) {
+        return h(
+          NDropdown,
+          {
+            options: [
+              {
+                label: 'Delete Entry',
+                props: {
+                  onClick: () => {
+                    window.$dialog.warning({
+                      title: 'Confirm',
+                      content:
+                        "Delete selected items? If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.",
+                      positiveText: 'OK',
+                      negativeText: 'Cancel',
+                      onPositiveClick: () => {
+                        handleDeleteEntry(row.uuid)
+                      },
+                      onNegativeClick: () => {},
+                    })
+                  },
+                },
+              },
+              {
+                label: 'Move to group',
+                props: {
+                  onClick: () => {
+                    window.$message.success('TBD!')
+                  },
+                },
+              },
+            ],
+          },
+          {
+            default: () =>
+              h(
+                NButton,
+                {
+                  onClick: (e: Event) => {
+                    e.stopPropagation()
+                  },
+                },
+                {default: () => 'Options'}
+              ),
+          }
+        )
+      },
     },
   ]
 }

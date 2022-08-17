@@ -3,6 +3,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {kService} from '@/api'
 import {EntryItem} from '@/enum/kdbx'
 import keepassIcons from '@/assets/icons'
+import {saveDatabaseAsync} from '@/utils/bus'
 
 export default defineComponent({
   name: 'DetailView',
@@ -54,6 +55,7 @@ export default defineComponent({
         ],
       })
       await getEntryDetail()
+      await saveDatabaseAsync()
     }
 
     return {

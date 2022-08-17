@@ -5,8 +5,10 @@ import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import AutoRouterView from '@/components/AutoRouterView.vue'
 import {useRoute, useRouter} from 'vue-router'
-import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {formatDate} from '@/utils'
+import {TreeDropInfo} from 'naive-ui'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -22,12 +24,17 @@ export default defineComponent({
     })
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
+
+    const groupUuid = computed(() => {
+      return route.query.groupUuid
+    })
+
     const selectedKeys = computed({
       get(): string[] {
-        if (!route.query.groupUuid) {
+        if (!groupUuid.value) {
           return []
         }
-        return [String(route.query.groupUuid)]
+        return [String(groupUuid.value)]
       },
       set(val: string[]) {
         if (!val) {
@@ -50,6 +57,48 @@ export default defineComponent({
       groupTree.value = res
     }
 
+    const handleCreateEntry = async () => {
+      const entry = await kService.createEntry({
+        groupUuid: groupUuid.value,
+        config: {title: formatDate(new Date())},
+      })
+      await saveDatabaseAsync()
+
+      await router.push({
+        name: 'NoteDetailView',
+        query: {uuid: entry.uuid},
+      })
+    }
+
+    const handleCreateGroup = async () => {
+      await kService.createGroup({
+        groupUuid: groupUuid.value,
+        name: formatDate(new Date()),
+      })
+      await saveDatabaseAsync()
+      await getGroupTree()
+    }
+
+    const handleDeleteGroup = async () => {
+      await kService.removeGroup({
+        groupUuid: groupUuid.value,
+      })
+      await saveDatabaseAsync()
+      await getGroupTree()
+    }
+
+    const handleTreeDrop = async ({node, dragNode, dropPosition}: TreeDropInfo) => {
+      const {uuid} = dragNode
+      const {uuid: targetUuid} = node
+
+      await kService.moveGroup({
+        uuid,
+        targetUuid,
+      })
+      await saveDatabaseAsync()
+      await getGroupTree()
+    }
+
     const menuOptionsBase = [
       {
         type: 'divider',
@@ -58,14 +107,6 @@ export default defineComponent({
       {
         label: 'Others',
         children: [
-          {
-            label: 'Save Database',
-            props: {
-              onClick: () => {
-                kService.saveDatabase()
-              },
-            },
-          },
           {
             label: 'Logout',
             props: {
@@ -85,26 +126,26 @@ export default defineComponent({
               },
             },
           },
-          {
-            label: 'About',
-            props: {
-              onClick: () => {
-                window.$message.success('Good!')
-              },
-            },
-          },
+          // {
+          //   label: 'About',
+          //   props: {
+          //     onClick: () => {
+          //       window.$message.success('Good!')
+          //     },
+          //   },
+          // },
         ],
       },
     ]
 
     const menuOptions = computed(() => {
-      if (route.query.groupUuid) {
+      if (groupUuid.value) {
         return [
           {
             label: 'Create Entry',
             props: {
               onClick: () => {
-                window.$message.success('Good!')
+                handleCreateEntry()
               },
             },
           },
@@ -116,7 +157,7 @@ export default defineComponent({
             label: 'Create Group',
             props: {
               onClick: () => {
-                window.$message.success('Good!')
+                handleCreateGroup()
               },
             },
           },
@@ -124,19 +165,24 @@ export default defineComponent({
             label: 'Edit Group',
             props: {
               onClick: () => {
-                window.$message.success('Good!')
+                window.$message.success('TBD!')
               },
             },
-          },
-          {
-            label: 'Move Group...',
-            disabled: true,
           },
           {
             label: 'Delete Group',
             props: {
               onClick: () => {
-                window.$message.success('Good!')
+                window.$dialog.warning({
+                  title: 'Confirm',
+                  content: 'Delete selected group? Permanently emptied if group is RecycleBin.',
+                  positiveText: 'OK',
+                  negativeText: 'Cancel',
+                  onPositiveClick: () => {
+                    handleDeleteGroup()
+                  },
+                  onNegativeClick: () => {},
+                })
               },
             },
           },
@@ -157,6 +203,7 @@ export default defineComponent({
       keeStore,
       selectedKeys,
       menuOptions,
+      handleTreeDrop,
     }
   },
 })
@@ -199,6 +246,8 @@ export default defineComponent({
             class="content-padding"
             selectable
             default-expand-all
+            draggable
+            @drop="handleTreeDrop"
             v-model:selected-keys="selectedKeys"
           />
         </n-layout-sider>

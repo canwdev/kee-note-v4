@@ -201,11 +201,11 @@ export class KdbxHelper {
     const {groupUuid, config} = params || {}
     console.log(`[db] createEntry uuid=${groupUuid}`)
 
-    if (!groupUuid || !config) {
+    if (!groupUuid) {
       throw new Error('groupUuid and config is required!')
     }
 
-    const {title, icon, bgColor, fgColor} = config || {}
+    const {title = 'New Entry', icon, bgColor, fgColor} = config || {}
 
     const group = this.db.getGroup(groupUuid)
     const entry = this.db.createEntry(group)
@@ -234,7 +234,7 @@ export class KdbxHelper {
    * @param params
    */
   createGroup(params) {
-    const {groupUuid, name} = params || {}
+    const {groupUuid, name = 'New Group'} = params || {}
 
     const group = this.db.getGroup(groupUuid)
     const newGroup = this.db.createGroup(group, name)
