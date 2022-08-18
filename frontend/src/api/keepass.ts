@@ -5,6 +5,10 @@ const service = Service({
   baseURL: API_PROXY_BASE + '/keepass',
 })
 
+export const openDatabase = () => {
+  return service.post('open-database')
+}
+
 export const closeDatabase = () => {
   return service.post('close-database')
 }

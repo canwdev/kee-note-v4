@@ -26,6 +26,16 @@ watch(
     getEntryList()
   }
 )
+watch(
+  () => keeStore.isDbOpened,
+  (val) => {
+    if (val) {
+      getEntryList()
+    } else {
+      entryList.value = []
+    }
+  }
+)
 
 const handleDeleteEntry = async (uuid: string) => {
   await kService.removeEntry({
@@ -133,7 +143,9 @@ const getEntryList = async () => {
 }
 
 onMounted(() => {
-  getEntryList()
+  if (keeStore.isDbOpened) {
+    getEntryList()
+  }
 })
 
 // onActivated(() => {

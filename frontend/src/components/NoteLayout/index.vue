@@ -10,6 +10,7 @@ import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {formatDate} from '@/utils'
 import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
+import {openDatabase} from '@/api/keepass'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -21,11 +22,24 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
 
-    onMounted(async () => {
-      await getGroupTree()
-    })
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
+
+    onMounted(async () => {
+      keeStore.isDbOpened = await kService.checkIsOpen()
+      if (keeStore.isDbOpened) {
+        await getGroupTree()
+      } else {
+        await handleOpenDatabase()
+      }
+    })
+
+    onActivated(async () => {
+      keeStore.isDbOpened = await kService.checkIsOpen()
+      if (!keeStore.isDbOpened) {
+        await handleOpenDatabase()
+      }
+    })
 
     const groupUuid = computed(() => {
       return route.query.groupUuid
@@ -113,6 +127,28 @@ export default defineComponent({
       tempEditNode.value = null
     }
 
+    const handleCloseDatabase = async () => {
+      await kService.closeDatabase()
+      keeStore.isDbOpened = false
+      window.$message.success('Database successfully closed')
+      selectedKeys.value = []
+      groupTree.value = []
+    }
+
+    const handleOpenDatabase = async () => {
+      if (keeStore.isDbOpened) {
+        window.$message.info('Database already opened')
+
+        return
+      }
+
+      await kService.openDatabase()
+
+      keeStore.isDbOpened = true
+      window.$message.success('Database successfully opened')
+      await getGroupTree()
+    }
+
     const menuOptionsBase = [
       {
         type: 'divider',
@@ -124,9 +160,10 @@ export default defineComponent({
           {
             label: 'Logout',
             props: {
-              onClick: () => {
+              onClick: async () => {
+                await handleCloseDatabase()
                 localStorage.removeItem(LS_KEY_AUTHORIZATION)
-                router.replace({
+                await router.replace({
                   name: 'HomeView',
                 })
               },
@@ -153,6 +190,19 @@ export default defineComponent({
     ]
 
     const menuOptions = computed(() => {
+      if (!keeStore.isDbOpened) {
+        return [
+          {
+            label: 'Open Database',
+            props: {
+              onClick: async () => {
+                await handleOpenDatabase()
+              },
+            },
+          },
+          ...menuOptionsBase,
+        ]
+      }
       if (groupUuid.value) {
         return [
           {
@@ -189,6 +239,18 @@ export default defineComponent({
                   },
                   onNegativeClick: () => {},
                 })
+              },
+            },
+          },
+          {
+            type: 'divider',
+            label: 'd2',
+          },
+          {
+            label: 'Close Database',
+            props: {
+              onClick: async () => {
+                await handleCloseDatabase()
               },
             },
           },
