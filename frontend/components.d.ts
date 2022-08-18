@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
+    DialogGroupSelect: typeof import('./src/components/DialogGroupSelect.vue')['default']
     DialogRename: typeof import('./src/components/DialogRename.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     NButton: typeof import('naive-ui')['NButton']

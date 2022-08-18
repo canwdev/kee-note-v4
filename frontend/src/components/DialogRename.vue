@@ -15,12 +15,12 @@ export default defineComponent({
       default: '',
     },
   },
-  emits: ['onRename'],
+  emits: ['onSubmit', 'update:visible'],
   setup(props, {emit}) {
     const {value: propValue} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const formRef = ref<FormInst | null>(null)
-    const modelRef = ref<{name: string}>({
+    const modelRef = reactive<{name: string}>({
       name: '',
     })
     const rules: FormRules = {
@@ -35,10 +35,10 @@ export default defineComponent({
 
     watch(mVisible, (val) => {
       if (val) {
-        modelRef.value.name = propValue.value
+        modelRef.name = propValue.value
       } else {
         setTimeout(() => {
-          modelRef.value.name = ''
+          modelRef.name = ''
         }, 1000)
       }
     })
@@ -54,7 +54,7 @@ export default defineComponent({
           if (errors) {
             return
           }
-          emit('onRename', modelRef.value.name)
+          emit('onSubmit', modelRef.name)
           mVisible.value = false
         })
       },

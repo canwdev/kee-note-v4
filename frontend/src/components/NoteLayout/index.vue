@@ -52,12 +52,9 @@ export default defineComponent({
         })
       },
     })
-    const selectedNodes = ref([])
 
     const getGroupTree = async () => {
-      const res: GroupItem[] = await kService.getGroupTree()
-      // console.log(res)
-      groupTree.value = res
+      groupTree.value = await kService.getGroupTree()
     }
 
     const handleCreateEntry = async () => {
@@ -113,6 +110,7 @@ export default defineComponent({
       })
       await saveDatabaseAsync()
       await getGroupTree()
+      tempEditNode.value = null
     }
 
     const menuOptionsBase = [
@@ -218,7 +216,6 @@ export default defineComponent({
       groupTree,
       keeStore,
       selectedKeys,
-      selectedNodes,
       menuOptions,
       handleTreeDrop,
       tempEditNode,
@@ -305,13 +302,12 @@ export default defineComponent({
             :node-props="nodeProps"
             @drop="handleTreeDrop"
             v-model:selected-keys="selectedKeys"
-            v-model="selectedNodes"
           />
 
           <DialogRename
             v-model:visible="showEditModal"
             :value="tempEditNode?.title"
-            @onRename="handleGroupEdit"
+            @onSubmit="handleGroupEdit"
           />
         </n-layout-sider>
 

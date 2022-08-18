@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {useKeeStore} from '@/store/kee-store'
-import {DataTableColumns, NButton, NDataTable, NDropdown} from 'naive-ui'
+import {DataTableColumns, NButton, NDataTable, NDropdown, TreeOption} from 'naive-ui'
 import {EntryItem} from '@/enum/kdbx'
 import {kService} from '@/api'
 import {RowData} from 'naive-ui/es/data-table/src/interface'
@@ -8,6 +8,7 @@ import keepassIcons from '@/assets/icons'
 import {useRoute, useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
 import {saveDatabaseAsync} from '@/utils/bus'
+import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -15,8 +16,12 @@ const route = useRoute()
 const keeStore = useKeeStore()
 const entryList = ref<EntryItem[]>([])
 
+const groupUuid = computed(() => {
+  return route.query.groupUuid
+})
+
 watch(
-  () => route.query.groupUuid,
+  () => groupUuid.value,
   (val) => {
     getEntryList()
   }
@@ -92,7 +97,8 @@ const createColumns = (): DataTableColumns<EntryItem> => {
                 label: 'Move to group',
                 props: {
                   onClick: () => {
-                    window.$message.success('TBD!')
+                    tempEditEntry.value = row
+                    showGroupSelectModal.value = true
                   },
                 },
               },
@@ -117,15 +123,13 @@ const createColumns = (): DataTableColumns<EntryItem> => {
 }
 
 const getEntryList = async () => {
-  if (!route.query.groupUuid) {
+  if (!groupUuid.value) {
     entryList.value = []
     return
   }
-  const list = await kService.getGroupEntries({
-    groupUuid: route.query.groupUuid,
+  entryList.value = await kService.getGroupEntries({
+    groupUuid: groupUuid.value,
   })
-
-  entryList.value = list
 }
 
 onMounted(() => {
@@ -162,6 +166,23 @@ const rowProps = (row: RowData) => {
     },
   }
 }
+
+const tempEditEntry = ref<EntryItem | null>(null)
+const showGroupSelectModal = ref(false)
+const handleSelectGroup = async (groupUuid: string) => {
+  // console.log(groupUuid)
+  if (!tempEditEntry.value) {
+    return
+  }
+  await kService.moveEntry({
+    groupUuid: groupUuid,
+    uuid: tempEditEntry.value.uuid,
+  })
+
+  await saveDatabaseAsync()
+  await getEntryList()
+  tempEditEntry.value = null
+}
 </script>
 
 <template>
@@ -173,6 +194,11 @@ const rowProps = (row: RowData) => {
       :data="entryList"
       :pagination="paginationReactive"
       :bordered="true"
+    />
+    <DialogGroupSelect
+      v-model:visible="showGroupSelectModal"
+      :value="groupUuid"
+      @onSubmit="handleSelectGroup"
     />
   </div>
 </template>
