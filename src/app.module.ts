@@ -8,9 +8,18 @@ import {APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core'
 import {JwtAuthGuard} from './auth/guards/jwt-auth.guard'
 import {CryptMiddleware} from './crypt.middleware'
 import {CryptInterceptor} from './crypt.interceptor'
+import {ServeStaticModule} from '@nestjs/serve-static'
+import {join} from 'path'
 
 @Module({
-  imports: [UsersModule, AuthModule, KeepassModule],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../frontend-dist', '/'),
+    }),
+    UsersModule,
+    AuthModule,
+    KeepassModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

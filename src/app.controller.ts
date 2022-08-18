@@ -9,11 +9,11 @@ import {SkipAuth} from './auth/skip-auth'
 export class AppController {
   constructor(private readonly appService: AppService, private authService: AuthService) {}
 
-  @SkipAuth()
-  @Get()
-  getHello(): string {
-    return this.appService.getHello()
-  }
+  // @SkipAuth()
+  // @Get()
+  // getHello(): string {
+  //   return this.appService.getHello()
+  // }
 
   // curl -X POST http://localhost:3000/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
   @SkipAuth()
