@@ -27,6 +27,5 @@ export class CryptInterceptor<T> implements NestInterceptor<T, Response<T>> {
         }
       })
     )
-    // .pipe(catchError((err) => throwError(err)))
   }
 }

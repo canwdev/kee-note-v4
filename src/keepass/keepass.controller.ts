@@ -1,7 +1,18 @@
-import {Body, Controller, Get, HttpException, HttpStatus, Post, Query} from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Post,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common'
 import {KeepassService} from './keepass.service'
 import {SkipAuth} from '../auth/skip-auth'
+import {ErrorInterceptor} from './error.interceptor'
 
+@UseInterceptors(ErrorInterceptor)
 @Controller('keepass')
 export class KeepassController {
   constructor(private keepassService: KeepassService) {}
@@ -16,9 +27,9 @@ export class KeepassController {
     return this.keepassService.getKdbxHelper()
   }
 
-  @Get('open')
+  @Post('open-database')
   async openDatabase() {
-    return 'fake open'
+    return this.keepassService.autoOpenDatabase()
   }
 
   @Post('close-database')

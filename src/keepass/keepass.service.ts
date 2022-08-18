@@ -14,9 +14,7 @@ export class KeepassService {
 
   constructor() {
     this.kdbxHelper = new KdbxHelper()
-    this.loadDbConfig().then((openOptions) => {
-      this.openDatabase(openOptions)
-    })
+    // this.autoOpenDatabase()
   }
 
   async loadDbConfig(): Promise<KdbxOpenOptions> {
@@ -31,6 +29,12 @@ export class KeepassService {
       kdbxOpenOptions.keyPath = Path.join(basePath, kdbxOpenOptions.keyPath)
     }
     return kdbxOpenOptions
+  }
+
+  autoOpenDatabase() {
+    return this.loadDbConfig().then((openOptions) => {
+      this.openDatabase(openOptions)
+    })
   }
 
   openDatabase(options: KdbxOpenOptions) {

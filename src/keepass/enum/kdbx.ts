@@ -90,7 +90,7 @@ export class KdbxHelper {
 
   getGroupTree(groupUuid) {
     if (!this.db) {
-      throw new Error('db is invalid')
+      throw new Error('Database may not be open')
     }
 
     const group = groupUuid ? this.db.getGroup(groupUuid) : this.db.groups
@@ -105,7 +105,7 @@ export class KdbxHelper {
    */
   getGroupEntries(groupUuid) {
     if (!(this.db && groupUuid)) {
-      throw new Error('db or groupUuid is invalid')
+      throw new Error('Invalid db or groupUuid')
     }
 
     const list = []
@@ -269,7 +269,7 @@ export class KdbxHelper {
 
     const checkIllegal = (item) => {
       if (item.uuid.id === groupUuid) {
-        throw new Error('Not allowed to move to the group itself')
+        throw new Error('Moving to the group itself is not allowed')
       }
     }
 
