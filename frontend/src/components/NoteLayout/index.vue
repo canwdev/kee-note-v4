@@ -4,16 +4,18 @@ import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import AutoRouterView from '@/components/AutoRouterView.vue'
+import DialogRename from '@/components/DialogRename.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {formatDate} from '@/utils'
-import {TreeDropInfo} from 'naive-ui'
+import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
     AutoRouterView,
+    DialogRename,
   },
   setup() {
     const router = useRouter()
@@ -50,6 +52,7 @@ export default defineComponent({
         })
       },
     })
+    const selectedNodes = ref([])
 
     const getGroupTree = async () => {
       const res: GroupItem[] = await kService.getGroupTree()
@@ -94,6 +97,19 @@ export default defineComponent({
       await kService.moveGroup({
         uuid,
         targetUuid,
+      })
+      await saveDatabaseAsync()
+      await getGroupTree()
+    }
+
+    const handleGroupEdit = async (name: string) => {
+      if (!tempEditNode.value) {
+        return
+      }
+
+      await kService.updateGroup({
+        uuid: tempEditNode.value.uuid,
+        updates: [{path: 'name', value: name}],
       })
       await saveDatabaseAsync()
       await getGroupTree()
@@ -162,14 +178,6 @@ export default defineComponent({
             },
           },
           {
-            label: 'Edit Group',
-            props: {
-              onClick: () => {
-                window.$message.success('TBD!')
-              },
-            },
-          },
-          {
             label: 'Delete Group',
             props: {
               onClick: () => {
@@ -198,12 +206,59 @@ export default defineComponent({
       ]
     })
 
+    const showEditModal = ref(false)
+    const tempEditNode = ref<TreeOption | null>(null)
+
+    const rightMenuOptions = ref<DropdownOption[]>([])
+    const showRightMenu = ref(false)
+    const xRef = ref(0)
+    const yRef = ref(0)
+
     return {
       groupTree,
       keeStore,
       selectedKeys,
+      selectedNodes,
       menuOptions,
       handleTreeDrop,
+      tempEditNode,
+      showEditModal,
+      rightMenuOptions,
+      showRightMenu,
+      xRef,
+      yRef,
+      handleSelect: () => {
+        showRightMenu.value = false
+      },
+      handleClickoutside: () => {
+        showRightMenu.value = false
+      },
+      nodeProps: ({option}: {option: TreeOption}) => {
+        return {
+          onClick() {
+            // message.info('[Click] ' + option.label)
+          },
+          onContextmenu(e: MouseEvent): void {
+            rightMenuOptions.value = [
+              {
+                label: 'Edit Group',
+                props: {
+                  onClick: () => {
+                    console.log(option)
+                    tempEditNode.value = option
+                    showEditModal.value = true
+                  },
+                },
+              },
+            ]
+            showRightMenu.value = true
+            xRef.value = e.clientX
+            yRef.value = e.clientY
+            e.preventDefault()
+          },
+        }
+      },
+      handleGroupEdit,
     }
   },
 })
@@ -247,10 +302,31 @@ export default defineComponent({
             selectable
             default-expand-all
             draggable
+            :node-props="nodeProps"
             @drop="handleTreeDrop"
             v-model:selected-keys="selectedKeys"
+            v-model="selectedNodes"
+          />
+
+          <DialogRename
+            v-model:visible="showEditModal"
+            :value="tempEditNode?.title"
+            @onRename="handleGroupEdit"
           />
         </n-layout-sider>
+
+        <n-dropdown
+          trigger="manual"
+          placement="bottom-start"
+          :show="showRightMenu"
+          :options="rightMenuOptions"
+          :x="xRef"
+          :y="yRef"
+          @select="handleSelect"
+          key-field="label"
+          @clickoutside="handleClickoutside"
+        />
+
         <n-layout-content>
           <AutoRouterView />
         </n-layout-content>

@@ -11,10 +11,10 @@ export default defineComponent({
 })
 </script>
 <template>
-  <router-view v-slot="{Component}">
+  <router-view v-slot="{Component, route}">
     <keep-alive>
-      <component :is="Component" :key="$route.name" v-if="isKeepAlive($route)" />
+      <component :is="Component" :key="route.name" v-if="isKeepAlive(route)" />
     </keep-alive>
-    <component :is="Component" :key="$route.name" v-if="!isKeepAlive($route)" />
+    <component :is="Component" :key="route.name" v-if="!isKeepAlive(route)" />
   </router-view>
 </template>

@@ -38,7 +38,7 @@ export default ({mode}) => {
       }),
     ],
     server: {
-      host: '0.0.0.0',
+      // host: '0.0.0.0',
       proxy: {
         '/api_server': {
           target: process.env.VITE_API_HOST,
