@@ -10,7 +10,6 @@ import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {formatDate} from '@/utils'
 import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
-import {openDatabase} from '@/api/keepass'
 
 export default defineComponent({
   name: 'NoteLayout',
