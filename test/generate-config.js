@@ -18,8 +18,10 @@ function generateConfig() {
 JWT_SECRET=${crypto.randomBytes(16).toString('hex')}
 JWT_EXPIRES_IN=7d
 AUTH_USERS=${generateUserConfig()}
+
 # Kdbx configuration file path, the database will be loaded once the server starts
-#DB_CONFIG_JSON=xxx.json
+#DB_CONFIG_JSON=test/db-config.json
+
 # Recommended to open in production mode, it can encrypt/decrypt request query/body and response body
 MY_CRYPT_KEY=${crypto.randomBytes(16).toString('hex')}
 `
