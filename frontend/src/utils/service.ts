@@ -71,8 +71,9 @@ function Service(config: any) {
       try {
         // 解密请求
         if (myCrypt && data.ie) {
-          data = JSON.parse(myCrypt.decrypt(data.main))
-          // console.log('dd', data)
+          const decrypted = myCrypt.decrypt(data.main) || 'null'
+          // console.log('dd', decrypted)
+          data = JSON.parse(decrypted)
         }
       } catch (error: any) {
         window.$message.error(error.message)

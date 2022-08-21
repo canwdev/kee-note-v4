@@ -22,8 +22,8 @@ yarn start:dev
 cd frontend
 yarn dev
 
-# Generate a user (password with hashed)
-yarn gen:user
+# Generate user (password with hashed) and other `.env` configs
+yarn gen:config
 ```
 
 You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`.

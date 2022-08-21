@@ -51,6 +51,10 @@ export default defineComponent({
         username: modelRef.value.username,
         password: modelRef.value.password,
       })
+      if (!access_token) {
+        message.error('Invalid token! Check crypt key in settings?')
+        return
+      }
       localStorage.setItem(LS_KEY_AUTHORIZATION, access_token)
 
       checkProfile()
@@ -63,7 +67,7 @@ export default defineComponent({
       const data = await userProfile()
 
       window.$notification.success({
-        content: '恭喜🎉，你已成功登录！',
+        content: 'Congrats🎉，you have successfully logged in！',
         meta: JSON.stringify(data),
         duration: 3000,
         keepAliveOnHover: true,

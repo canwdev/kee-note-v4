@@ -12,7 +12,7 @@ import {ConfigModule} from '@nestjs/config'
     ConfigModule.forRoot({
       // ignoreEnvFile: true,
       isGlobal: true,
-      envFilePath: ['.env.development.local', '.env.development', '.env'],
+      envFilePath: process.env.IS_DEV ? ['.env.development', '.env.development.local'] : ['.env'],
     }),
     UsersModule,
     PassportModule,

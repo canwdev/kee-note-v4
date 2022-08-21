@@ -32,7 +32,7 @@ export default defineComponent({
       if (keeStore.isDbOpened) {
         await getGroupTree()
       } else {
-        handleOpenDatabase()
+        await handleOpenDatabase()
       }
     })
 
@@ -131,7 +131,7 @@ export default defineComponent({
     }
 
     const showOpenDbModal = ref(false)
-    const handleOpenDatabase = async (password) => {
+    const handleOpenDatabase = async (password?) => {
       if (keeStore.isDbOpened) {
         window.$message.info('Database already opened')
 
@@ -164,7 +164,11 @@ export default defineComponent({
             label: 'Logout',
             props: {
               onClick: async () => {
-                await handleCloseDatabase()
+                try {
+                  await handleCloseDatabase()
+                } catch (e) {
+                  window.$message.warning('Database close failed')
+                }
                 localStorage.removeItem(LS_KEY_AUTHORIZATION)
                 await router.replace({
                   name: 'HomeView',
