@@ -14,14 +14,16 @@ export class CryptMiddleware implements NestMiddleware {
     if (/post/gi.test(req.method) && req.body) {
       const {ie, main} = req.body
       if (ie && main) {
-        req.body = JSON.parse(myCrypt.decrypt(main))
+        const decrypted = myCrypt.decrypt(main) || 'null'
+        req.body = JSON.parse(decrypted)
         // console.log('POST', req.body)
       }
     }
     if (/get/gi.test(req.method) && req.query) {
       const {ie, main} = req.query
       if (ie && main) {
-        req.query = JSON.parse(myCrypt.decrypt(main))
+        const decrypted = myCrypt.decrypt(main) || 'null'
+        req.query = JSON.parse(decrypted)
         // console.log('GET', req.query)
       }
     }

@@ -25,8 +25,8 @@ export default defineComponent({
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const modelRef = ref<ModelType>({
-      username: 'test',
-      password: '__REPLACE_ME__',
+      username: import.meta.env.VITE_USER_NAME || '',
+      password: import.meta.env.VITE_USER_PASSWORD || '',
     })
 
     const rules: FormRules = {
