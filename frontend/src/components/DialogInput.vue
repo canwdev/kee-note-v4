@@ -94,6 +94,8 @@ export default defineComponent({
           ref="inputRef"
           v-model:value="modelRef.name"
           :type="isPassword ? 'password' : 'text'"
+          show-password-on="click"
+          @keyup.enter="handleOK"
         />
       </n-form-item>
 

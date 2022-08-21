@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {LS_KEY_AUTHORIZATION, LS_KEY_MY_CRYPT_KEY} from '@/enum'
 import {MyCrypt} from '@/utils/my-crypt'
+import globalEventBus, {GlobalEvents} from '@/utils/bus'
 
 function Service(config: any) {
   const {
@@ -18,6 +19,14 @@ function Service(config: any) {
   if (encryptionKey) {
     myCrypt = new MyCrypt(encryptionKey)
   }
+
+  globalEventBus.on(GlobalEvents.UPDATE_MY_CRYPT_KEY, (myCryptKey) => {
+    if (myCrypt) {
+      myCrypt.setKey(String(myCryptKey))
+    } else {
+      myCrypt = new MyCrypt(String(myCryptKey))
+    }
+  })
 
   // 创建 axios 实例
   const service = axios.create({

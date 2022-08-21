@@ -218,6 +218,7 @@ const handleSelectGroup = async (groupUuid: string) => {
 <style lang="scss" scoped>
 .note-list-view {
   overflow: auto;
+  height: 100%;
   .note-list-table {
     min-width: 700px;
   }

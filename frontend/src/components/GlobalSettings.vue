@@ -1,6 +1,7 @@
 <script lang="ts">
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getMyCryptKey, getUserTheme, LS_KEY_MY_CRYPT_KEY, LS_KEY_THEME, ThemeType} from '@/enum'
+import globalEventBus, {GlobalEvents} from '@/utils/bus'
 export default defineComponent({
   props: {
     visible: {
@@ -25,7 +26,8 @@ export default defineComponent({
         return
       }
       localStorage.setItem(LS_KEY_MY_CRYPT_KEY, String(myCryptKey.value))
-      window.$message.success('MY_CRYPT_KEY is set! Refresh the page to take effect.')
+      window.$message.success('MY_CRYPT_KEY is set!')
+      globalEventBus.emit(GlobalEvents.UPDATE_MY_CRYPT_KEY, String(myCryptKey.value))
     }
 
     return {

@@ -3,9 +3,13 @@ import crypto from 'crypto-js'
 const IV_LENGTH = 16 // For AES, this is always 16
 
 export class MyCrypt {
-  private readonly encryptionKey: string
+  private encryptionKey: string
   constructor(key: string) {
     // Must be 256 bits (32 characters)
+    this.encryptionKey = key
+  }
+
+  setKey(key: string) {
     this.encryptionKey = key
   }
 

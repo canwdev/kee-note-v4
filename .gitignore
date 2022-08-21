@@ -37,3 +37,7 @@ lerna-debug.log*
 
 *.env
 *.local
+
+# .tar.gz 打包
+*.tar
+*.tar.gz

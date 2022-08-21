@@ -111,14 +111,19 @@ export default defineComponent({
       <n-card class="card-wrap" title="Login" hoverable>
         <n-form ref="formRef" :model="model" :rules="rules">
           <n-form-item path="username" label="Username">
-            <n-input v-model:value="model.username" @keydown.enter.prevent />
+            <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
           </n-form-item>
           <n-form-item path="password" label="Password">
-            <n-input v-model:value="model.password" type="password" />
+            <n-input
+              v-model:value="model.password"
+              type="password"
+              show-password-on="click"
+              @keyup.enter="handleValidateButtonClick"
+            />
           </n-form-item>
           <n-space style="display: flex; justify-content: flex-end">
-            <n-button round @click="handleSettings"> Settings </n-button>
             <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
+            <n-button round @click="handleSettings"> Settings </n-button>
           </n-space>
         </n-form>
       </n-card>
