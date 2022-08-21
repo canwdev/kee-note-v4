@@ -31,9 +31,12 @@ export class KeepassService {
     return kdbxOpenOptions
   }
 
-  autoOpenDatabase() {
+  autoOpenDatabase(params: any) {
     return this.loadDbConfig().then((openOptions) => {
-      this.openDatabase(openOptions)
+      if (params && params.password) {
+        openOptions.password = params.password
+      }
+      return this.openDatabase(openOptions)
     })
   }
 

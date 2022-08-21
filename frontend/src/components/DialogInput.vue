@@ -4,7 +4,7 @@ import {FormInst, FormRules, FormValidationError} from 'naive-ui'
 import {ref} from 'vue'
 
 export default defineComponent({
-  name: 'DialogRename',
+  name: 'DialogInput',
   props: {
     visible: {
       type: Boolean,
@@ -14,20 +14,37 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    dialogTitle: {
+      type: String,
+      default: 'Input',
+    },
+    inputLabel: {
+      type: String,
+      default: 'Input',
+    },
+    isPassword: {
+      type: Boolean,
+      default: false,
+    },
+    required: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['onSubmit', 'update:visible'],
   setup(props, {emit}) {
-    const {value: propValue} = toRefs(props)
+    const {value: propValue, inputLabel, required} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const formRef = ref<FormInst | null>(null)
+    const inputRef = ref<any>(null)
     const modelRef = reactive<{name: string}>({
       name: '',
     })
     const rules: FormRules = {
       name: [
         {
-          required: true,
-          message: 'Name is required',
+          required: required.value,
+          message: `${inputLabel.value} is required`,
           trigger: ['blur'],
         },
       ],
@@ -36,6 +53,11 @@ export default defineComponent({
     watch(mVisible, (val) => {
       if (val) {
         modelRef.name = propValue.value
+        nextTick(() => {
+          if (inputRef.value) {
+            inputRef.value.focus()
+          }
+        })
       } else {
         setTimeout(() => {
           modelRef.name = ''
@@ -44,6 +66,7 @@ export default defineComponent({
     })
 
     return {
+      inputRef,
       formRef,
       mVisible,
       modelRef,
@@ -64,10 +87,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" title="Edit Group">
+  <n-modal v-model:show="mVisible" preset="dialog" :title="dialogTitle">
     <n-form ref="formRef" :model="modelRef" :rules="rules">
-      <n-form-item path="name" label="Name">
-        <n-input v-model:value="modelRef.name" />
+      <n-form-item path="name" :label="inputLabel">
+        <n-input
+          ref="inputRef"
+          v-model:value="modelRef.name"
+          :type="isPassword ? 'password' : 'text'"
+        />
       </n-form-item>
 
       <n-space style="display: flex; justify-content: flex-end">

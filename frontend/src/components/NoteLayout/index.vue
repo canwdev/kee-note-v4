@@ -4,18 +4,19 @@ import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import AutoRouterView from '@/components/AutoRouterView.vue'
-import DialogRename from '@/components/DialogRename.vue'
+import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {formatDate} from '@/utils'
 import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
+import {openDatabase} from '@/api/keepass'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
     AutoRouterView,
-    DialogRename,
+    DialogInput,
   },
   setup() {
     const router = useRouter()
@@ -24,19 +25,14 @@ export default defineComponent({
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
 
-    onMounted(async () => {
+    onMounted(async () => {})
+
+    onActivated(async () => {
       keeStore.isDbOpened = await kService.checkIsOpen()
       if (keeStore.isDbOpened) {
         await getGroupTree()
       } else {
-        await handleOpenDatabase()
-      }
-    })
-
-    onActivated(async () => {
-      keeStore.isDbOpened = await kService.checkIsOpen()
-      if (!keeStore.isDbOpened) {
-        await handleOpenDatabase()
+        handleOpenDatabase()
       }
     })
 
@@ -134,14 +130,22 @@ export default defineComponent({
       groupTree.value = []
     }
 
-    const handleOpenDatabase = async () => {
+    const showOpenDbModal = ref(false)
+    const handleOpenDatabase = async (password) => {
       if (keeStore.isDbOpened) {
         window.$message.info('Database already opened')
 
         return
       }
+      try {
+        await kService.openDatabase({password})
+      } catch (e) {
+        console.error(e)
+        showOpenDbModal.value = true
+        keeStore.isDbOpened = false
 
-      await kService.openDatabase()
+        return
+      }
 
       keeStore.isDbOpened = true
       window.$message.success('Database successfully opened')
@@ -189,19 +193,27 @@ export default defineComponent({
     ]
 
     const menuOptions = computed(() => {
-      if (!keeStore.isDbOpened) {
-        return [
-          {
-            label: 'Open Database',
-            props: {
-              onClick: async () => {
-                await handleOpenDatabase()
+      const options = [
+        keeStore.isDbOpened
+          ? {
+              label: 'Close Database',
+              props: {
+                onClick: async () => {
+                  await handleCloseDatabase()
+                },
+              },
+            }
+          : {
+              label: 'Open Database',
+              props: {
+                onClick: async () => {
+                  showOpenDbModal.value = true
+                },
               },
             },
-          },
-          ...menuOptionsBase,
-        ]
-      }
+
+        ...menuOptionsBase,
+      ]
       if (groupUuid.value) {
         return [
           {
@@ -241,28 +253,10 @@ export default defineComponent({
               },
             },
           },
-          {
-            type: 'divider',
-            label: 'd2',
-          },
-          {
-            label: 'Close Database',
-            props: {
-              onClick: async () => {
-                await handleCloseDatabase()
-              },
-            },
-          },
-          ...menuOptionsBase,
+          ...options,
         ]
       }
-      return [
-        {
-          label: 'Select a group first',
-          disabled: true,
-        },
-        ...menuOptionsBase,
-      ]
+      return options
     })
 
     const showEditModal = ref(false)
@@ -317,6 +311,8 @@ export default defineComponent({
         }
       },
       handleGroupEdit,
+      showOpenDbModal,
+      handleOpenDatabase,
     }
   },
 })
@@ -342,6 +338,16 @@ export default defineComponent({
         </n-space>
       </n-layout-header>
 
+      <DialogInput
+        v-model:visible="showOpenDbModal"
+        :value="''"
+        @onSubmit="handleOpenDatabase"
+        dialog-title="Open Database"
+        input-label="Database password"
+        is-password
+        :required="false"
+      />
+
       <n-layout has-sider>
         <n-layout-sider
           collapse-mode="width"
@@ -365,10 +371,12 @@ export default defineComponent({
             v-model:selected-keys="selectedKeys"
           />
 
-          <DialogRename
+          <DialogInput
             v-model:visible="showEditModal"
             :value="tempEditNode?.title"
             @onSubmit="handleGroupEdit"
+            dialog-title="Rename Group"
+            input-label="Group name"
           />
         </n-layout-sider>
 

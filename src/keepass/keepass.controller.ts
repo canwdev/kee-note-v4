@@ -28,8 +28,8 @@ export class KeepassController {
   }
 
   @Post('open-database')
-  async openDatabase() {
-    return this.keepassService.autoOpenDatabase()
+  async openDatabase(@Body() params) {
+    return this.keepassService.autoOpenDatabase(params)
   }
 
   @Post('close-database')
