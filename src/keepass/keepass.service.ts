@@ -26,7 +26,9 @@ export class KeepassService {
     if (config.isRelativeBase) {
       const basePath = Path.dirname(configPath)
       kdbxOpenOptions.dbPath = Path.join(basePath, kdbxOpenOptions.dbPath)
-      kdbxOpenOptions.keyPath = Path.join(basePath, kdbxOpenOptions.keyPath)
+      if (kdbxOpenOptions.keyPath) {
+        kdbxOpenOptions.keyPath = Path.join(basePath, kdbxOpenOptions.keyPath)
+      }
     }
     return kdbxOpenOptions
   }
