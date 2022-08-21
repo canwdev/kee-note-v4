@@ -8,6 +8,7 @@
  "scripts": {
   "prebuild": "rimraf dist",
   "build": "nest build",
+  "build:all": "rimraf dist frontend-dist && nest build && yarn --cwd=frontend build",
   "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
   "start": "nest start",
   "start:dev": "nest start --watch",
