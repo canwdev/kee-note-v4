@@ -9,6 +9,7 @@ export const GlobalEvents = {
   SHOW_SETTINGS: 'SHOW_SETTINGS',
   SAVE_DATABASE: 'SAVE_DATABASE',
   UPDATE_MY_CRYPT_KEY: 'UPDATE_MY_CRYPT_KEY',
+  REFRESH_GROUP_TREE: 'REFRESH_GROUP',
 }
 
 export const saveDatabaseAsync = () => {

@@ -12,6 +12,7 @@ import {formatDate} from '@/utils'
 import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
 import {openDatabase} from '@/api/keepass'
 import {isElectron} from '@/utils/backend'
+import keepassIcons from '@/assets/icons'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -26,7 +27,12 @@ export default defineComponent({
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
 
-    onMounted(async () => {})
+    onMounted(async () => {
+      globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
+    })
+    onBeforeUnmount(() => {
+      globalEventBus.off(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
+    })
 
     onActivated(async () => {
       keeStore.isDbOpened = await kService.checkIsOpen()
@@ -250,7 +256,7 @@ export default defineComponent({
             label: '📁 Create Entry',
             props: {
               onClick: () => {
-                enterEditGroup(null, () => {
+                nodeAction(null, () => {
                   handleCreateEntry()
                 })
               },
@@ -260,7 +266,7 @@ export default defineComponent({
             label: '🗒️ Create Group',
             props: {
               onClick: () => {
-                enterEditGroup(null, () => {
+                nodeAction(null, () => {
                   handleCreateGroup()
                 })
               },
@@ -270,7 +276,7 @@ export default defineComponent({
             label: '🚮 Delete Group',
             props: {
               onClick: () => {
-                enterEditGroup(null, () => {
+                nodeAction(null, () => {
                   confirmDeleteGroup()
                 })
               },
@@ -287,8 +293,8 @@ export default defineComponent({
     })
 
     const showEditModal = ref(false)
-    const editingNode = ref<TreeOption | null>(null)
-    const enterEditGroup = (node: TreeOption | null, cb) => {
+    const editingNode = ref<GroupItem | null>(null)
+    const nodeAction = (node: GroupItem | null, cb) => {
       // console.log(node)
       editingNode.value = node
       cb()
@@ -320,10 +326,10 @@ export default defineComponent({
       handleClickoutside: () => {
         showRightMenu.value = false
       },
-      nodeProps: ({option}: {option: TreeOption}) => {
+      nodeProps: ({option}: {option: GroupItem}) => {
         return {
           onClick() {
-            // message.info('[Click] ' + option.label)
+            // message.info('[Click] ' + option)
           },
           onContextmenu(e: MouseEvent): void {
             rightMenuOptions.value = [
@@ -331,7 +337,7 @@ export default defineComponent({
                 label: '📁 Create Entry',
                 props: {
                   onClick: () => {
-                    enterEditGroup(option, () => {
+                    nodeAction(option, () => {
                       handleCreateEntry()
                     })
                   },
@@ -341,7 +347,7 @@ export default defineComponent({
                 label: '🗒️ Create Group',
                 props: {
                   onClick: () => {
-                    enterEditGroup(option, () => {
+                    nodeAction(option, () => {
                       handleCreateGroup()
                     })
                   },
@@ -351,7 +357,7 @@ export default defineComponent({
                 label: '📝 Edit Group',
                 props: {
                   onClick: () => {
-                    enterEditGroup(option, () => {
+                    nodeAction(option, () => {
                       showEditModal.value = true
                     })
                   },
@@ -361,7 +367,7 @@ export default defineComponent({
                 label: '🚮 Delete Group',
                 props: {
                   onClick: () => {
-                    enterEditGroup(option, () => {
+                    nodeAction(option, () => {
                       confirmDeleteGroup()
                     })
                   },
@@ -374,6 +380,14 @@ export default defineComponent({
             e.preventDefault()
           },
         }
+      },
+      renderPrefix({option}: {option: GroupItem}) {
+        return h('img', {
+          onClick: (e: Event) => e.stopPropagation(),
+          alt: String(option.icon),
+          src: String(keepassIcons[option.icon]),
+          style: {height: '18px', width: '18px'},
+        })
       },
       handleGroupEdit,
       showOpenDbModal,
@@ -433,6 +447,7 @@ export default defineComponent({
             draggable
             :node-props="nodeProps"
             @drop="handleTreeDrop"
+            :render-prefix="renderPrefix"
             v-model:selected-keys="selectedKeys"
           />
 

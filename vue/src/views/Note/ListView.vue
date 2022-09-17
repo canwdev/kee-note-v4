@@ -6,7 +6,7 @@ import {kService} from '@/api'
 import keepassIcons from '@/assets/icons'
 import {useRoute, useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
-import {saveDatabaseAsync} from '@/utils/bus'
+import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 
 const router = useRouter()
@@ -42,12 +42,13 @@ const handleDeleteEntry = async (uuid: string) => {
   })
   await saveDatabaseAsync()
   await getEntryList()
+  globalEventBus.emit(GlobalEvents.REFRESH_GROUP_TREE)
 }
 
 const createColumns = (): DataTableColumns<EntryItem> => {
   return [
     {
-      title: 'Icon',
+      title: '🌟',
       key: 'icon',
       render(row, index) {
         return h('img', {
@@ -63,14 +64,14 @@ const createColumns = (): DataTableColumns<EntryItem> => {
       key: 'title',
     },
     {
-      title: 'creationTime',
+      title: 'Create Time',
       key: 'creationTime',
       render(row, index) {
         return h('span', {}, formatDate(new Date(row.creationTime)))
       },
     },
     {
-      title: 'lastModTime',
+      title: 'Update Time',
       key: 'lastModTime',
       render(row, index) {
         return h('span', {}, formatDate(new Date(row.lastModTime)))
@@ -85,7 +86,16 @@ const createColumns = (): DataTableColumns<EntryItem> => {
           {
             options: [
               {
-                label: 'Delete Entry',
+                label: '📁 Move to group',
+                props: {
+                  onClick: () => {
+                    tempEditEntry.value = row
+                    showGroupSelectModal.value = true
+                  },
+                },
+              },
+              {
+                label: '🚮 Delete Entry',
                 props: {
                   onClick: () => {
                     window.$dialog.warning({
@@ -102,15 +112,6 @@ const createColumns = (): DataTableColumns<EntryItem> => {
                   },
                 },
               },
-              {
-                label: 'Move to group',
-                props: {
-                  onClick: () => {
-                    tempEditEntry.value = row
-                    showGroupSelectModal.value = true
-                  },
-                },
-              },
             ],
           },
           {
@@ -121,8 +122,9 @@ const createColumns = (): DataTableColumns<EntryItem> => {
                   onClick: (e: Event) => {
                     e.stopPropagation()
                   },
+                  size: 'small',
                 },
-                {default: () => 'Options'}
+                {default: () => '⚙️'}
               ),
           }
         )
