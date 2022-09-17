@@ -69,7 +69,7 @@ export default defineComponent({
 
     const handleCreateEntry = async () => {
       const entry = await kService.createEntry({
-        groupUuid: groupUuid.value,
+        groupUuid: editingUuid.value,
         config: {title: formatDate(new Date())},
       })
       await saveDatabaseAsync()
@@ -82,16 +82,29 @@ export default defineComponent({
 
     const handleCreateGroup = async () => {
       await kService.createGroup({
-        groupUuid: groupUuid.value,
+        groupUuid: editingUuid.value,
         name: formatDate(new Date()),
       })
       await saveDatabaseAsync()
       await getGroupTree()
     }
 
+    const confirmDeleteGroup = () => {
+      window.$dialog.warning({
+        title: 'Confirm',
+        content: 'Delete selected group? Permanently emptied if group is RecycleBin.',
+        positiveText: 'OK',
+        negativeText: 'Cancel',
+        onPositiveClick: () => {
+          handleDeleteGroup()
+        },
+        onNegativeClick: () => {},
+      })
+    }
+
     const handleDeleteGroup = async () => {
       await kService.removeGroup({
-        groupUuid: groupUuid.value,
+        groupUuid: editingUuid.value,
       })
       await saveDatabaseAsync()
       await getGroupTree()
@@ -110,17 +123,17 @@ export default defineComponent({
     }
 
     const handleGroupEdit = async (name: string) => {
-      if (!tempEditNode.value) {
+      if (!editingUuid.value) {
         return
       }
 
       await kService.updateGroup({
-        uuid: tempEditNode.value.uuid,
+        uuid: editingUuid.value,
         updates: [{path: 'name', value: name}],
       })
       await saveDatabaseAsync()
       await getGroupTree()
-      tempEditNode.value = null
+      editingNode.value = null
     }
 
     const handleCloseDatabase = async () => {
@@ -129,6 +142,11 @@ export default defineComponent({
       window.$message.success('Database successfully closed')
       selectedKeys.value = []
       groupTree.value = []
+      if (isElectron) {
+        await router.replace({
+          name: 'HomeView',
+        })
+      }
     }
 
     const showOpenDbModal = ref(false)
@@ -166,24 +184,26 @@ export default defineComponent({
       {
         label: 'Others',
         children: [
-          {
-            label: 'Logout',
-            props: {
-              onClick: async () => {
-                try {
-                  await handleCloseDatabase()
-                } catch (e) {
-                  window.$message.warning('Database close failed')
-                }
-                localStorage.removeItem(LS_KEY_AUTHORIZATION)
-                await router.replace({
-                  name: 'HomeView',
-                })
+          isElectron
+            ? null
+            : {
+                label: '🏃 Logout',
+                props: {
+                  onClick: async () => {
+                    try {
+                      await handleCloseDatabase()
+                    } catch (e) {
+                      window.$message.warning('Database close failed')
+                    }
+                    localStorage.removeItem(LS_KEY_AUTHORIZATION)
+                    await router.replace({
+                      name: 'HomeView',
+                    })
+                  },
+                },
               },
-            },
-          },
           {
-            label: 'Settings',
+            label: '⚙️ Settings',
             props: {
               onClick: () => {
                 globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
@@ -198,7 +218,7 @@ export default defineComponent({
           //     },
           //   },
           // },
-        ],
+        ].filter(Boolean),
       },
     ]
 
@@ -206,7 +226,7 @@ export default defineComponent({
       const options = [
         keeStore.isDbOpened
           ? {
-              label: 'Close Database',
+              label: '🔐 Close Database',
               props: {
                 onClick: async () => {
                   await handleCloseDatabase()
@@ -214,7 +234,7 @@ export default defineComponent({
               },
             }
           : {
-              label: 'Open Database',
+              label: '🔓 Open Database',
               props: {
                 onClick: async () => {
                   showOpenDbModal.value = true
@@ -227,41 +247,38 @@ export default defineComponent({
       if (groupUuid.value) {
         return [
           {
-            label: 'Create Entry',
+            label: '📁 Create Entry',
             props: {
               onClick: () => {
-                handleCreateEntry()
+                enterEditGroup(null, () => {
+                  handleCreateEntry()
+                })
+              },
+            },
+          },
+          {
+            label: '🗒️ Create Group',
+            props: {
+              onClick: () => {
+                enterEditGroup(null, () => {
+                  handleCreateGroup()
+                })
+              },
+            },
+          },
+          {
+            label: '🚮 Delete Group',
+            props: {
+              onClick: () => {
+                enterEditGroup(null, () => {
+                  confirmDeleteGroup()
+                })
               },
             },
           },
           {
             type: 'divider',
             label: 'd1',
-          },
-          {
-            label: 'Create Group',
-            props: {
-              onClick: () => {
-                handleCreateGroup()
-              },
-            },
-          },
-          {
-            label: 'Delete Group',
-            props: {
-              onClick: () => {
-                window.$dialog.warning({
-                  title: 'Confirm',
-                  content: 'Delete selected group? Permanently emptied if group is RecycleBin.',
-                  positiveText: 'OK',
-                  negativeText: 'Cancel',
-                  onPositiveClick: () => {
-                    handleDeleteGroup()
-                  },
-                  onNegativeClick: () => {},
-                })
-              },
-            },
           },
           ...options,
         ]
@@ -270,7 +287,15 @@ export default defineComponent({
     })
 
     const showEditModal = ref(false)
-    const tempEditNode = ref<TreeOption | null>(null)
+    const editingNode = ref<TreeOption | null>(null)
+    const enterEditGroup = (node: TreeOption | null, cb) => {
+      // console.log(node)
+      editingNode.value = node
+      cb()
+    }
+    const editingUuid = computed(() => {
+      return editingNode.value ? editingNode.value.uuid : groupUuid.value
+    })
 
     const rightMenuOptions = ref<DropdownOption[]>([])
     const showRightMenu = ref(false)
@@ -283,7 +308,7 @@ export default defineComponent({
       selectedKeys,
       menuOptions,
       handleTreeDrop,
-      tempEditNode,
+      editingNode,
       showEditModal,
       rightMenuOptions,
       showRightMenu,
@@ -303,12 +328,42 @@ export default defineComponent({
           onContextmenu(e: MouseEvent): void {
             rightMenuOptions.value = [
               {
-                label: 'Edit Group',
+                label: '📁 Create Entry',
                 props: {
                   onClick: () => {
-                    console.log(option)
-                    tempEditNode.value = option
-                    showEditModal.value = true
+                    enterEditGroup(option, () => {
+                      handleCreateEntry()
+                    })
+                  },
+                },
+              },
+              {
+                label: '🗒️ Create Group',
+                props: {
+                  onClick: () => {
+                    enterEditGroup(option, () => {
+                      handleCreateGroup()
+                    })
+                  },
+                },
+              },
+              {
+                label: '📝 Edit Group',
+                props: {
+                  onClick: () => {
+                    enterEditGroup(option, () => {
+                      showEditModal.value = true
+                    })
+                  },
+                },
+              },
+              {
+                label: '🚮 Delete Group',
+                props: {
+                  onClick: () => {
+                    enterEditGroup(option, () => {
+                      confirmDeleteGroup()
+                    })
                   },
                 },
               },
@@ -383,7 +438,7 @@ export default defineComponent({
 
           <DialogInput
             v-model:visible="showEditModal"
-            :value="tempEditNode?.title"
+            :value="editingNode?.title"
             @onSubmit="handleGroupEdit"
             dialog-title="Rename Group"
             input-label="Group name"

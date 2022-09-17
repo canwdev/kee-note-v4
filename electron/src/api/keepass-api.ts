@@ -23,6 +23,7 @@ const apiList = [
   {key: 'update-entry', handler: (params) => kdbxHelper.updateEntry(params)},
   {key: 'update-group', handler: (params) => kdbxHelper.updateGroup(params)},
   {key: 'create-entry', handler: (params) => kdbxHelper.createEntry(params)},
+  {key: 'create-group', handler: (params) => kdbxHelper.createGroup(params)},
   {key: 'remove-group', handler: (params) => kdbxHelper.removeGroup(params)},
   {key: 'remove-entry', handler: (params) => kdbxHelper.removeEntry(params)},
   {key: 'move-group', handler: (params) => kdbxHelper.moveGroup(params)},
