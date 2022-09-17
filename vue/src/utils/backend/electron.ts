@@ -1,10 +1,8 @@
-const apiPrefix = 'ipc-kdbx/'
-
 export default {
   async post(url, params) {
     console.log('post1', {url, params})
     try {
-      return await window.$electronAPI.ipcInvoke(apiPrefix + url, params)
+      return await window.$electronAPI.ipcInvoke(url, params)
     } catch (error: any) {
       window.$notification.error({
         content: error.message,

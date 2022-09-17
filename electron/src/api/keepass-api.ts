@@ -2,7 +2,6 @@ import {KdbxHelper} from '../common/keepass/kdbx'
 import {ipcMain} from 'electron'
 
 export const kdbxHelper = new KdbxHelper()
-const apiPrefix = 'ipc-kdbx/'
 
 const apiList = [
   {key: 'test-ok', handler: () => 'ok'},
@@ -31,10 +30,8 @@ const apiList = [
 ]
 
 apiList.forEach(({key, handler}) => {
-  ipcMain.handle(apiPrefix + key, (event, ...args) => {
+  ipcMain.handle(key, (event, ...args) => {
     // @ts-ignore
     return handler(...args)
   })
 })
-
-ipcMain.handle('getAvailableApi', () => apiList.map(({key}) => apiPrefix + key))

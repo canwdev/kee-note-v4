@@ -51,7 +51,7 @@ export default defineComponent({
       }
 
       window.$notification.success({
-        content: '🎉 You already unlocked！',
+        content: '🎉 Database unlocked！',
         meta: '',
         duration: 3000,
         keepAliveOnHover: true,
@@ -65,6 +65,25 @@ export default defineComponent({
     onMounted(async () => {
       await checkProfile()
     })
+
+    const handleChooseFile = async (type) => {
+      const {filePaths} = await kService.openFileDialog({
+        filters: [
+          type === 'dbPath'
+            ? {
+                name: 'KeePass Database',
+                extensions: ['kdbx'],
+              }
+            : {
+                name: 'Key File',
+                extensions: ['*'],
+              },
+        ],
+      })
+      if (filePaths && filePaths.length > 0) {
+        modelRef.value[type] = filePaths[0]
+      }
+    }
 
     return {
       isElectron,
@@ -85,6 +104,7 @@ export default defineComponent({
       handleSettings() {
         globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
       },
+      handleChooseFile,
     }
   },
 })
@@ -95,19 +115,39 @@ export default defineComponent({
     <n-layout-content>
       <n-card class="card-wrap" title="Open Kdbx Database" hoverable>
         <n-form ref="formRef" :model="model" :rules="rules">
-          <n-form-item path="dbPath" label="dbPath">
-            <n-input v-model:value="model.dbPath" @keyup.enter="handleValidateButtonClick" />
+          <n-form-item path="dbPath" label="🔒 Kdbx Path">
+            <n-input-group>
+              <n-input
+                v-model:value="model.dbPath"
+                @keyup.enter="handleValidateButtonClick"
+                clearable
+                placeholder="Input or select file path"
+              />
+              <n-button @click="handleChooseFile('dbPath')">📂</n-button>
+            </n-input-group>
           </n-form-item>
-          <n-form-item path="password" label="Password">
+          <n-form-item path="password" label="🔑 Password">
             <n-input
               v-model:value="model.password"
               type="password"
               show-password-on="click"
+              clearable
               @keyup.enter="handleValidateButtonClick"
+              placeholder="Please input password"
             />
           </n-form-item>
-          <n-form-item path="keyPath" label="keyPath">
-            <n-input v-model:value="model.keyPath" @keyup.enter="handleValidateButtonClick" />
+          <n-form-item path="keyPath" label="🔑 Key Path (Optional)">
+            <n-input-group>
+              <n-input
+                v-model:value="model.keyPath"
+                @keyup.enter="handleValidateButtonClick"
+                show-password-on="click"
+                clearable
+                type="password"
+                placeholder="Input or select file path"
+              />
+              <n-button @click="handleChooseFile('keyPath')">📂</n-button>
+            </n-input-group>
           </n-form-item>
           <n-space style="display: flex; justify-content: flex-end">
             <n-button round type="primary" @click="handleValidateButtonClick"> Unlock </n-button>

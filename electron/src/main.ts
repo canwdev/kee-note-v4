@@ -2,6 +2,7 @@ import {app, BrowserWindow} from 'electron'
 import * as path from 'path'
 import Store from 'electron-store'
 import {kdbxHelper} from './api/keepass-api'
+import './api/common-api'
 
 const store = new Store()
 

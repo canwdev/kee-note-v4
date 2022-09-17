@@ -51,3 +51,8 @@ export const moveGroup = (params: any) => {
 export const moveEntry = (params: any) => {
   return service.post('move-entry', params)
 }
+
+// electron common api
+export const openFileDialog = (params: any) => {
+  return service.post('open-file-dialog', params)
+}

@@ -11,6 +11,7 @@ import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {formatDate} from '@/utils'
 import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
 import {openDatabase} from '@/api/keepass'
+import {isElectron} from '@/utils/backend'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -135,6 +136,11 @@ export default defineComponent({
       if (keeStore.isDbOpened) {
         window.$message.info('Database already opened')
 
+        return
+      } else if (isElectron) {
+        await router.replace({
+          name: 'HomeView',
+        })
         return
       }
       try {
