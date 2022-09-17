@@ -4,6 +4,7 @@ import {getMyCryptKey, getUserTheme, LS_KEY_MY_CRYPT_KEY, LS_KEY_THEME, ThemeTyp
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 export default defineComponent({
+  name: 'GlobalSettings',
   props: {
     visible: {
       type: Boolean,

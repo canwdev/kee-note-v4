@@ -3,6 +3,13 @@ html, body {
   width: 100%;
 }
 
+body {
+  font-family: "SF Pro SC", "SF Pro Text", "SF Pro Icons", "PingFang SC", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  margin: 0;
+  touch-action: manipulation; // disable ios double tap zoom
+  user-select: none;
+}
+
 #app, .n-config-provider {
   height: 100%;
 }

@@ -22,6 +22,8 @@ function createWindow() {
     },
   })
 
+  mainWindow.setMenuBarVisibility(false)
+
   // and load the index.html of the app.
   // mainWindow.loadFile(path.join(__dirname, '../index.html'))
   mainWindow.loadURL('http://127.0.0.1:5173/')

@@ -1,12 +1,12 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {FormInst, FormValidationError, useMessage, FormRules} from 'naive-ui'
-import {kService, userLogin, userProfile} from '@/api'
-import {LS_KEY_AUTHORIZATION} from '@/enum'
-import cookies from 'js-cookie'
+import {kService} from '@/api'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
+import HistoryDialog from '@/components/HistoryDialog.vue'
+import {getLocalStorageObject, LS_KEY_HISTORY_LIST, setLocalStorageObject} from '@/enum'
 
 interface ModelType {
   dbPath: string | null
@@ -35,6 +35,27 @@ export default defineComponent({
       ],
     }
 
+    const updateHistory = () => {
+      const historyList = getLocalStorageObject(LS_KEY_HISTORY_LIST, [])
+      const index = historyList.findIndex((item: string) => item === modelRef.value.dbPath)
+      if (index > -1) {
+        historyList.splice(index, 1)
+      }
+      historyList.unshift({
+        dbPath: modelRef.value.dbPath,
+        keyPath: modelRef.value.keyPath,
+      })
+      setLocalStorageObject(LS_KEY_HISTORY_LIST, historyList)
+    }
+
+    const loadFirstHistory = () => {
+      const historyList = getLocalStorageObject(LS_KEY_HISTORY_LIST, [])
+      if (historyList.length > 0) {
+        modelRef.value.dbPath = historyList[0].dbPath
+        modelRef.value.keyPath = historyList[0].keyPath
+      }
+    }
+
     const handleLogin = async () => {
       await kService.openDatabase({
         dbPath: modelRef.value.dbPath,
@@ -43,6 +64,7 @@ export default defineComponent({
       })
 
       await checkProfile()
+      updateHistory()
     }
 
     const checkProfile = async () => {
@@ -63,6 +85,7 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      loadFirstHistory()
       await checkProfile()
     })
 
@@ -85,6 +108,13 @@ export default defineComponent({
       }
     }
 
+    const isShowHistoryDialog = ref(false)
+    const handleHistoryItemClick = (item) => {
+      modelRef.value.dbPath = item.dbPath
+      modelRef.value.keyPath = item.keyPath
+      isShowHistoryDialog.value = false
+    }
+
     return {
       isElectron,
       formRef,
@@ -105,6 +135,8 @@ export default defineComponent({
         globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
       },
       handleChooseFile,
+      isShowHistoryDialog,
+      handleHistoryItemClick,
     }
   },
 })
@@ -112,8 +144,16 @@ export default defineComponent({
 
 <template>
   <n-layout class="login-view">
+    <HistoryDialog
+      @historyItemClick="handleHistoryItemClick"
+      v-model:visible="isShowHistoryDialog"
+    />
     <n-layout-content>
       <n-card class="card-wrap" title="Open Kdbx Database" hoverable>
+        <template #header-extra>
+          <n-button size="small" @click="isShowHistoryDialog = true">History</n-button>
+        </template>
+
         <n-form ref="formRef" :model="model" :rules="rules">
           <n-form-item path="dbPath" label="🔒 Kdbx Path">
             <n-input-group>
