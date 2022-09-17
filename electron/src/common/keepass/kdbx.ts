@@ -336,4 +336,15 @@ export class KdbxHelper {
   get isOpen() {
     return !!this.db
   }
+
+  getMeta() {
+    const meta: any = (this.db && this.db.meta) || {}
+    return {
+      // header: kInstance.db.header,
+      meta: {
+        recycleBinEnabled: meta.recycleBinEnabled,
+        recycleBinUuid: meta.recycleBinUuid,
+      },
+    }
+  }
 }

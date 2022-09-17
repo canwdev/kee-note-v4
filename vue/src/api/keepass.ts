@@ -1,14 +1,8 @@
-import Service from '@/utils/service'
-import {API_PROXY_BASE} from '@/enum'
-
-const service = Service({
-  baseURL: API_PROXY_BASE + '/keepass',
-})
+import service from '../utils/backend'
 
 export const openDatabase = (params?: any) => {
   return service.post('open-database', params)
 }
-
 export const closeDatabase = () => {
   return service.post('close-database')
 }

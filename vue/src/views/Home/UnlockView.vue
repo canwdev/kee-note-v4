@@ -1,14 +1,17 @@
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
 import {FormInst, FormValidationError, useMessage, FormRules} from 'naive-ui'
-import {userLogin, userProfile} from '@/api'
+import {kService, userLogin, userProfile} from '@/api'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
+import cookies from 'js-cookie'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import {isElectron} from '@/utils/backend'
 
 interface ModelType {
-  username: string | null
+  dbPath: string | null
   password: string | null
+  keyPath: string | null
 }
 
 export default defineComponent({
@@ -17,55 +20,44 @@ export default defineComponent({
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
     const modelRef = ref<ModelType>({
-      username: import.meta.env.VITE_USER_NAME || '',
-      password: import.meta.env.VITE_USER_PASSWORD || '',
+      dbPath: '',
+      password: '',
+      keyPath: '',
     })
 
     const rules: FormRules = {
-      username: [
+      dbPath: [
         {
           required: true,
-          message: 'Username is required',
-          trigger: ['blur'],
-        },
-      ],
-      password: [
-        {
-          required: true,
-          message: 'Password is required',
+          message: 'dbPath is required',
           trigger: ['blur'],
         },
       ],
     }
 
     const handleLogin = async () => {
-      const {access_token} = await userLogin({
-        username: modelRef.value.username,
+      await kService.openDatabase({
+        dbPath: modelRef.value.dbPath,
         password: modelRef.value.password,
+        keyPath: modelRef.value.keyPath,
       })
-      if (!access_token) {
-        message.error('Invalid token! Check crypt key in settings?')
-        return
-      }
-      localStorage.setItem(LS_KEY_AUTHORIZATION, access_token)
 
-      checkProfile()
+      await checkProfile()
     }
 
     const checkProfile = async () => {
-      if (!localStorage.getItem(LS_KEY_AUTHORIZATION)) {
+      if (!(await kService.checkIsOpen())) {
         return
       }
-      const data = await userProfile()
 
       window.$notification.success({
-        content: 'Congrats🎉，you have successfully logged in！',
-        meta: JSON.stringify(data),
+        content: '🎉 You already unlocked！',
+        meta: '',
         duration: 3000,
         keepAliveOnHover: true,
       })
 
-      router.replace({
+      await router.replace({
         name: 'NoteView',
       })
     }
@@ -75,6 +67,7 @@ export default defineComponent({
     })
 
     return {
+      isElectron,
       formRef,
       model: modelRef,
       rules,
@@ -100,10 +93,10 @@ export default defineComponent({
 <template>
   <n-layout class="login-view">
     <n-layout-content>
-      <n-card class="card-wrap" title="Login" hoverable>
+      <n-card class="card-wrap" title="Open Kdbx Database" hoverable>
         <n-form ref="formRef" :model="model" :rules="rules">
-          <n-form-item path="username" label="Username">
-            <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
+          <n-form-item path="dbPath" label="dbPath">
+            <n-input v-model:value="model.dbPath" @keyup.enter="handleValidateButtonClick" />
           </n-form-item>
           <n-form-item path="password" label="Password">
             <n-input
@@ -113,8 +106,11 @@ export default defineComponent({
               @keyup.enter="handleValidateButtonClick"
             />
           </n-form-item>
+          <n-form-item path="keyPath" label="keyPath">
+            <n-input v-model:value="model.keyPath" @keyup.enter="handleValidateButtonClick" />
+          </n-form-item>
           <n-space style="display: flex; justify-content: flex-end">
-            <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
+            <n-button round type="primary" @click="handleValidateButtonClick"> Unlock </n-button>
             <n-button round @click="handleSettings"> Settings </n-button>
           </n-space>
         </n-form>

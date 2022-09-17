@@ -1,15 +1,21 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import LoginView from '@/views/Home/LoginView.vue'
+import UnlockView from '@/views/Home/UnlockView.vue'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {isElectron} from '@/utils/backend'
 
 const constantRoutes = [
-  {name: 'HomeView', path: '/', component: LoginView},
+  {
+    name: 'HomeView',
+    path: '/',
+    component: isElectron ? UnlockView : LoginView,
+  },
   {
     name: 'NoteRoot',
     path: '/note',
     redirect: '/note/view/list',
     beforeEnter: () => {
-      if (!localStorage.getItem(LS_KEY_AUTHORIZATION)) {
+      if (!isElectron && !localStorage.getItem(LS_KEY_AUTHORIZATION)) {
         // reject the navigation
         return {name: 'HomeView'}
       }

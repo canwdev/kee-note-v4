@@ -2,6 +2,7 @@
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getMyCryptKey, getUserTheme, LS_KEY_MY_CRYPT_KEY, LS_KEY_THEME, ThemeType} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import {isElectron} from '@/utils/backend'
 export default defineComponent({
   props: {
     visible: {
@@ -31,6 +32,7 @@ export default defineComponent({
     }
 
     return {
+      isElectron,
       mVisible,
       themeValue,
       handleThemeSelectChange,
@@ -69,7 +71,7 @@ export default defineComponent({
           />
         </template>
       </n-list-item>
-      <n-list-item>
+      <n-list-item v-if="!isElectron">
         <n-thing title="Crypt Key" description="Set `MY_CRYPT_KEY`" />
         <template #suffix>
           <n-input

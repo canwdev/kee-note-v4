@@ -7,6 +7,7 @@ declare global {
     $message: MessageApiInjection
     $notification: NotificationApiInjection
     $dialog: DialogApiInjection
+    $electronAPI: any
   }
 }
 
