@@ -3,7 +3,7 @@ import {Kdbx} from 'kdbxweb'
 
 import {EntryItem, GroupItem} from './entry'
 
-import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../../utils'
+import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../utils'
 
 /**
  * 递归遍历数据库 groups

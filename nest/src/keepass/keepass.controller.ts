@@ -42,17 +42,17 @@ export class KeepassController {
     return this.kdbxHelper.save()
   }
 
-  @Get('check-is-open')
+  @Post('check-is-open')
   checkIsOpen() {
     return this.kdbxHelper.isOpen
   }
 
-  @Get('check-is-changed')
+  @Post('check-is-changed')
   getIsChanged() {
     return this.kdbxHelper.isChanged
   }
 
-  @Get('get-meta')
+  @Post('get-meta')
   async getMeta() {
     const meta: any = (this.kdbxHelper.db && this.kdbxHelper.db.meta) || {}
     console.log('meta', meta)
@@ -65,18 +65,18 @@ export class KeepassController {
     }
   }
 
-  @Get('get-group-tree')
-  getGroupTree(@Query('groupUuid') groupUuid) {
+  @Post('get-group-tree')
+  getGroupTree(@Body('groupUuid') groupUuid) {
     return this.kdbxHelper.getGroupTree(groupUuid)
   }
 
-  @Get('get-group-entries')
-  getGroupEntries(@Query('groupUuid') groupUuid) {
+  @Post('get-group-entries')
+  getGroupEntries(@Body('groupUuid') groupUuid) {
     return this.kdbxHelper.getGroupEntries(groupUuid)
   }
 
-  @Get('get-entry-detail')
-  getEntryDetail(@Query('uuid') uuid) {
+  @Post('get-entry-detail')
+  getEntryDetail(@Body('uuid') uuid) {
     try {
       return this.kdbxHelper.getEntryDetail(uuid)
     } catch (e) {

@@ -16,22 +16,22 @@ export const saveDatabase = () => {
   return service.post('save-database')
 }
 export const checkIsOpen = () => {
-  return service.get('check-is-open')
+  return service.post('check-is-open')
 }
 export const checkIsChanged = () => {
-  return service.get('check-is-changed')
+  return service.post('check-is-changed')
 }
 export const getMeta = () => {
-  return service.get('get-meta')
+  return service.post('get-meta')
 }
 export const getGroupTree = (params?: any) => {
-  return service.get('get-group-tree', {params})
+  return service.post('get-group-tree', params)
 }
 export const getGroupEntries = (params: any) => {
-  return service.get('get-group-entries', {params})
+  return service.post('get-group-entries', params)
 }
 export const getEntryDetail = (params: any) => {
-  return service.get('get-entry-detail', {params})
+  return service.post('get-entry-detail', params)
 }
 export const updateEntry = (params: any) => {
   return service.post('update-entry', params)
