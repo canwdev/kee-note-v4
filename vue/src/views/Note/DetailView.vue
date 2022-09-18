@@ -83,7 +83,9 @@ export default defineComponent({
         >
           <n-button @click="handleBack">Back</n-button>
 
-          <div>Detail View</div>
+          <div>
+            {{ entryDetail && entryDetail.title }}
+          </div>
 
           <n-button :disabled="!isChanged" @click="handleSave">Save</n-button>
         </n-space>
@@ -93,7 +95,7 @@ export default defineComponent({
         <n-card v-if="entryDetail" class="detail-card" size="small">
           <n-space vertical>
             <n-input-group>
-              <n-button>
+              <n-button text style="margin-right: 10px">
                 <img
                   :src="keepassIcons[entryDetail.icon]"
                   :alt="entryDetail.icon"
@@ -102,12 +104,12 @@ export default defineComponent({
               </n-button>
               <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
-              <n-button> Settings </n-button>
+              <!--              <n-button> Settings </n-button>-->
             </n-input-group>
 
             <n-space justify="space-between">
               <n-space align="center">
-                creationTime
+                Create Time
                 <n-date-picker
                   v-model:value="times[0]"
                   type="datetime"
@@ -115,7 +117,7 @@ export default defineComponent({
                 />
               </n-space>
               <n-space align="center">
-                lastModTime <n-date-picker v-model:value="times[1]" type="datetime" disabled="" />
+                Update Time <n-date-picker v-model:value="times[1]" type="datetime" disabled="" />
               </n-space>
             </n-space>
 

@@ -253,7 +253,7 @@ export default defineComponent({
       if (groupUuid.value) {
         return [
           {
-            label: '📁 Create Entry',
+            label: '🗒️ Create Entry',
             props: {
               onClick: () => {
                 nodeAction(null, () => {
@@ -263,7 +263,7 @@ export default defineComponent({
             },
           },
           {
-            label: '🗒️ Create Group',
+            label: '📁 Create Group',
             props: {
               onClick: () => {
                 nodeAction(null, () => {
@@ -334,7 +334,7 @@ export default defineComponent({
           onContextmenu(e: MouseEvent): void {
             rightMenuOptions.value = [
               {
-                label: '📁 Create Entry',
+                label: '🗒️ Create Entry',
                 props: {
                   onClick: () => {
                     nodeAction(option, () => {
@@ -344,7 +344,7 @@ export default defineComponent({
                 },
               },
               {
-                label: '🗒️ Create Group',
+                label: '📁 Create Group',
                 props: {
                   onClick: () => {
                     nodeAction(option, () => {
