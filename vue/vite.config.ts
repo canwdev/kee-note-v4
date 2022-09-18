@@ -12,6 +12,7 @@ export default ({mode}) => {
   process.env = {...process.env, ...loadEnv(mode, process.cwd())}
 
   return defineConfig({
+    base: './',
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -53,7 +54,7 @@ export default ({mode}) => {
       jsxFragment: 'Fragment',
     },
     build: {
-      outDir: '../frontend-dist',
+      outDir: '../electron/dist-frontend',
     },
   })
 }

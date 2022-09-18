@@ -1,0 +1,39 @@
+directories:
+  output: build
+  buildResources: build
+productName: KeeNote
+appId: com.canwdev.keenote
+files:
+  - filter:
+      - ./dist-frontend/**/*
+      - ./dist-src/**/*
+extraMetadata:
+  main: ./src/main.js
+mac:
+  target:
+    - dmg
+    - zip
+dmg:
+  contents:
+    - x: 130
+      'y': 220
+    - x: 410
+      'y': 220
+      type: link
+      path: /Applications
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  perMachine: true
+  allowToChangeInstallationDirectory: true
+  installerHeader: build/installerHeader.bmp
+  installerSidebar: build/installerSidebar.bmp
+  shortcutName: KeeNote 3
+  deleteAppDataOnUninstall: true
+linux:
+  category: Tools
+  target:
+    - dir
+electronVersion: 20.1.4

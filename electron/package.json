@@ -1,24 +1,19 @@
 {
-  "name": "electron-quick-start-typescript",
-  "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "name": "kee-note",
+  "appName": "KeeNote",
+  "version": "4.0.0",
+  "description": "A encrypted note editor,powered by KeePass.",
+  "license": "GPLV3",
+  "author": "canwdev",
+  "main": "dist-src/main.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build-src": "tsc",
+    "watch-src": "tsc -w",
+    "dev": "cross-env NODE_ENV=development electron ./dist-src/main.js",
+    "start": "electron ./dist-src/main.js",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "build": "npm run build-src && electron-builder --dir"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo",
-    "typescript"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.9",
     "@types/fs-extra": "^9.0.13",
@@ -26,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "electron": "^20.1.3",
+    "electron-builder": "^23.3.3",
     "eslint": "8.22.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -34,7 +30,9 @@
   },
   "dependencies": {
     "@electron/remote": "^2.0.8",
+    "cross-env": "^7.0.3",
     "electron-store": "^8.1.0",
+    "fs-extra": "^10.1.0",
     "kdbxweb": "^2.1.1"
   }
 }

@@ -37,7 +37,7 @@ export default defineComponent({
 
     const updateHistory = () => {
       const historyList = getLocalStorageObject(LS_KEY_HISTORY_LIST, [])
-      const index = historyList.findIndex((item: string) => item === modelRef.value.dbPath)
+      const index = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
       if (index > -1) {
         historyList.splice(index, 1)
       }

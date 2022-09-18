@@ -3,6 +3,7 @@ import * as path from 'path'
 import Store from 'electron-store'
 import {kdbxHelper} from './api/keepass-api'
 import './api/common-api'
+import {isDev} from './utils'
 
 const store = new Store()
 
@@ -14,6 +15,7 @@ function createWindow() {
     height: 600,
     width: 800,
     ...winBounds,
+    icon: path.join(__dirname, '../build/256x256.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -25,11 +27,13 @@ function createWindow() {
   mainWindow.setMenuBarVisibility(false)
 
   // and load the index.html of the app.
-  // mainWindow.loadFile(path.join(__dirname, '../index.html'))
-  mainWindow.loadURL('http://127.0.0.1:5173/')
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  if (isDev) {
+    mainWindow.loadURL('http://127.0.0.1:5173/')
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools()
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../dist-frontend/index.html'))
+  }
 
   // 退出前询问
   mainWindow.on('close', (e) => {

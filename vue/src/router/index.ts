@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import LoginView from '@/views/Home/LoginView.vue'
 import UnlockView from '@/views/Home/UnlockView.vue'
 import {LS_KEY_AUTHORIZATION} from '@/enum'
@@ -53,7 +53,7 @@ const constantRoutes = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL || ''),
+  history: createWebHashHistory(import.meta.env.BASE_URL || ''),
   routes: constantRoutes,
 })
 
