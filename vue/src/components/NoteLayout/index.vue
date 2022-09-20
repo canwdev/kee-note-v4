@@ -72,6 +72,10 @@ export default defineComponent({
 
     const getGroupTree = async () => {
       groupTree.value = await kService.getGroupTree()
+
+      if (!selectedKeys.value.length && groupTree.value.length) {
+        selectedKeys.value = [groupTree.value[0].uuid]
+      }
     }
 
     const handleCreateEntry = async () => {
@@ -407,6 +411,7 @@ export default defineComponent({
               selectable
               default-expand-all
               draggable
+              :cancelable="false"
               :node-props="nodeProps"
               @drop="handleTreeDrop"
               :render-prefix="renderPrefix"
