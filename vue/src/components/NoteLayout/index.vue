@@ -405,7 +405,7 @@ export default defineComponent({
           align="center"
           style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
         >
-          KeeNote
+          🔓 KeeNote
           <n-dropdown
             :options="menuOptions"
             key-field="label"

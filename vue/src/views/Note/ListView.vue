@@ -50,6 +50,7 @@ const createColumns = (): DataTableColumns<EntryItem> => {
     {
       title: '🌟',
       key: 'icon',
+      width: 80,
       render(row, index) {
         return h('img', {
           onClick: (e: Event) => e.stopPropagation(),
@@ -58,10 +59,20 @@ const createColumns = (): DataTableColumns<EntryItem> => {
           style: {height: '24px', width: '24px'},
         })
       },
+      sorter: {
+        compare: (a: any, b: any) => a.icon - b.icon,
+        multiple: 4,
+      },
     },
     {
       title: 'Title',
       key: 'title',
+      sorter: {
+        compare: (a: any, b: any) => {
+          return a.title.localeCompare(b.title)
+        },
+        multiple: 3,
+      },
     },
     {
       title: 'Create Time',
@@ -69,12 +80,20 @@ const createColumns = (): DataTableColumns<EntryItem> => {
       render(row, index) {
         return h('span', {}, formatDate(new Date(row.creationTime)))
       },
+      sorter: {
+        compare: (a: any, b: any) => a.creationTime - b.creationTime,
+        multiple: 1,
+      },
     },
     {
       title: 'Update Time',
       key: 'lastModTime',
       render(row, index) {
         return h('span', {}, formatDate(new Date(row.lastModTime)))
+      },
+      sorter: {
+        compare: (a: any, b: any) => a.lastModTime - b.lastModTime,
+        multiple: 2,
       },
     },
     {
@@ -129,6 +148,8 @@ const createColumns = (): DataTableColumns<EntryItem> => {
           }
         )
       },
+      // fixed: 'right',
+      width: 100,
     },
   ]
 }
@@ -164,6 +185,7 @@ const paginationReactive = reactive({
     paginationReactive.pageSize = pageSize
     paginationReactive.page = 1
   },
+  prefix: () => h('span', 'Total: ' + entryList.value.length),
 })
 
 const columns = createColumns()
@@ -209,6 +231,7 @@ const handleSelectGroup = async (groupUuid: string) => {
           :data="entryList"
           :pagination="paginationReactive"
           :bordered="true"
+          max-height="72vh"
         />
       </div>
     </n-scrollbar>
