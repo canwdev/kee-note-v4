@@ -12,6 +12,7 @@ export const getMyCryptKey = () => localStorage.getItem(LS_KEY_MY_CRYPT_KEY)
 export const LS_KEY_AUTHORIZATION = 'ck_keenote_authorization'
 export const LS_KEY_THEME = 'ck_keenote_theme'
 export const LS_KEY_MY_CRYPT_KEY = 'ck_keenote_MY_CRYPT_KEY'
+export const LS_KEY_IS_CALENDAR_VIEW = 'ck_keenote_is_calendar_view'
 export const LS_KEY_DONT_SAVE_HISTORY = 'ck_keenote_dont_save_history'
 export const LS_KEY_HISTORY_LIST = 'ck_keenote_history_list'
 export const LS_KEY_NO_COMPLEX_EDITOR = 'ck_keenote_no_complex_editor'

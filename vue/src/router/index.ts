@@ -1,7 +1,7 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import LoginView from '@/views/Home/LoginView.vue'
 import UnlockView from '@/views/Home/UnlockView.vue'
-import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {LS_KEY_AUTHORIZATION, LS_KEY_IS_CALENDAR_VIEW} from '@/enum'
 import {isElectron} from '@/utils/backend'
 
 const constantRoutes = [
@@ -24,7 +24,13 @@ const constantRoutes = [
       {
         name: 'NoteView',
         path: 'view',
-        redirect: '/note/view/list',
+        // redirect: '/note/view/list',
+        redirect: (to) => {
+          if (localStorage.getItem(LS_KEY_IS_CALENDAR_VIEW)) {
+            return {name: 'NoteCalendarView'}
+          }
+          return {name: 'NoteListView'}
+        },
         component: () => import('@/components/NoteLayout/index.vue'),
         children: [
           {

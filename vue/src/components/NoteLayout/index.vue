@@ -7,13 +7,13 @@ import AutoRouterView from '@/components/AutoRouterView.vue'
 import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {LS_KEY_AUTHORIZATION} from '@/enum'
+import {LS_KEY_AUTHORIZATION, LS_KEY_IS_CALENDAR_VIEW} from '@/enum'
 import {formatDate} from '@/utils'
-import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
-import {openDatabase} from '@/api/keepass'
+import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
 import keepassIcons from '@/assets/icons'
 import {useContextMenu} from '@/hooks/use-context-menu'
+import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -27,6 +27,8 @@ export default defineComponent({
 
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
+
+    const isCalendarView = useLocalStorageBoolean(LS_KEY_IS_CALENDAR_VIEW)
 
     onMounted(async () => {
       globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
@@ -299,6 +301,18 @@ export default defineComponent({
               },
             },
 
+        {
+          label: isCalendarView.value ? '📃 List View' : '📅 Calendar View',
+          props: {
+            onClick: () => {
+              isCalendarView.value = !isCalendarView.value
+
+              nextTick(() => {
+                router.replace({name: 'NoteView'})
+              })
+            },
+          },
+        },
         ...menuOptionsBase,
       ]
       if (groupUuid.value) {

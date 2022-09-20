@@ -65,7 +65,7 @@ export default defineComponent({
         keepAliveOnHover: true,
       })
 
-      router.replace({
+      await router.replace({
         name: 'NoteView',
       })
     }
