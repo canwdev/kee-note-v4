@@ -2,6 +2,7 @@
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getLocalStorageObject, LS_KEY_DONT_SAVE_HISTORY, LS_KEY_HISTORY_LIST} from '@/enum'
+import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 
 export default defineComponent({
   name: 'HistoryDialog',
@@ -13,16 +14,8 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const isSaveHistory = ref(!Boolean(localStorage.getItem(LS_KEY_DONT_SAVE_HISTORY)))
+    const isSaveHistory = useLocalStorageBoolean(LS_KEY_DONT_SAVE_HISTORY, true)
     const historyList = ref(getLocalStorageObject(LS_KEY_HISTORY_LIST, []))
-    watch(isSaveHistory, (val) => {
-      if (val) {
-        localStorage.removeItem(LS_KEY_DONT_SAVE_HISTORY)
-      } else {
-        localStorage.setItem(LS_KEY_DONT_SAVE_HISTORY, '1')
-        handleClearHistory()
-      }
-    })
 
     const handleClearHistory = () => {
       localStorage.removeItem(LS_KEY_HISTORY_LIST)

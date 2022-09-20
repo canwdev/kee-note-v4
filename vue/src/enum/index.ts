@@ -14,6 +14,11 @@ export const LS_KEY_THEME = 'ck_keenote_theme'
 export const LS_KEY_MY_CRYPT_KEY = 'ck_keenote_MY_CRYPT_KEY'
 export const LS_KEY_DONT_SAVE_HISTORY = 'ck_keenote_dont_save_history'
 export const LS_KEY_HISTORY_LIST = 'ck_keenote_history_list'
+export const LS_KEY_NO_COMPLEX_EDITOR = 'ck_keenote_no_complex_editor'
+export const LS_KEY_EDITOR_FONT_SIZE = 'ck_keenote_editor_font_size'
+export const LS_KEY_EDITOR_FONT_FAMILY = 'ck_keenote_editor_font_family'
+export const LS_KEY_EDITOR_NO_WYSIWYG = 'ck_keenote_editor_no_wysiwyg'
+export const LS_KEY_EDITOR_THEME = 'ck_keenote_editor_theme'
 
 export const getLocalStorageObject = (key, fallback?) => {
   const str = localStorage.getItem(key)

@@ -40,27 +40,25 @@ onBeforeUnmount(() => {
 })
 
 const themeOverrides: GlobalThemeOverrides = {
-  // common: {
-  //   primaryColor: '#7A5649',
-  // },
+  common: {
+    borderRadiusSmall: '4px',
+    borderRadius: '8px',
+  },
 }
 </script>
 
 <template>
-  <n-theme-editor>
-    <n-config-provider
-      :theme="isSystemDarkMode ? darkTheme : null"
-      :theme-overrides="themeOverrides"
-    >
-      <n-loading-bar-provider>
-        <n-dialog-provider>
-          <n-notification-provider placement="bottom-left">
-            <n-message-provider placement="bottom">
-              <AppContent @themeChange="handleThemeChange" />
-            </n-message-provider>
-          </n-notification-provider>
-        </n-dialog-provider>
-      </n-loading-bar-provider>
-    </n-config-provider>
-  </n-theme-editor>
+  <!--  <n-theme-editor>-->
+  <n-config-provider :theme="isSystemDarkMode ? darkTheme : null" :theme-overrides="themeOverrides">
+    <n-loading-bar-provider>
+      <n-dialog-provider>
+        <n-notification-provider placement="bottom-left">
+          <n-message-provider placement="bottom">
+            <AppContent @themeChange="handleThemeChange" />
+          </n-message-provider>
+        </n-notification-provider>
+      </n-dialog-provider>
+    </n-loading-bar-provider>
+  </n-config-provider>
+  <!--  </n-theme-editor>-->
 </template>

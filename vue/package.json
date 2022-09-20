@@ -13,6 +13,8 @@
   "@vueuse/core": "^9.2.0",
   "axios": "^0.27.2",
   "crypto-js": "^4.1.1",
+  "hypermd": "^0.3.11",
+  "codemirror": "5.65.8",
   "js-cookie": "^3.0.1",
   "mitt": "^3.0.0",
   "normalize.css": "^8.0.1",
@@ -21,6 +23,7 @@
   "vue-router": "^4.1.5"
  },
  "devDependencies": {
+  "@types/codemirror": "^5.60.5",
   "@types/js-cookie": "^3.0.2",
   "@typescript-eslint/eslint-plugin": "^5.0.0",
   "@typescript-eslint/parser": "^5.0.0",

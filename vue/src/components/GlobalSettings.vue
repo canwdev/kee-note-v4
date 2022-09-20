@@ -3,6 +3,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getMyCryptKey, getUserTheme, LS_KEY_MY_CRYPT_KEY, LS_KEY_THEME, ThemeType} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
+import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 export default defineComponent({
   name: 'GlobalSettings',
   props: {
@@ -17,6 +18,7 @@ export default defineComponent({
 
     const themeValue = ref(getUserTheme())
     const myCryptKey = ref(getMyCryptKey())
+    // const isEnableThemeEdit = useLocalStorageBoolean('ck_keenote_enable_theme_edit')
 
     const handleThemeSelectChange = (val: ThemeType) => {
       localStorage.setItem(LS_KEY_THEME, String(val))
@@ -62,7 +64,7 @@ export default defineComponent({
   <n-modal class="global-settings" v-model:show="mVisible" preset="dialog" title="Settings">
     <n-list>
       <n-list-item>
-        <n-thing title="Theme" description="Toggle light/dark theme" />
+        <n-thing title="Toggle light/dark theme" />
         <template #suffix>
           <n-select
             v-model:value="themeValue"

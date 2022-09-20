@@ -5,14 +5,21 @@ import {EntryItem} from '@/enum/kdbx'
 import keepassIcons from '@/assets/icons'
 import {saveDatabaseAsync} from '@/utils/bus'
 import {useUnSavedChanges} from '@/hooks/use-changed'
+import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
+import {LS_KEY_NO_COMPLEX_EDITOR} from '@/enum'
+import MarkdownEditor from '@/components/MarkdownEditor.vue'
 
 export default defineComponent({
   name: 'DetailView',
+  components: {
+    MarkdownEditor,
+  },
   setup() {
     const router = useRouter()
     const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
     const times = reactive([0, 0])
+    const isComplexEditor = useLocalStorageBoolean(LS_KEY_NO_COMPLEX_EDITOR, true)
 
     onMounted(() => {
       getEntryDetail()
@@ -77,6 +84,8 @@ export default defineComponent({
       await saveDatabaseAsync()
     }
 
+    const complexEditorRef = ref()
+
     return {
       handleBack() {
         if (isChanged.value) {
@@ -99,6 +108,15 @@ export default defineComponent({
       isChanged,
       handleSave,
       keepassIcons,
+      isComplexEditor,
+      complexEditorRef,
+      showEditorSettings() {
+        if (!isComplexEditor.value) {
+          isComplexEditor.value = true
+          return
+        }
+        complexEditorRef.value.showSettings()
+      },
     }
   },
 })
@@ -129,7 +147,7 @@ export default defineComponent({
           <n-card v-if="entryDetail" class="detail-card" size="small">
             <n-space vertical>
               <n-input-group>
-                <n-button text style="margin-right: 10px">
+                <n-button>
                   <img
                     :src="keepassIcons[entryDetail.icon]"
                     :alt="entryDetail.icon"
@@ -138,7 +156,9 @@ export default defineComponent({
                 </n-button>
                 <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
-                <!--              <n-button> Settings </n-button>-->
+                <n-button @click="showEditorSettings">
+                  {{ isComplexEditor ? '⚙' : '_' }}
+                </n-button>
               </n-input-group>
 
               <n-space justify="space-between">
@@ -151,11 +171,19 @@ export default defineComponent({
                   />
                 </n-space>
                 <n-space align="center">
-                  Update Time <n-date-picker v-model:value="times[1]" type="datetime" disabled="" />
+                  Update Time
+                  <n-date-picker v-model:value="times[1]" type="datetime" disabled />
                 </n-space>
               </n-space>
 
+              <MarkdownEditor
+                ref="complexEditorRef"
+                v-if="isComplexEditor"
+                v-model="entryDetail.notes"
+                @turnOff="isComplexEditor = false"
+              />
               <n-input
+                v-else
                 v-model:value="entryDetail.notes"
                 type="textarea"
                 placeholder="Input your Note here."
