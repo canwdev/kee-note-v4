@@ -13,6 +13,7 @@ import {DropdownOption, TreeDropInfo, TreeOption} from 'naive-ui'
 import {openDatabase} from '@/api/keepass'
 import {isElectron} from '@/utils/backend'
 import keepassIcons from '@/assets/icons'
+import {useContextMenu} from '@/hooks/use-context-menu'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -182,6 +183,52 @@ export default defineComponent({
       await getGroupTree()
     }
 
+    const getMenuOptions = (option) => [
+      {
+        label: '🗒️ Create Entry',
+        props: {
+          onClick: () => {
+            nodeAction(option, () => {
+              handleCreateEntry()
+            })
+          },
+        },
+      },
+      {
+        label: '📁 Create Group',
+        props: {
+          onClick: () => {
+            nodeAction(option, () => {
+              handleCreateGroup()
+            })
+          },
+        },
+      },
+      {
+        label: '📝 Edit Group',
+        props: {
+          onClick: () => {
+            nodeAction(option, () => {
+              showEditModal.value = true
+            })
+          },
+        },
+      },
+      {
+        label: '🚮 Delete Group',
+        props: {
+          onClick: () => {
+            nodeAction(option, () => {
+              confirmDeleteGroup()
+            })
+          },
+        },
+      },
+    ]
+
+    const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
+      useContextMenu(getMenuOptions)
+
     const menuOptionsBase = [
       {
         type: 'divider',
@@ -252,36 +299,7 @@ export default defineComponent({
       ]
       if (groupUuid.value) {
         return [
-          {
-            label: '🗒️ Create Entry',
-            props: {
-              onClick: () => {
-                nodeAction(null, () => {
-                  handleCreateEntry()
-                })
-              },
-            },
-          },
-          {
-            label: '📁 Create Group',
-            props: {
-              onClick: () => {
-                nodeAction(null, () => {
-                  handleCreateGroup()
-                })
-              },
-            },
-          },
-          {
-            label: '🚮 Delete Group',
-            props: {
-              onClick: () => {
-                nodeAction(null, () => {
-                  confirmDeleteGroup()
-                })
-              },
-            },
-          },
+          ...getMenuOptions(null),
           {
             type: 'divider',
             label: 'd1',
@@ -293,20 +311,10 @@ export default defineComponent({
     })
 
     const showEditModal = ref(false)
-    const editingNode = ref<GroupItem | null>(null)
-    const nodeAction = (node: GroupItem | null, cb) => {
-      // console.log(node)
-      editingNode.value = node
-      cb()
-    }
+
     const editingUuid = computed(() => {
       return editingNode.value ? editingNode.value.uuid : groupUuid.value
     })
-
-    const rightMenuOptions = ref<DropdownOption[]>([])
-    const showRightMenu = ref(false)
-    const xRef = ref(0)
-    const yRef = ref(0)
 
     return {
       groupTree,
@@ -316,71 +324,7 @@ export default defineComponent({
       handleTreeDrop,
       editingNode,
       showEditModal,
-      rightMenuOptions,
-      showRightMenu,
-      xRef,
-      yRef,
-      handleSelect: () => {
-        showRightMenu.value = false
-      },
-      handleClickoutside: () => {
-        showRightMenu.value = false
-      },
-      nodeProps: ({option}: {option: GroupItem}) => {
-        return {
-          onClick() {
-            // message.info('[Click] ' + option)
-          },
-          onContextmenu(e: MouseEvent): void {
-            rightMenuOptions.value = [
-              {
-                label: '🗒️ Create Entry',
-                props: {
-                  onClick: () => {
-                    nodeAction(option, () => {
-                      handleCreateEntry()
-                    })
-                  },
-                },
-              },
-              {
-                label: '📁 Create Group',
-                props: {
-                  onClick: () => {
-                    nodeAction(option, () => {
-                      handleCreateGroup()
-                    })
-                  },
-                },
-              },
-              {
-                label: '📝 Edit Group',
-                props: {
-                  onClick: () => {
-                    nodeAction(option, () => {
-                      showEditModal.value = true
-                    })
-                  },
-                },
-              },
-              {
-                label: '🚮 Delete Group',
-                props: {
-                  onClick: () => {
-                    nodeAction(option, () => {
-                      confirmDeleteGroup()
-                    })
-                  },
-                },
-              },
-            ]
-            showRightMenu.value = true
-            xRef.value = e.clientX
-            yRef.value = e.clientY
-            e.preventDefault()
-          },
-        }
-      },
+      ...contextMenuEtc,
       renderPrefix({option}: {option: GroupItem}) {
         return h('img', {
           onClick: (e: Event) => e.stopPropagation(),
@@ -392,6 +336,16 @@ export default defineComponent({
       handleGroupEdit,
       showOpenDbModal,
       handleOpenDatabase,
+      nodeProps: ({option}: {option: any}) => {
+        return {
+          onClick() {
+            // message.info('[Click] ' + option)
+          },
+          onContextmenu(e: MouseEvent): void {
+            handleContextmenu(e, option)
+          },
+        }
+      },
     }
   },
 })
@@ -403,7 +357,13 @@ export default defineComponent({
       <n-layout-header bordered>
         <n-space
           align="center"
-          style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
+          style="
+            width: 100%;
+            height: 100%;
+            padding: 10px 24px;
+            box-sizing: border-box;
+            user-select: none;
+          "
         >
           🔓 KeeNote
           <n-dropdown
@@ -412,7 +372,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="click"
           >
-            <n-button>Menu</n-button>
+            <n-button size="small">⚙ Menu</n-button>
           </n-dropdown>
         </n-space>
       </n-layout-header>
@@ -472,7 +432,7 @@ export default defineComponent({
           :y="yRef"
           @select="handleSelect"
           key-field="label"
-          @clickoutside="handleClickoutside"
+          :on-clickoutside="handleClickOutside"
         />
 
         <n-layout-content>
