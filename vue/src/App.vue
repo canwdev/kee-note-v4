@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import {darkTheme} from 'naive-ui'
+import {darkTheme, GlobalThemeOverrides} from 'naive-ui'
 import AppContent from './AppContent.vue'
 import {getUserTheme, ThemeType} from '@/enum'
+import {NThemeEditor} from 'naive-ui'
 
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -37,18 +38,29 @@ onBeforeUnmount(() => {
     .matchMedia('(prefers-color-scheme: dark)')
     .removeEventListener('change', handleSystemThemeChange)
 })
+
+const themeOverrides: GlobalThemeOverrides = {
+  // common: {
+  //   primaryColor: '#7A5649',
+  // },
+}
 </script>
 
 <template>
-  <n-config-provider :theme="isSystemDarkMode ? darkTheme : null">
-    <n-loading-bar-provider>
-      <n-dialog-provider>
-        <n-notification-provider placement="bottom-left">
-          <n-message-provider placement="bottom">
-            <AppContent @themeChange="handleThemeChange" />
-          </n-message-provider>
-        </n-notification-provider>
-      </n-dialog-provider>
-    </n-loading-bar-provider>
-  </n-config-provider>
+  <n-theme-editor>
+    <n-config-provider
+      :theme="isSystemDarkMode ? darkTheme : null"
+      :theme-overrides="themeOverrides"
+    >
+      <n-loading-bar-provider>
+        <n-dialog-provider>
+          <n-notification-provider placement="bottom-left">
+            <n-message-provider placement="bottom">
+              <AppContent @themeChange="handleThemeChange" />
+            </n-message-provider>
+          </n-notification-provider>
+        </n-dialog-provider>
+      </n-loading-bar-provider>
+    </n-config-provider>
+  </n-theme-editor>
 </template>
