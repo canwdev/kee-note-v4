@@ -199,15 +199,19 @@ const handleSelectGroup = async (groupUuid: string) => {
 </script>
 
 <template>
-  <div class="note-list-view content-padding">
-    <n-data-table
-      class="note-list-table"
-      :columns="columns"
-      :rowProps="rowProps"
-      :data="entryList"
-      :pagination="paginationReactive"
-      :bordered="true"
-    />
+  <div class="note-list-view">
+    <n-scrollbar trigger="none" x-scrollable>
+      <div class="content-padding">
+        <n-data-table
+          class="note-list-table"
+          :columns="columns"
+          :rowProps="rowProps"
+          :data="entryList"
+          :pagination="paginationReactive"
+          :bordered="true"
+        />
+      </div>
+    </n-scrollbar>
     <DialogGroupSelect
       v-model:visible="showGroupSelectModal"
       :value="groupUuid"
@@ -218,7 +222,6 @@ const handleSelectGroup = async (groupUuid: string) => {
 
 <style lang="scss" scoped>
 .note-list-view {
-  overflow: auto;
   height: 100%;
   .note-list-table {
     min-width: 700px;

@@ -14,6 +14,7 @@ export default defineComponent({
     window.$message = useMessage()
     window.$notification = useNotification()
     window.$dialog = useDialog()
+    window.$loadingBar = useLoadingBar()
 
     onMounted(() => {
       globalEventBus.on(GlobalEvents.SHOW_SETTINGS, handleShowSettings)

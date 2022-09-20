@@ -435,21 +435,24 @@ export default defineComponent({
           show-trigger="arrow-circle"
           bordered
         >
-          <n-tree
-            block-line
-            :data="groupTree"
-            key-field="uuid"
-            label-field="title"
-            children-field="children"
-            class="content-padding"
-            selectable
-            default-expand-all
-            draggable
-            :node-props="nodeProps"
-            @drop="handleTreeDrop"
-            :render-prefix="renderPrefix"
-            v-model:selected-keys="selectedKeys"
-          />
+          <n-scrollbar x-scrollable>
+            <n-tree
+              style="min-width: 150px"
+              block-line
+              :data="groupTree"
+              key-field="uuid"
+              label-field="title"
+              children-field="children"
+              class="content-padding"
+              selectable
+              default-expand-all
+              draggable
+              :node-props="nodeProps"
+              @drop="handleTreeDrop"
+              :render-prefix="renderPrefix"
+              v-model:selected-keys="selectedKeys"
+            />
+          </n-scrollbar>
 
           <DialogInput
             v-model:visible="showEditModal"

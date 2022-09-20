@@ -41,12 +41,14 @@ onBeforeUnmount(() => {
 
 <template>
   <n-config-provider :theme="isSystemDarkMode ? darkTheme : null">
-    <n-dialog-provider>
-      <n-notification-provider>
-        <n-message-provider>
-          <AppContent @themeChange="handleThemeChange" />
-        </n-message-provider>
-      </n-notification-provider>
-    </n-dialog-provider>
+    <n-loading-bar-provider>
+      <n-dialog-provider>
+        <n-notification-provider placement="bottom-left">
+          <n-message-provider placement="bottom">
+            <AppContent @themeChange="handleThemeChange" />
+          </n-message-provider>
+        </n-notification-provider>
+      </n-dialog-provider>
+    </n-loading-bar-provider>
   </n-config-provider>
 </template>
