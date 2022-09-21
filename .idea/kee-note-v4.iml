@@ -8,6 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/electron/dist-frontend" />
       <excludeFolder url="file://$MODULE_DIR$/electron/dist-src" />
       <excludeFolder url="file://$MODULE_DIR$/electron/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/nest/dist-frontend" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

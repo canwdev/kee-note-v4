@@ -19,6 +19,7 @@ const apiList = [
   {key: 'get-meta', handler: () => kdbxHelper.getMeta()},
   {key: 'get-group-tree', handler: (params) => kdbxHelper.getGroupTree(params?.groupUuid)},
   {key: 'get-group-entries', handler: (params) => kdbxHelper.getGroupEntries(params?.groupUuid)},
+  {key: 'get-group-entries-deep', handler: (params) => kdbxHelper.getGroupEntriesDeep(params)},
   {key: 'get-entry-detail', handler: (params) => kdbxHelper.getEntryDetail(params?.uuid)},
   {key: 'update-entry', handler: (params) => kdbxHelper.updateEntry(params)},
   {key: 'update-group', handler: (params) => kdbxHelper.updateGroup(params)},

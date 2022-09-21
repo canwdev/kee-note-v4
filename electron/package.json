@@ -1,8 +1,8 @@
 {
   "name": "kee-note",
   "appName": "KeeNote",
-  "version": "4.0.0",
-  "description": "A encrypted note editor,powered by KeePass.",
+  "version": "4.0.1",
+  "description": "A encrypted note editor, powered by KeePass.",
   "license": "GPLV3",
   "author": "canwdev",
   "main": "dist-src/main.js",
