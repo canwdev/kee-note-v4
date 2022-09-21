@@ -29,7 +29,7 @@ export default defineComponent({
       handleSelectGroup,
       getMenuOptions,
       ...contextMenuEtc
-    } = useCommonActions(getEntryList)
+    } = useCommonActions({getEntryList, checkedRowKeys})
 
     const createColumns = (): DataTableColumns<EntryItem> => {
       return [
@@ -92,6 +92,7 @@ export default defineComponent({
               NDropdown,
               {
                 options: getMenuOptions(row),
+                showArrow: true,
               },
               {
                 default: () =>
@@ -139,8 +140,10 @@ export default defineComponent({
     const rowProps = (row: EntryItem) => {
       return {
         style: 'cursor: pointer;',
-        onClick: () => {
-          // console.log(row)
+        onClick: (e, a) => {
+          if (e.target.closest('.n-checkbox-box-wrapper')) {
+            return
+          }
           router.push({
             name: 'NoteDetailView',
             query: {uuid: row.uuid},
@@ -152,7 +155,10 @@ export default defineComponent({
       }
     }
 
+    const tableRef = ref()
+
     return {
+      tableRef,
       entryList,
       columns,
       rowProps,
@@ -166,8 +172,10 @@ export default defineComponent({
       handleSelectGroup,
       checkedRowKeys,
       handleCheck(rowKeys: DataTableRowKey[]) {
+        console.log(tableRef)
         checkedRowKeys.value = rowKeys
       },
+      getMenuOptions,
     }
   },
 })
@@ -178,6 +186,8 @@ export default defineComponent({
     <n-scrollbar trigger="none" x-scrollable>
       <div class="content-padding">
         <n-data-table
+          ref="tableRef"
+          hoverable
           class="note-list-table"
           :columns="columns"
           :rowProps="rowProps"
@@ -186,12 +196,23 @@ export default defineComponent({
           :bordered="true"
           max-height="72vh"
           :row-key="(row) => row.uuid"
+          :checked-row-keys="checkedRowKeys"
           @update:checked-row-keys="handleCheck"
         />
-        <n-p v-if="checkedRowKeys.length"> 你选中了 {{ checkedRowKeys.length }} 行。 </n-p>
       </div>
+      <n-collapse-transition :show="Boolean(checkedRowKeys.length)">
+        <n-dropdown :options="getMenuOptions(null)">
+          <n-button
+            secondary
+            type="tertiary"
+            size="small"
+            style="position: absolute; top: 0; left: 0; z-index: 10"
+          >
+            You selected {{ checkedRowKeys.length }} items
+          </n-button>
+        </n-dropdown>
+      </n-collapse-transition>
     </n-scrollbar>
-
     <n-dropdown
       trigger="manual"
       placement="bottom-start"
@@ -214,6 +235,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .note-list-view {
+  position: relative;
   height: 100%;
   .note-list-table {
     min-width: 700px;

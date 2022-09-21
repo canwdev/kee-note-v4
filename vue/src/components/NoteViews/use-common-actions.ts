@@ -2,7 +2,8 @@ import {useContextMenu} from '@/hooks/use-context-menu'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {kService} from '@/api'
 
-export const useCommonActions = (getEntryList) => {
+export const useCommonActions = (options) => {
+  const {getEntryList, checkedRowKeys = ref([])} = options || {}
   const showGroupSelectModal = ref(false)
 
   const handleDeleteEntry = async (uuid: string) => {
@@ -29,14 +30,16 @@ export const useCommonActions = (getEntryList) => {
       label: '🚮 Delete Entry',
       props: {
         onClick: () => {
+          const isMultiple = Boolean(checkedRowKeys.value.length)
           window.$dialog.warning({
             title: 'Confirm',
-            content:
-              "Delete selected items? If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.",
+            content: `Delete ${
+              isMultiple ? 'selected items' : 'item'
+            }? If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.`,
             positiveText: 'OK',
             negativeText: 'Cancel',
             onPositiveClick: () => {
-              handleDeleteEntry(option.uuid)
+              handleDeleteEntry(isMultiple ? checkedRowKeys.value : option.uuid)
             },
             onNegativeClick: () => {},
           })
@@ -50,12 +53,13 @@ export const useCommonActions = (getEntryList) => {
 
   const handleSelectGroup = async (groupUuid: string) => {
     // console.log(groupUuid)
-    if (!editingNode.value) {
+    if (!editingNode.value && !checkedRowKeys.value.length) {
+      console.warn('no entry selected', checkedRowKeys)
       return
     }
     await kService.moveEntry({
       groupUuid: groupUuid,
-      uuid: editingNode.value.uuid,
+      uuid: checkedRowKeys.value.length ? checkedRowKeys.value : editingNode.value.uuid,
     })
 
     await saveDatabaseAsync()

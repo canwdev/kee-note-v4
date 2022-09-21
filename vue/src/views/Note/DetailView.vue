@@ -144,7 +144,7 @@ export default defineComponent({
 
       <n-scrollbar trigger="none">
         <n-layout-content>
-          <n-card v-if="entryDetail" class="detail-card" size="small">
+          <n-card v-if="entryDetail" class="detail-card" size="small" hoverable>
             <n-space vertical>
               <n-input-group>
                 <n-button>

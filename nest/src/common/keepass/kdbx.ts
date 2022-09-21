@@ -188,6 +188,9 @@ export class KdbxHelper {
     if (!uuid) {
       throw new Error('uuid is required!')
     }
+    if (Array.isArray(uuid)) {
+      return uuid.map((id) => this.curEntryMap[id])
+    }
 
     if (!this.curEntryMap[uuid]) {
       throw new Error(`entry ${uuid} not found in current map (Have you open the entry list?)`)

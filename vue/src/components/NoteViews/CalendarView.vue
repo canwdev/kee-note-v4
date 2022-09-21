@@ -109,7 +109,7 @@ export default defineComponent({
       handleSelectGroup,
       getMenuOptions,
       ...contextMenuEtc
-    } = useCommonActions(getEntryList)
+    } = useCommonActions({getEntryList})
 
     return {
       mainStore,
