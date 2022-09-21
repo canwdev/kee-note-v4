@@ -5,16 +5,21 @@ import 'v-calendar/dist/style.css'
 import {useMainStore} from '@/store/main-store'
 import LunarDay from '@/components/Calendar/LunarDay.vue'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
+import {EntryItem} from '@/enum/kdbx'
+import {useRouter} from 'vue-router'
+import IconDisplay from '@/components/IconDisplay.vue'
 
 export default defineComponent({
   name: 'CalendarView',
   components: {
     Calendar,
     LunarDay,
+    IconDisplay,
   },
   setup() {
+    const router = useRouter()
     const mainStore = useMainStore()
-    const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList(true)
+    const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList(true)
 
     onMounted(() => {
       if (keeStore.isDbOpened) {
@@ -22,8 +27,44 @@ export default defineComponent({
       }
     })
 
+    const dateRef = ref(new Date())
+    const calendarAttributes = computed(() => {
+      const date = dateRef.value
+
+      if (!date || !calendarData.value) {
+        return []
+      }
+
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+
+      const list = (calendarData.value[year] && calendarData.value[year][month]) || []
+
+      return list.map((entry: EntryItem, index) => {
+        return {
+          key: index,
+          customData: entry,
+          dates: entry.creationTime,
+        }
+      })
+    })
+
+    const handlePreview = (attr) => {
+      const {customData} = attr
+      router.push({
+        name: 'NoteDetailView',
+        query: {uuid: customData.uuid},
+      })
+    }
+    const handleItemContextMenu = (attr) => {
+      console.log('handleItemContextMenu', attr)
+    }
+
     return {
       mainStore,
+      calendarAttributes,
+      handlePreview,
+      handleItemContextMenu,
     }
   },
 })
@@ -32,7 +73,14 @@ export default defineComponent({
   <div class="calendar-view">
     <n-scrollbar trigger="none" x-scrollable>
       <div class="content-padding">
-        <Calendar ref="calendarRef" is-expanded :is-dark="mainStore.isAppDarkMode">
+        <Calendar
+          ref="calendarRef"
+          is-expanded
+          :is-dark="mainStore.isAppDarkMode"
+          :attributes="calendarAttributes"
+          title-position="left"
+          trim-weeks
+        >
           <template v-slot:day-content="{day, attributes}">
             <div class="day-content">
               <div class="entry-list">
@@ -47,13 +95,9 @@ export default defineComponent({
                         color: attr.customData.fgColor,
                       }"
                       @click="handlePreview(attr)"
-                      @contextmenu="handleAttrContextMenu(attr)"
+                      @contextmenu="handleItemContextMenu(attr)"
                     >
-                      <!--                      <IconShow-->
-                      <!--                        :item="{iconIndex: attr.customData.iconIndex}"-->
-                      <!--                        size="16px"-->
-                      <!--                        :icon-scale="1"-->
-                      <!--                      />-->
+                      <IconDisplay :icon="attr.customData.icon" :size="16" />
                       <span class="entry-title">{{ attr.customData.title }}</span>
                     </div>
                   </template>
@@ -82,7 +126,7 @@ export default defineComponent({
 
     @media screen and (max-width: $mq_pc_min_width) {
       --day-width: 100px;
-      --day-height: 80px;
+      --day-height: 100px;
     }
 
     @media screen and (max-width: $mq_tablet_width) {
@@ -104,7 +148,7 @@ export default defineComponent({
     }
 
     .vc-header {
-      padding: 10px 0;
+      padding: 10px 0 10px 20px;
     }
 
     .vc-weeks {
@@ -188,8 +232,6 @@ export default defineComponent({
     }
   }
   .vc-container {
-    border-radius: 0;
-
     .day-content {
       display: flex;
       flex-direction: column;
@@ -199,7 +241,7 @@ export default defineComponent({
 
       .day-label-wrap {
         font-size: 14px;
-        padding: 2px 4px;
+        padding: 0 4px 2px;
         text-align: right;
 
         .lunar-label {
@@ -217,28 +259,23 @@ export default defineComponent({
         overflow: auto;
         flex-grow: 1;
 
-        .q-scrollarea {
-          height: 100%;
-          width: 100%;
-
-          .scroll > .absolute {
-            padding: 4px 4px;
-          }
+        .n-scrollbar-content {
+          padding: 4px 4px;
         }
       }
 
       .entry-item {
-        font-size: 12px;
+        font-size: 11px;
         padding: 2px;
         line-height: 1.2;
         box-shadow: 0 0 1px 1px rgba(134, 134, 134, 0.5);
+        cursor: pointer;
 
         &:hover {
           opacity: 0.8;
         }
 
-        .q-avatar {
-          margin-top: -3px;
+        .icon-display {
         }
 
         .entry-title {

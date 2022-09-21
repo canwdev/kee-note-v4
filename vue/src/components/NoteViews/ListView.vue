@@ -10,13 +10,13 @@ import {
 } from 'naive-ui'
 import {EntryItem, GroupItem} from '@/enum/kdbx'
 import {kService} from '@/api'
-import keepassIcons from '@/assets/icons'
 import {useRoute, useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
+import IconDisplay from '@/components/IconDisplay.vue'
 
 export default defineComponent({
   components: {
@@ -42,11 +42,10 @@ export default defineComponent({
           key: 'icon',
           width: 80,
           render(row, index) {
-            return h('img', {
+            return h(IconDisplay, {
               onClick: (e: Event) => e.stopPropagation(),
-              alt: String(row.icon),
-              src: String(keepassIcons[row.icon]),
-              style: {height: '24px', width: '24px'},
+              icon: row.icon,
+              size: 24,
             })
           },
           sorter: {

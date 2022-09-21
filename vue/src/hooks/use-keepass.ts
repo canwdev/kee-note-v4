@@ -3,11 +3,20 @@ import {useKeeStore} from '@/store/kee-store'
 import {EntryItem} from '@/enum/kdbx'
 import {kService} from '@/api'
 
+interface CalendarData {
+  // year
+  [key: string]: {
+    // month
+    [key: string]: EntryItem[]
+  }
+}
+
 export const useKeepassEntryList = (isCalendar = false) => {
   const route = useRoute()
 
   const keeStore = useKeeStore()
   const entryList = ref<EntryItem[]>([])
+  const calendarData = ref<CalendarData>({})
 
   const groupUuid = computed(() => {
     return route.query.groupUuid
@@ -37,7 +46,7 @@ export const useKeepassEntryList = (isCalendar = false) => {
       return
     }
     if (isCalendar) {
-      entryList.value = await kService.getGroupEntriesDeep({
+      calendarData.value = await kService.getGroupEntriesDeep({
         groupUuid: groupUuid.value,
         isDayMapped: true,
       })
@@ -50,6 +59,7 @@ export const useKeepassEntryList = (isCalendar = false) => {
 
   return {
     entryList,
+    calendarData,
     getEntryList,
     keeStore,
     groupUuid,

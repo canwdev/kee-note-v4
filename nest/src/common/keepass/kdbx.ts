@@ -134,7 +134,7 @@ export class KdbxHelper {
     const list = []
 
     const dayMap = {}
-    let creationTime, year, month, day
+    let creationTime, year, month
     const traverse = (node) => {
       if (!node) return
 
@@ -143,14 +143,12 @@ export class KdbxHelper {
           creationTime = entry.times.creationTime
           year = creationTime.getFullYear()
           month = creationTime.getMonth() + 1
-          day = creationTime.getDate()
 
           // 初始化
           if (!dayMap[year]) dayMap[year] = {}
-          if (!dayMap[year][month]) dayMap[year][month] = {}
-          if (!dayMap[year][month][day]) dayMap[year][month][day] = []
+          if (!dayMap[year][month]) dayMap[year][month] = []
 
-          dayMap[year][month][day].push(new EntryItem(entry))
+          dayMap[year][month].push(new EntryItem(entry))
         } else {
           list.push(new EntryItem(entry))
         }

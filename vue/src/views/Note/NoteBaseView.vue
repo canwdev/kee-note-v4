@@ -9,12 +9,12 @@ import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {formatDate} from '@/utils'
 import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
-import keepassIcons from '@/assets/icons'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import ListView from '@/components/NoteViews/ListView.vue'
 import CalendarView from '@/components/NoteViews/CalendarView.vue'
+import IconDisplay from '@/components/IconDisplay.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -343,11 +343,10 @@ export default defineComponent({
       showEditModal,
       ...contextMenuEtc,
       renderPrefix({option}: {option: GroupItem}) {
-        return h('img', {
+        return h(IconDisplay, {
           onClick: (e: Event) => e.stopPropagation(),
-          alt: String(option.icon),
-          src: String(keepassIcons[option.icon]),
-          style: {height: '18px', width: '18px'},
+          icon: option.icon,
+          size: 18,
         })
       },
       handleGroupEdit,

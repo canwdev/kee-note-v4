@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     DialogInput: typeof import('./src/components/DialogInput.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/HistoryDialog.vue')['default']
+    IconDisplay: typeof import('./src/components/IconDisplay.vue')['default']
     ListView: typeof import('./src/components/NoteViews/ListView.vue')['default']
     LunarDay: typeof import('./src/components/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/MarkdownEditor.vue')['default']
