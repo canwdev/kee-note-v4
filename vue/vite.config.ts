@@ -18,6 +18,13 @@ export default ({mode}) => {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "@/styles/_variables.scss";`,
+        },
+      },
+    },
     plugins: [
       vueJsx(),
       vue({

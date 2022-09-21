@@ -16,6 +16,7 @@ import {formatDate} from '@/utils'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 import {useContextMenu} from '@/hooks/use-context-menu'
+import {useKeepassEntryList} from '@/hooks/use-keepass'
 
 export default defineComponent({
   components: {
@@ -23,31 +24,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
-    const route = useRoute()
-
-    const keeStore = useKeeStore()
-    const entryList = ref<EntryItem[]>([])
-
-    const groupUuid = computed(() => {
-      return route.query.groupUuid
-    })
-
-    watch(
-      () => groupUuid.value,
-      (val) => {
-        getEntryList()
-      }
-    )
-    watch(
-      () => keeStore.isDbOpened,
-      (val) => {
-        if (val) {
-          getEntryList()
-        } else {
-          entryList.value = []
-        }
-      }
-    )
+    const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList()
 
     const handleDeleteEntry = async (uuid: string) => {
       await kService.removeEntry({
@@ -139,21 +116,11 @@ export default defineComponent({
       ]
     }
 
-    const getEntryList = async () => {
-      if (!groupUuid.value) {
-        entryList.value = []
-        return
-      }
-      entryList.value = await kService.getGroupEntries({
-        groupUuid: groupUuid.value,
-      })
-    }
-
-    onMounted(() => {
-      if (keeStore.isDbOpened) {
-        getEntryList()
-      }
-    })
+    // onMounted(() => {
+    //   if (keeStore.isDbOpened) {
+    //     getEntryList()
+    //   }
+    // })
 
     const paginationReactive = reactive({
       page: 1,

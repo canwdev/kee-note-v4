@@ -24,6 +24,9 @@ export const getGroupTree = (params?: any) => {
 export const getGroupEntries = (params: any) => {
   return service.post('get-group-entries', params)
 }
+export const getGroupEntriesDeep = (params: any) => {
+  return service.post('get-group-entries-deep', params)
+}
 export const getEntryDetail = (params: any) => {
   return service.post('get-entry-detail', params)
 }

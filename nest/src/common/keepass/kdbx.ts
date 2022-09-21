@@ -31,7 +31,7 @@ export interface KdbxOpenOptions {
 export class KdbxHelper {
   db: null | Kdbx // Kdbx 数据库实例
   dbPath: null | string // 数据库路径
-  private curEntryMap: object // 保存打开的 entry 映射表
+  private curEntryMap: object // 由于 kdbxweb 不能直接查询 entry，需要保存打开的 entry map
   isChanged: boolean // 数据库是否修改
 
   constructor() {
@@ -120,6 +120,52 @@ export class KdbxHelper {
       }
     }
 
+    return list
+  }
+
+  getGroupEntriesDeep(params) {
+    const {groupUuid, isDayMapped} = params || {}
+    if (!(this.db && groupUuid)) {
+      throw new Error('Invalid db or groupUuid')
+    }
+    this.curEntryMap = {}
+    const group: any = this.db.getGroup(groupUuid)
+
+    const list = []
+
+    const dayMap = {}
+    let creationTime, year, month, day
+    const traverse = (node) => {
+      if (!node) return
+
+      node.entries.forEach((entry) => {
+        if (isDayMapped) {
+          creationTime = entry.times.creationTime
+          year = creationTime.getFullYear()
+          month = creationTime.getMonth() + 1
+          day = creationTime.getDate()
+
+          // 初始化
+          if (!dayMap[year]) dayMap[year] = {}
+          if (!dayMap[year][month]) dayMap[year][month] = {}
+          if (!dayMap[year][month][day]) dayMap[year][month][day] = []
+
+          dayMap[year][month][day].push(new EntryItem(entry))
+        } else {
+          list.push(new EntryItem(entry))
+        }
+
+        this.curEntryMap[entry.uuid.id] = entry
+      })
+
+      node.groups.forEach((group) => {
+        traverse(group)
+      })
+    }
+    traverse(group)
+    if (isDayMapped) {
+      return dayMap
+    }
     return list
   }
 
@@ -335,5 +381,16 @@ export class KdbxHelper {
   // 数据库是否开启
   get isOpen() {
     return !!this.db
+  }
+
+  getMeta() {
+    const meta: any = (this.db && this.db.meta) || {}
+    return {
+      // header: kInstance.db.header,
+      meta: {
+        recycleBinEnabled: meta.recycleBinEnabled,
+        recycleBinUuid: meta.recycleBinUuid,
+      },
+    }
   }
 }

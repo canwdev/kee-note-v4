@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     DialogInput: typeof import('./src/components/DialogInput.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/HistoryDialog.vue')['default']
+    LunarDay: typeof import('./src/components/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/MarkdownEditor.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']

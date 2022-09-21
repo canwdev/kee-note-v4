@@ -4,22 +4,22 @@ import AppContent from './AppContent.vue'
 import {getUserTheme, LsKeys, ThemeType} from '@/enum'
 import {NThemeEditor, NConfigProvider, NLoadingBarProvider, NMessageProvider} from 'naive-ui'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
+import {useMainStore} from '@/store/main-store'
 
 export default defineComponent({
   setup() {
     const getSystemIsDarkMode = () =>
       window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
-
-    let isSystemDarkMode = ref(true)
+    const mainStore = useMainStore()
 
     const handleThemeChange = (val: ThemeType) => {
       if (val === ThemeType.SYSTEM) {
-        isSystemDarkMode.value = getSystemIsDarkMode()
+        mainStore.isAppDarkMode = getSystemIsDarkMode()
       } else if (val === ThemeType.LIGHT) {
-        isSystemDarkMode.value = false
+        mainStore.isAppDarkMode = false
       } else if (val === ThemeType.DARK) {
-        isSystemDarkMode.value = true
+        mainStore.isAppDarkMode = true
       }
     }
 
@@ -27,7 +27,7 @@ export default defineComponent({
 
     const handleSystemThemeChange = (event: any) => {
       if (getUserTheme() === ThemeType.SYSTEM) {
-        isSystemDarkMode.value = Boolean(event.matches)
+        mainStore.isAppDarkMode = Boolean(event.matches)
       }
     }
 
@@ -50,7 +50,7 @@ export default defineComponent({
       },
     }
     return {
-      isSystemDarkMode,
+      mainStore,
       handleThemeChange,
       themeOverrides,
       darkTheme,
@@ -61,7 +61,7 @@ export default defineComponent({
     const contentVNode = h(
       NConfigProvider,
       {
-        theme: this.isSystemDarkMode ? this.darkTheme : null,
+        theme: this.mainStore.isAppDarkMode ? this.darkTheme : null,
         'theme-overrides': this.themeOverrides,
       },
       {

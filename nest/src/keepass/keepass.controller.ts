@@ -54,15 +54,7 @@ export class KeepassController {
 
   @Post('get-meta')
   async getMeta() {
-    const meta: any = (this.kdbxHelper.db && this.kdbxHelper.db.meta) || {}
-    console.log('meta', meta)
-    return {
-      // header: kInstance.db.header,
-      meta: {
-        recycleBinEnabled: meta.recycleBinEnabled,
-        recycleBinUuid: meta.recycleBinUuid,
-      },
-    }
+    return this.kdbxHelper.getMeta()
   }
 
   @Post('get-group-tree')
@@ -73,6 +65,11 @@ export class KeepassController {
   @Post('get-group-entries')
   getGroupEntries(@Body('groupUuid') groupUuid) {
     return this.kdbxHelper.getGroupEntries(groupUuid)
+  }
+
+  @Post('get-group-entries-deep')
+  getGroupEntriesDeep(@Body() params) {
+    return this.kdbxHelper.getGroupEntriesDeep(params)
   }
 
   @Post('get-entry-detail')
