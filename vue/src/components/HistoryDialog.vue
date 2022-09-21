@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {getLocalStorageObject, LS_KEY_DONT_SAVE_HISTORY, LS_KEY_HISTORY_LIST} from '@/enum'
+import {getLocalStorageObject, LsKeys} from '@/enum'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 
 export default defineComponent({
@@ -14,17 +14,17 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const isSaveHistory = useLocalStorageBoolean(LS_KEY_DONT_SAVE_HISTORY, true)
-    const historyList = ref(getLocalStorageObject(LS_KEY_HISTORY_LIST, []))
+    const isSaveHistory = useLocalStorageBoolean(LsKeys.LS_KEY_DONT_SAVE_HISTORY, true)
+    const historyList = ref(getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, []))
 
     const handleClearHistory = () => {
-      localStorage.removeItem(LS_KEY_HISTORY_LIST)
+      localStorage.removeItem(LsKeys.LS_KEY_HISTORY_LIST)
       historyList.value = []
     }
 
     const removeHistoryItem = (index: number) => {
       historyList.value.splice(index, 1)
-      localStorage.setItem(LS_KEY_HISTORY_LIST, JSON.stringify(historyList.value))
+      localStorage.setItem(LsKeys.LS_KEY_HISTORY_LIST, JSON.stringify(historyList.value))
     }
 
     return {

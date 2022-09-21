@@ -2,9 +2,9 @@
 import {defineComponent, ref} from 'vue'
 import {FormInst, FormValidationError, useMessage, FormRules} from 'naive-ui'
 import {userLogin, userProfile} from '@/api'
-import {LS_KEY_AUTHORIZATION} from '@/enum'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import {LsKeys} from '@/enum'
 
 interface ModelType {
   username: string | null
@@ -47,13 +47,13 @@ export default defineComponent({
         message.error('Invalid token! Check crypt key in settings?')
         return
       }
-      localStorage.setItem(LS_KEY_AUTHORIZATION, access_token)
+      localStorage.setItem(LsKeys.LS_KEY_AUTHORIZATION, access_token)
 
       checkProfile()
     }
 
     const checkProfile = async () => {
-      if (!localStorage.getItem(LS_KEY_AUTHORIZATION)) {
+      if (!localStorage.getItem(LsKeys.LS_KEY_AUTHORIZATION)) {
         return
       }
       const data = await userProfile()

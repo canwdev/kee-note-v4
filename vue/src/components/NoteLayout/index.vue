@@ -7,13 +7,13 @@ import AutoRouterView from '@/components/AutoRouterView.vue'
 import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {LS_KEY_AUTHORIZATION, LS_KEY_IS_CALENDAR_VIEW} from '@/enum'
 import {formatDate} from '@/utils'
 import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
 import keepassIcons from '@/assets/icons'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
+import {LsKeys} from '@/enum'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -28,7 +28,7 @@ export default defineComponent({
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
 
-    const isCalendarView = useLocalStorageBoolean(LS_KEY_IS_CALENDAR_VIEW)
+    const isCalendarView = useLocalStorageBoolean(LsKeys.LS_KEY_IS_CALENDAR_VIEW)
 
     onMounted(async () => {
       globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
@@ -38,6 +38,7 @@ export default defineComponent({
     })
 
     onActivated(async () => {
+      isCalendarView.value = Boolean(localStorage.getItem(LsKeys.LS_KEY_IS_CALENDAR_VIEW))
       keeStore.isDbOpened = await kService.checkIsOpen()
       if (keeStore.isDbOpened) {
         await getGroupTree()
@@ -254,7 +255,7 @@ export default defineComponent({
                     } catch (e) {
                       window.$message.warning('Database close failed')
                     }
-                    localStorage.removeItem(LS_KEY_AUTHORIZATION)
+                    localStorage.removeItem(LsKeys.LS_KEY_AUTHORIZATION)
                     await router.replace({
                       name: 'HomeView',
                     })

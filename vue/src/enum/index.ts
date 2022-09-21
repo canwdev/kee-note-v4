@@ -6,20 +6,24 @@ export enum ThemeType {
   LIGHT = 1,
   DARK = 2,
 }
-export const getUserTheme = () => Number(localStorage.getItem(LS_KEY_THEME)) || ThemeType.SYSTEM
-export const getMyCryptKey = () => localStorage.getItem(LS_KEY_MY_CRYPT_KEY)
+export const getUserTheme = () =>
+  Number(localStorage.getItem(LsKeys.LS_KEY_THEME)) || ThemeType.SYSTEM
+export const getMyCryptKey = () => localStorage.getItem(LsKeys.LS_KEY_MY_CRYPT_KEY)
 
-export const LS_KEY_AUTHORIZATION = 'ck_keenote_authorization'
-export const LS_KEY_THEME = 'ck_keenote_theme'
-export const LS_KEY_MY_CRYPT_KEY = 'ck_keenote_MY_CRYPT_KEY'
-export const LS_KEY_IS_CALENDAR_VIEW = 'ck_keenote_is_calendar_view'
-export const LS_KEY_DONT_SAVE_HISTORY = 'ck_keenote_dont_save_history'
-export const LS_KEY_HISTORY_LIST = 'ck_keenote_history_list'
-export const LS_KEY_NO_COMPLEX_EDITOR = 'ck_keenote_no_complex_editor'
-export const LS_KEY_EDITOR_FONT_SIZE = 'ck_keenote_editor_font_size'
-export const LS_KEY_EDITOR_FONT_FAMILY = 'ck_keenote_editor_font_family'
-export const LS_KEY_EDITOR_NO_WYSIWYG = 'ck_keenote_editor_no_wysiwyg'
-export const LS_KEY_EDITOR_THEME = 'ck_keenote_editor_theme'
+export const LsKeys = {
+  LS_KEY_AUTHORIZATION: 'ck_keenote_authorization',
+  LS_KEY_THEME: 'ck_keenote_theme',
+  LS_KEY_ENABLE_THEME_EDITOR: 'ck_keenote_enable_theme_editor',
+  LS_KEY_MY_CRYPT_KEY: 'ck_keenote_MY_CRYPT_KEY',
+  LS_KEY_IS_CALENDAR_VIEW: 'ck_keenote_is_calendar_view',
+  LS_KEY_DONT_SAVE_HISTORY: 'ck_keenote_dont_save_history',
+  LS_KEY_HISTORY_LIST: 'ck_keenote_history_list',
+  LS_KEY_NO_COMPLEX_EDITOR: 'ck_keenote_no_complex_editor',
+  LS_KEY_EDITOR_FONT_SIZE: 'ck_keenote_editor_font_size',
+  LS_KEY_EDITOR_FONT_FAMILY: 'ck_keenote_editor_font_family',
+  LS_KEY_EDITOR_NO_WYSIWYG: 'ck_keenote_editor_no_wysiwyg',
+  LS_KEY_EDITOR_THEME: 'ck_keenote_editor_theme',
+}
 
 export const getLocalStorageObject = (key, fallback?) => {
   const str = localStorage.getItem(key)

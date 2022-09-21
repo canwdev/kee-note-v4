@@ -1,6 +1,6 @@
 <script lang="ts">
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {getMyCryptKey, getUserTheme, LS_KEY_MY_CRYPT_KEY, LS_KEY_THEME, ThemeType} from '@/enum'
+import {getMyCryptKey, getUserTheme, LsKeys, ThemeType} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
@@ -18,10 +18,16 @@ export default defineComponent({
 
     const themeValue = ref(getUserTheme())
     const myCryptKey = ref(getMyCryptKey())
-    // const isEnableThemeEdit = useLocalStorageBoolean('ck_keenote_enable_theme_edit')
+    const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
+
+    watch(isEnableThemeEdit, (val) => {
+      nextTick(() => {
+        location.reload()
+      })
+    })
 
     const handleThemeSelectChange = (val: ThemeType) => {
-      localStorage.setItem(LS_KEY_THEME, String(val))
+      localStorage.setItem(LsKeys.LS_KEY_THEME, String(val))
       emit('themeChange', val)
     }
 
@@ -29,7 +35,7 @@ export default defineComponent({
       if (getMyCryptKey() === myCryptKey.value) {
         return
       }
-      localStorage.setItem(LS_KEY_MY_CRYPT_KEY, String(myCryptKey.value))
+      localStorage.setItem(LsKeys.LS_KEY_MY_CRYPT_KEY, String(myCryptKey.value))
       window.$message.success('MY_CRYPT_KEY is set!')
       globalEventBus.emit(GlobalEvents.UPDATE_MY_CRYPT_KEY, String(myCryptKey.value))
     }
@@ -55,6 +61,7 @@ export default defineComponent({
         },
       ],
       handleMyCryptKeyChange,
+      isEnableThemeEdit,
     }
   },
 })
@@ -74,14 +81,26 @@ export default defineComponent({
           />
         </template>
       </n-list-item>
+      <n-list-item>
+        <n-thing title="Enable Theme Editor" />
+        <template #suffix>
+          <n-switch v-model:value="isEnableThemeEdit" />
+        </template>
+      </n-list-item>
       <n-list-item v-if="!isElectron">
-        <n-thing title="Crypt Key" description="Set `MY_CRYPT_KEY`" />
+        <n-thing
+          title="Client-Server communication key"
+          description="MY_CRYPT_KEY"
+          style="line-height: 1"
+        />
         <template #suffix>
           <n-input
             v-model:value="myCryptKey"
             type="password"
             style="width: 200px"
             show-password-on="click"
+            placeholder="keep default"
+            clearable
             @keyup.enter="handleMyCryptKeyChange"
             @blur="handleMyCryptKeyChange"
           />

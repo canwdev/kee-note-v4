@@ -6,7 +6,7 @@ import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import HistoryDialog from '@/components/HistoryDialog.vue'
-import {getLocalStorageObject, LS_KEY_HISTORY_LIST, setLocalStorageObject} from '@/enum'
+import {getLocalStorageObject, LsKeys, setLocalStorageObject} from '@/enum'
 
 interface ModelType {
   dbPath: string | null
@@ -36,7 +36,7 @@ export default defineComponent({
     }
 
     const updateHistory = () => {
-      const historyList = getLocalStorageObject(LS_KEY_HISTORY_LIST, [])
+      const historyList = getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, [])
       const index = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
       if (index > -1) {
         historyList.splice(index, 1)
@@ -45,11 +45,11 @@ export default defineComponent({
         dbPath: modelRef.value.dbPath,
         keyPath: modelRef.value.keyPath,
       })
-      setLocalStorageObject(LS_KEY_HISTORY_LIST, historyList)
+      setLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, historyList)
     }
 
     const loadFirstHistory = () => {
-      const historyList = getLocalStorageObject(LS_KEY_HISTORY_LIST, [])
+      const historyList = getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, [])
       if (historyList.length > 0) {
         modelRef.value.dbPath = historyList[0].dbPath
         modelRef.value.keyPath = historyList[0].keyPath

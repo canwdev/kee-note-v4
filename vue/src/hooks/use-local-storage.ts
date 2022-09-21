@@ -1,11 +1,12 @@
 import {Ref} from 'vue'
 
 export const useLocalStorageBoolean = (key, defaultValue = false): Ref<boolean> => {
-  const flag = ref<boolean>(
+  const updateInitValue = () =>
     defaultValue ? !Boolean(localStorage.getItem(key)) : Boolean(localStorage.getItem(key))
-  )
 
-  watch(flag, (val) => {
+  const val = ref<boolean>(updateInitValue())
+
+  watch(val, (val) => {
     if (!defaultValue) {
       val = !val
     }
@@ -16,7 +17,7 @@ export const useLocalStorageBoolean = (key, defaultValue = false): Ref<boolean> 
     }
   })
 
-  return flag
+  return val
 }
 
 export const useLocalStorageString = (key, defaultValue = ''): Ref<string> => {

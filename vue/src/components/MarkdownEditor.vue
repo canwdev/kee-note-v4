@@ -26,13 +26,8 @@ import {
   useLocalStorageBoolean,
   useLocalStorageNumber,
   useLocalStorageString,
-} from '@/hooks/use-local-storage' // Front Matter
-import {
-  LS_KEY_EDITOR_FONT_FAMILY,
-  LS_KEY_EDITOR_FONT_SIZE,
-  LS_KEY_EDITOR_NO_WYSIWYG,
-  LS_KEY_EDITOR_THEME,
-} from '@/enum'
+} from '@/hooks/use-local-storage'
+import {LsKeys} from '@/enum' // Front Matter
 
 // do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
 let editorInstance: any = null
@@ -67,10 +62,10 @@ export default defineComponent({
   setup(props, {emit}) {
     const mValue = useModelWrapper(props, emit)
     const textareaRef = ref()
-    const editorFontSize = useLocalStorageNumber(LS_KEY_EDITOR_FONT_SIZE, 14)
-    const isEditWYSIWYG = useLocalStorageBoolean(LS_KEY_EDITOR_NO_WYSIWYG, true)
-    const editorFontFamily = useLocalStorageString(LS_KEY_EDITOR_FONT_FAMILY, 'inherit')
-    const editorTheme = useLocalStorageString(LS_KEY_EDITOR_THEME, 'hypermd-light')
+    const editorFontSize = useLocalStorageNumber(LsKeys.LS_KEY_EDITOR_FONT_SIZE, 14)
+    const isEditWYSIWYG = useLocalStorageBoolean(LsKeys.LS_KEY_EDITOR_NO_WYSIWYG, true)
+    const editorFontFamily = useLocalStorageString(LsKeys.LS_KEY_EDITOR_FONT_FAMILY, 'inherit')
+    const editorTheme = useLocalStorageString(LsKeys.LS_KEY_EDITOR_THEME, 'hypermd-light')
 
     watch(editorFontSize, () => {
       setFontSize()

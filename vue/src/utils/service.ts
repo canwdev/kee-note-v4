@@ -1,7 +1,7 @@
 import axios from 'axios'
-import {LS_KEY_AUTHORIZATION, LS_KEY_MY_CRYPT_KEY} from '@/enum'
 import {MyCrypt} from '@/utils/my-crypt'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
+import {LsKeys} from '@/enum'
 
 function Service(config: any) {
   const {
@@ -12,7 +12,8 @@ function Service(config: any) {
     isAuth = true,
     isToast = true,
     isRawResponse = false,
-    encryptionKey = import.meta.env.VITE_MY_CRYPT_KEY || localStorage.getItem(LS_KEY_MY_CRYPT_KEY),
+    encryptionKey = import.meta.env.VITE_MY_CRYPT_KEY ||
+      localStorage.getItem(LsKeys.LS_KEY_MY_CRYPT_KEY),
   } = config || {}
 
   let myCrypt: MyCrypt
@@ -40,7 +41,7 @@ function Service(config: any) {
   service.interceptors.request.use(
     (config) => {
       if (isAuth) {
-        const Authorization = localStorage.getItem(LS_KEY_AUTHORIZATION)
+        const Authorization = localStorage.getItem(LsKeys.LS_KEY_AUTHORIZATION)
         if (Authorization) {
           // @ts-ignore
           config.headers.Authorization = 'bearer ' + Authorization

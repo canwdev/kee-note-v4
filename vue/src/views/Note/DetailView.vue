@@ -6,8 +6,8 @@ import keepassIcons from '@/assets/icons'
 import {saveDatabaseAsync} from '@/utils/bus'
 import {useUnSavedChanges} from '@/hooks/use-changed'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
-import {LS_KEY_NO_COMPLEX_EDITOR} from '@/enum'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
+import {LsKeys} from '@/enum'
 
 export default defineComponent({
   name: 'DetailView',
@@ -19,7 +19,7 @@ export default defineComponent({
     const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
     const times = reactive([0, 0])
-    const isComplexEditor = useLocalStorageBoolean(LS_KEY_NO_COMPLEX_EDITOR, true)
+    const isComplexEditor = useLocalStorageBoolean(LsKeys.LS_KEY_NO_COMPLEX_EDITOR, true)
 
     onMounted(() => {
       getEntryDetail()
