@@ -36,8 +36,6 @@ export const useKeepassEntryList = (isCalendar = false) => {
       entryList.value = []
       return
     }
-    // TODO: fix multiple request
-    console.log('getEntryList', groupUuid.value)
     if (isCalendar) {
       entryList.value = await kService.getGroupEntriesDeep({
         groupUuid: groupUuid.value,

@@ -116,11 +116,11 @@ export default defineComponent({
       ]
     }
 
-    // onMounted(() => {
-    //   if (keeStore.isDbOpened) {
-    //     getEntryList()
-    //   }
-    // })
+    onMounted(() => {
+      if (keeStore.isDbOpened) {
+        getEntryList()
+      }
+    })
 
     const paginationReactive = reactive({
       page: 1,

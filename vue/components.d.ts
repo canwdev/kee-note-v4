@@ -8,10 +8,13 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
+    CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
+    DetailView: typeof import('./src/components/NoteViews/DetailView.vue')['default']
     DialogGroupSelect: typeof import('./src/components/DialogGroupSelect.vue')['default']
     DialogInput: typeof import('./src/components/DialogInput.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/HistoryDialog.vue')['default']
+    ListView: typeof import('./src/components/NoteViews/ListView.vue')['default']
     LunarDay: typeof import('./src/components/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/MarkdownEditor.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
@@ -38,6 +41,7 @@ declare module '@vue/runtime-core' {
     NModal: typeof import('naive-ui')['NModal']
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NoteLayout: typeof import('./src/components/NoteLayout/index.vue')['default']
+    NoteViews: typeof import('./src/components/NoteViews/index.vue')['default']
     NScrollbar: typeof import('naive-ui')['NScrollbar']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']

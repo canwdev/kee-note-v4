@@ -24,26 +24,7 @@ const constantRoutes = [
       {
         name: 'NoteView',
         path: 'view',
-        // redirect: '/note/view/list',
-        redirect: (to) => {
-          if (localStorage.getItem(LsKeys.LS_KEY_IS_CALENDAR_VIEW)) {
-            return {name: 'NoteCalendarView'}
-          }
-          return {name: 'NoteListView'}
-        },
-        component: () => import('@/components/NoteLayout/index.vue'),
-        children: [
-          {
-            name: 'NoteListView',
-            path: 'list',
-            component: () => import('@/views/Note/ListView.vue'),
-          },
-          {
-            name: 'NoteCalendarView',
-            path: 'calendar',
-            component: () => import('@/views/Note/CalendarView.vue'),
-          },
-        ],
+        component: () => import('@/views/Note/NoteBaseView.vue'),
         meta: {
           keepAlive: true,
         },

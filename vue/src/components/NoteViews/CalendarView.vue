@@ -16,11 +16,11 @@ export default defineComponent({
     const mainStore = useMainStore()
     const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList(true)
 
-    // onMounted(() => {
-    //   if (keeStore.isDbOpened) {
-    //     getEntryList()
-    //   }
-    // })
+    onMounted(() => {
+      if (keeStore.isDbOpened) {
+        getEntryList()
+      }
+    })
 
     return {
       mainStore,

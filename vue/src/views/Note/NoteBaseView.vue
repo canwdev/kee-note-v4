@@ -3,7 +3,6 @@ import {kService} from '@/api'
 import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
-import AutoRouterView from '@/components/AutoRouterView.vue'
 import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
@@ -14,12 +13,15 @@ import keepassIcons from '@/assets/icons'
 import {useContextMenu} from '@/hooks/use-context-menu'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
+import ListView from '@/components/NoteViews/ListView.vue'
+import CalendarView from '@/components/NoteViews/CalendarView.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
-    AutoRouterView,
     DialogInput,
+    ListView,
+    CalendarView,
   },
   setup() {
     const router = useRouter()
@@ -307,10 +309,6 @@ export default defineComponent({
           props: {
             onClick: () => {
               isCalendarView.value = !isCalendarView.value
-
-              nextTick(() => {
-                router.replace({name: 'NoteView'})
-              })
             },
           },
         },
@@ -365,6 +363,7 @@ export default defineComponent({
           },
         }
       },
+      isCalendarView,
     }
   },
 })
@@ -456,7 +455,8 @@ export default defineComponent({
         />
 
         <n-layout-content>
-          <AutoRouterView />
+          <CalendarView v-if="isCalendarView" />
+          <ListView v-else />
         </n-layout-content>
       </n-layout>
     </n-layout>
