@@ -7,10 +7,12 @@ import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
 import IconDisplay from '@/components/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
+import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
 
 export default defineComponent({
   components: {
     DialogGroupSelect,
+    DialogEntryPreview,
   },
   setup() {
     const router = useRouter()
@@ -25,7 +27,8 @@ export default defineComponent({
       editingNode,
       nodeAction,
       handleContextmenu,
-      showGroupSelectModal,
+      isShowGroupSelectModal,
+      isShowPreviewModal,
       handleSelectGroup,
       getMenuOptions,
       ...contextMenuEtc
@@ -42,7 +45,12 @@ export default defineComponent({
           width: 80,
           render(row, index) {
             return h(IconDisplay, {
-              onClick: (e: Event) => e.stopPropagation(),
+              onClick: (e: Event) => {
+                e.stopPropagation()
+                nodeAction(row, () => {
+                  isShowPreviewModal.value = true
+                })
+              },
               icon: row.icon,
               size: 24,
             })
@@ -168,7 +176,8 @@ export default defineComponent({
       nodeAction,
       handleContextmenu,
       ...contextMenuEtc,
-      showGroupSelectModal,
+      isShowGroupSelectModal,
+      isShowPreviewModal,
       handleSelectGroup,
       checkedRowKeys,
       handleCheck(rowKeys: DataTableRowKey[]) {
@@ -226,9 +235,14 @@ export default defineComponent({
     />
 
     <DialogGroupSelect
-      v-model:visible="showGroupSelectModal"
+      v-model:visible="isShowGroupSelectModal"
       :value="groupUuid"
       @onSubmit="handleSelectGroup"
+    />
+
+    <DialogEntryPreview
+      v-model:visible="isShowPreviewModal"
+      :uuid="editingNode && editingNode.uuid"
     />
   </div>
 </template>

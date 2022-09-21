@@ -1,10 +1,13 @@
 import {useContextMenu} from '@/hooks/use-context-menu'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {kService} from '@/api'
+import {useRouter} from 'vue-router'
 
 export const useCommonActions = (options) => {
+  const router = useRouter()
   const {getEntryList, checkedRowKeys = ref([])} = options || {}
-  const showGroupSelectModal = ref(false)
+  const isShowGroupSelectModal = ref(false)
+  const isShowPreviewModal = ref(false)
 
   const handleDeleteEntry = async (uuid: string) => {
     await kService.removeEntry({
@@ -17,11 +20,32 @@ export const useCommonActions = (options) => {
 
   const getMenuOptions = (option) => [
     {
+      label: '👁️ Preview',
+      props: {
+        onClick: () => {
+          nodeAction(option, () => {
+            isShowPreviewModal.value = true
+          })
+        },
+      },
+    },
+    {
+      label: '✒️ Edit',
+      props: {
+        onClick: () => {
+          router.push({
+            name: 'NoteDetailView',
+            query: {uuid: option.uuid},
+          })
+        },
+      },
+    },
+    {
       label: '📁 Move to group',
       props: {
         onClick: () => {
           nodeAction(option, () => {
-            showGroupSelectModal.value = true
+            isShowGroupSelectModal.value = true
           })
         },
       },
@@ -71,7 +95,8 @@ export const useCommonActions = (options) => {
     editingNode,
     nodeAction,
     handleContextmenu,
-    showGroupSelectModal,
+    isShowGroupSelectModal,
+    isShowPreviewModal,
     handleSelectGroup,
     getMenuOptions,
     ...contextMenuEtc,

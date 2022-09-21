@@ -40,6 +40,7 @@ function Service(config: any) {
   // 请求 拦截器
   service.interceptors.request.use(
     (config) => {
+      window.$loadingBar.start()
       if (isAuth) {
         const Authorization = localStorage.getItem(LsKeys.LS_KEY_AUTHORIZATION)
         if (Authorization) {
@@ -87,8 +88,10 @@ function Service(config: any) {
         }
       } catch (error: any) {
         window.$message.error(error.message)
+        window.$loadingBar.error()
         return Promise.reject(error)
       }
+      window.$loadingBar.finish()
       return data
     },
     (error) => {
@@ -115,6 +118,7 @@ function Service(config: any) {
           window.$message.error(message)
         }
       }
+      window.$loadingBar.error()
       return Promise.reject(error)
     }
   )

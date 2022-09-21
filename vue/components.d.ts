@@ -9,8 +9,10 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
+    DialogEntryPreview: typeof import('./src/components/DialogEntryPreview.vue')['default']
     DialogGroupSelect: typeof import('./src/components/DialogGroupSelect.vue')['default']
     DialogInput: typeof import('./src/components/DialogInput.vue')['default']
+    DialogPreview: typeof import('./src/components/DialogPreview.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/HistoryDialog.vue')['default']
     IconDisplay: typeof import('./src/components/IconDisplay.vue')['default']
@@ -23,6 +25,7 @@ declare module '@vue/runtime-core' {
     NCollapseTransition: typeof import('naive-ui')['NCollapseTransition']
     NDataTable: typeof import('naive-ui')['NDataTable']
     NDatePicker: typeof import('naive-ui')['NDatePicker']
+    NDivider: typeof import('naive-ui')['NDivider']
     NDropdown: typeof import('naive-ui')['NDropdown']
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']

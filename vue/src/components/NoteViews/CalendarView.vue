@@ -84,9 +84,9 @@ export default defineComponent({
 
     const handlePreview = (attr) => {
       const {customData} = attr
-      router.push({
-        name: 'NoteDetailView',
-        query: {uuid: customData.uuid},
+
+      nodeAction(customData, () => {
+        isShowPreviewModal.value = true
       })
     }
     const handleItemContextMenu = (event: MouseEvent, attr) => {
@@ -105,7 +105,8 @@ export default defineComponent({
       editingNode,
       nodeAction,
       handleContextmenu,
-      showGroupSelectModal,
+      isShowGroupSelectModal,
+      isShowPreviewModal,
       handleSelectGroup,
       getMenuOptions,
       ...contextMenuEtc
@@ -121,7 +122,8 @@ export default defineComponent({
       editingNode,
       nodeAction,
       handleContextmenu,
-      showGroupSelectModal,
+      isShowGroupSelectModal,
+      isShowPreviewModal,
       handleSelectGroup,
       getMenuOptions,
       ...contextMenuEtc,
@@ -188,9 +190,14 @@ export default defineComponent({
     />
 
     <DialogGroupSelect
-      v-model:visible="showGroupSelectModal"
+      v-model:visible="isShowGroupSelectModal"
       :value="groupUuid"
       @onSubmit="handleSelectGroup"
+    />
+
+    <DialogEntryPreview
+      v-model:visible="isShowPreviewModal"
+      :uuid="editingNode && editingNode.uuid"
     />
   </div>
 </template>
