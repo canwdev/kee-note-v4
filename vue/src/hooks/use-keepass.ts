@@ -11,7 +11,8 @@ interface CalendarData {
   }
 }
 
-export const useKeepassEntryList = (isCalendar = false) => {
+export const useKeepassEntryList = (options?) => {
+  const {isCalendar = false, getCalendarParams} = options || {}
   const route = useRoute()
 
   const keeStore = useKeeStore()
@@ -46,9 +47,14 @@ export const useKeepassEntryList = (isCalendar = false) => {
       return
     }
     if (isCalendar) {
+      let params = {}
+      if (getCalendarParams) {
+        params = getCalendarParams()
+      }
       calendarData.value = await kService.getGroupEntriesDeep({
         groupUuid: groupUuid.value,
         isDayMapped: true,
+        ...params,
       })
     } else {
       entryList.value = await kService.getGroupEntries({

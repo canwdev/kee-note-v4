@@ -8,15 +8,13 @@ import {
   NDropdown,
   TreeOption,
 } from 'naive-ui'
-import {EntryItem, GroupItem} from '@/enum/kdbx'
-import {kService} from '@/api'
-import {useRoute, useRouter} from 'vue-router'
+import {EntryItem} from '@/enum/kdbx'
+import {useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
-import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
-import {useContextMenu} from '@/hooks/use-context-menu'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
 import IconDisplay from '@/components/IconDisplay.vue'
+import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 
 export default defineComponent({
   components: {
@@ -26,14 +24,15 @@ export default defineComponent({
     const router = useRouter()
     const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList()
 
-    const handleDeleteEntry = async (uuid: string) => {
-      await kService.removeEntry({
-        uuid: uuid,
-      })
-      await saveDatabaseAsync()
-      await getEntryList()
-      globalEventBus.emit(GlobalEvents.REFRESH_GROUP_TREE)
-    }
+    const {
+      editingNode,
+      nodeAction,
+      handleContextmenu,
+      showGroupSelectModal,
+      handleSelectGroup,
+      getMenuOptions,
+      ...contextMenuEtc
+    } = useCommonActions(getEntryList)
 
     const createColumns = (): DataTableColumns<EntryItem> => {
       return [
@@ -136,40 +135,6 @@ export default defineComponent({
       prefix: () => h('span', 'Total: ' + entryList.value.length),
     })
 
-    const getMenuOptions = (option) => [
-      {
-        label: '📁 Move to group',
-        props: {
-          onClick: () => {
-            nodeAction(option, () => {
-              showGroupSelectModal.value = true
-            })
-          },
-        },
-      },
-      {
-        label: '🚮 Delete Entry',
-        props: {
-          onClick: () => {
-            window.$dialog.warning({
-              title: 'Confirm',
-              content:
-                "Delete selected items? If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.",
-              positiveText: 'OK',
-              negativeText: 'Cancel',
-              onPositiveClick: () => {
-                handleDeleteEntry(option.uuid)
-              },
-              onNegativeClick: () => {},
-            })
-          },
-        },
-      },
-    ]
-
-    const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
-      useContextMenu(getMenuOptions)
-
     const columns = createColumns()
     const rowProps = (row: EntryItem) => {
       return {
@@ -187,31 +152,18 @@ export default defineComponent({
       }
     }
 
-    const showGroupSelectModal = ref(false)
-    const handleSelectGroup = async (groupUuid: string) => {
-      // console.log(groupUuid)
-      if (!editingNode.value) {
-        return
-      }
-      await kService.moveEntry({
-        groupUuid: groupUuid,
-        uuid: editingNode.value.uuid,
-      })
-
-      await saveDatabaseAsync()
-      await getEntryList()
-      editingNode.value = null
-    }
-
     return {
       entryList,
       columns,
       rowProps,
       paginationReactive,
+      groupUuid,
+      editingNode,
+      nodeAction,
+      handleContextmenu,
+      ...contextMenuEtc,
       showGroupSelectModal,
       handleSelectGroup,
-      ...contextMenuEtc,
-      groupUuid,
     }
   },
 })

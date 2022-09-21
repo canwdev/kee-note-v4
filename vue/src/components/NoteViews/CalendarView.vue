@@ -8,6 +8,8 @@ import {useKeepassEntryList} from '@/hooks/use-keepass'
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
 import IconDisplay from '@/components/IconDisplay.vue'
+import {useCommonActions} from '@/components/NoteViews/use-common-actions'
+import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
 
 export default defineComponent({
   name: 'CalendarView',
@@ -15,21 +17,52 @@ export default defineComponent({
     Calendar,
     LunarDay,
     IconDisplay,
+    DialogGroupSelect,
   },
   setup() {
     const router = useRouter()
     const mainStore = useMainStore()
-    const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList(true)
 
-    onMounted(() => {
-      if (keeStore.isDbOpened) {
-        getEntryList()
-      }
+    const calendarRef = ref()
+    const currentDateRef = ref(new Date())
+    const isInitialized = ref(false)
+
+    // trigger refresh when init
+    const initCalendar = () => {
+      const calendar = calendarRef.value
+
+      const date = currentDateRef.value
+      const year = date.getFullYear()
+      const month = date.getMonth()
+
+      calendar.move({month: month + 1, year: year})
+      isInitialized.value = true
+    }
+
+    const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
+      isCalendar: true,
+      getCalendarParams: () => {
+        const date = currentDateRef.value
+
+        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
+        const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
+
+        return {
+          startDate: firstDay.getTime(),
+          endDate: lastDay.getTime(),
+        }
+      },
     })
 
-    const dateRef = ref(new Date())
+    onMounted(async () => {
+      if (keeStore.isDbOpened) {
+        await getEntryList()
+      }
+      initCalendar()
+    })
+
     const calendarAttributes = computed(() => {
-      const date = dateRef.value
+      const date = currentDateRef.value
 
       if (!date || !calendarData.value) {
         return []
@@ -56,15 +89,43 @@ export default defineComponent({
         query: {uuid: customData.uuid},
       })
     }
-    const handleItemContextMenu = (attr) => {
-      console.log('handleItemContextMenu', attr)
+    const handleItemContextMenu = (event: MouseEvent, attr) => {
+      // console.log('handleItemContextMenu', attr)
+      handleContextmenu(event, attr.customData)
     }
+
+    const handlePageChange = ({year, month}) => {
+      if (!isInitialized.value) return
+      // console.log('handlePageChange', year, month)
+      currentDateRef.value = new Date(year, month - 1, 1)
+      getEntryList()
+    }
+
+    const {
+      editingNode,
+      nodeAction,
+      handleContextmenu,
+      showGroupSelectModal,
+      handleSelectGroup,
+      getMenuOptions,
+      ...contextMenuEtc
+    } = useCommonActions(getEntryList)
 
     return {
       mainStore,
+      calendarRef,
       calendarAttributes,
       handlePreview,
       handleItemContextMenu,
+      handlePageChange,
+      editingNode,
+      nodeAction,
+      handleContextmenu,
+      showGroupSelectModal,
+      handleSelectGroup,
+      getMenuOptions,
+      ...contextMenuEtc,
+      groupUuid,
     }
   },
 })
@@ -80,6 +141,7 @@ export default defineComponent({
           :attributes="calendarAttributes"
           title-position="left"
           trim-weeks
+          @update:from-page="handlePageChange"
         >
           <template v-slot:day-content="{day, attributes}">
             <div class="day-content">
@@ -95,7 +157,7 @@ export default defineComponent({
                         color: attr.customData.fgColor,
                       }"
                       @click="handlePreview(attr)"
-                      @contextmenu="handleItemContextMenu(attr)"
+                      @contextmenu="handleItemContextMenu($event, attr)"
                     >
                       <IconDisplay :icon="attr.customData.icon" :size="16" />
                       <span class="entry-title">{{ attr.customData.title }}</span>
@@ -112,6 +174,24 @@ export default defineComponent({
         </Calendar>
       </div>
     </n-scrollbar>
+
+    <n-dropdown
+      trigger="manual"
+      placement="bottom-start"
+      :show="showRightMenu"
+      :options="rightMenuOptions"
+      :x="xRef"
+      :y="yRef"
+      @select="handleSelect"
+      key-field="label"
+      :on-clickoutside="handleClickOutside"
+    />
+
+    <DialogGroupSelect
+      v-model:visible="showGroupSelectModal"
+      :value="groupUuid"
+      @onSubmit="handleSelectGroup"
+    />
   </div>
 </template>
 
@@ -119,6 +199,7 @@ export default defineComponent({
 .calendar-view {
   height: 100%;
   .vc-container {
+    min-width: 620px;
     --day-border: 1px solid rgba(160, 174, 192, 0.4);
     --day-width: 120px;
     --day-height: 120px;

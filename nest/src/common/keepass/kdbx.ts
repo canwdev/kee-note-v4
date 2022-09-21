@@ -125,6 +125,7 @@ export class KdbxHelper {
 
   getGroupEntriesDeep(params) {
     const {groupUuid, isDayMapped} = params || {}
+    let {startDate, endDate} = params || {}
     if (!(this.db && groupUuid)) {
       throw new Error('Invalid db or groupUuid')
     }
@@ -133,14 +134,24 @@ export class KdbxHelper {
 
     const list = []
 
+    if (startDate && endDate) {
+      startDate = new Date(startDate)
+      endDate = new Date(endDate)
+    }
+
     const dayMap = {}
     let creationTime, year, month
     const traverse = (node) => {
       if (!node) return
 
       node.entries.forEach((entry) => {
+        creationTime = entry.times.creationTime
+        if (startDate && endDate) {
+          if (creationTime < startDate || creationTime > endDate) {
+            return
+          }
+        }
         if (isDayMapped) {
-          creationTime = entry.times.creationTime
           year = creationTime.getFullYear()
           month = creationTime.getMonth() + 1
 
