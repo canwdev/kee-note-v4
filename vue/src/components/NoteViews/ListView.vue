@@ -1,13 +1,5 @@
 <script lang="ts">
-import {useKeeStore} from '@/store/kee-store'
-import {
-  DataTableColumns,
-  DropdownOption,
-  NButton,
-  NDataTable,
-  NDropdown,
-  TreeOption,
-} from 'naive-ui'
+import {DataTableColumns, DataTableRowKey, NButton, NDataTable, NDropdown} from 'naive-ui'
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
@@ -22,7 +14,12 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
-    const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList()
+    const checkedRowKeys = ref<DataTableRowKey[]>([])
+    const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
+      cleanupFn: () => {
+        checkedRowKeys.value = []
+      },
+    })
 
     const {
       editingNode,
@@ -36,6 +33,9 @@ export default defineComponent({
 
     const createColumns = (): DataTableColumns<EntryItem> => {
       return [
+        {
+          type: 'selection',
+        },
         {
           title: '🌟',
           key: 'icon',
@@ -164,6 +164,10 @@ export default defineComponent({
       ...contextMenuEtc,
       showGroupSelectModal,
       handleSelectGroup,
+      checkedRowKeys,
+      handleCheck(rowKeys: DataTableRowKey[]) {
+        checkedRowKeys.value = rowKeys
+      },
     }
   },
 })
@@ -181,7 +185,10 @@ export default defineComponent({
           :pagination="paginationReactive"
           :bordered="true"
           max-height="72vh"
+          :row-key="(row) => row.uuid"
+          @update:checked-row-keys="handleCheck"
         />
+        <n-p v-if="checkedRowKeys.length"> 你选中了 {{ checkedRowKeys.length }} 行。 </n-p>
       </div>
     </n-scrollbar>
 

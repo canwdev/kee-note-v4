@@ -12,7 +12,7 @@ interface CalendarData {
 }
 
 export const useKeepassEntryList = (options?) => {
-  const {isCalendar = false, getCalendarParams} = options || {}
+  const {isCalendar = false, getCalendarParams, cleanupFn} = options || {}
   const route = useRoute()
 
   const keeStore = useKeeStore()
@@ -42,6 +42,9 @@ export const useKeepassEntryList = (options?) => {
   )
 
   const getEntryList = async () => {
+    if (cleanupFn) {
+      cleanupFn()
+    }
     if (!groupUuid.value) {
       entryList.value = []
       return
