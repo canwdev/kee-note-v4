@@ -65,7 +65,12 @@ export default defineComponent({
     :title="entryDetail && entryDetail.title"
   >
     <template #icon>
-      <IconDisplay v-if="entryDetail" :icon="entryDetail.icon" />
+      <IconDisplay
+        v-if="entryDetail"
+        :icon="entryDetail.icon"
+        :bg-color="entryDetail.bgColor"
+        :fg-color="entryDetail.fgColor"
+      />
     </template>
     <template v-if="entryDetail">
       <n-space justify="space-between" style="font-size: 12px">

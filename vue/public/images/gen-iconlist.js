@@ -7,7 +7,7 @@ Fs.writeFileSync(
   Path.join(__dirname, 'keepass-xc-icons.json'),
   JSON.stringify(
     list.map((i) => {
-      return `images/keepass-xc/${i}`
+      return `${i}`
     })
   )
 )

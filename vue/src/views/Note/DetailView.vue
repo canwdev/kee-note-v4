@@ -8,11 +8,15 @@ import {useUnSavedChanges} from '@/hooks/use-changed'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import {LsKeys} from '@/enum'
+import DialogIconEdit from '@/components/DialogIconEdit.vue'
+import IconDisplay from '@/components/IconDisplay.vue'
 
 export default defineComponent({
   name: 'DetailView',
   components: {
     MarkdownEditor,
+    DialogIconEdit,
+    IconDisplay,
   },
   setup() {
     const router = useRouter()
@@ -77,6 +81,9 @@ export default defineComponent({
         updates: [
           {path: 'fields.Title', value: entryDetail.value.title},
           {path: 'fields.Notes', value: entryDetail.value.notes},
+          {path: 'fgColor', value: entryDetail.value.fgColor},
+          {path: 'bgColor', value: entryDetail.value.bgColor},
+          {path: 'icon', value: entryDetail.value.icon},
           {path: 'times.creationTime', value: times[0]},
         ],
       })
@@ -85,6 +92,7 @@ export default defineComponent({
     }
 
     const complexEditorRef = ref()
+    const isShowIconEdit = ref(false)
 
     return {
       handleBack() {
@@ -117,6 +125,7 @@ export default defineComponent({
         }
         complexEditorRef.value.showSettings()
       },
+      isShowIconEdit,
     }
   },
 })
@@ -147,11 +156,11 @@ export default defineComponent({
           <n-card v-if="entryDetail" class="detail-card" size="small" hoverable>
             <n-space vertical>
               <n-input-group>
-                <n-button>
-                  <img
-                    :src="keepassIcons[entryDetail.icon]"
-                    :alt="entryDetail.icon"
-                    style="width: 24px; height: 24px"
+                <n-button @click="isShowIconEdit = true">
+                  <IconDisplay
+                    :icon="entryDetail.icon"
+                    :bg-color="entryDetail.bgColor"
+                    :fg-color="entryDetail.fgColor"
                   />
                 </n-button>
                 <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
@@ -196,9 +205,12 @@ export default defineComponent({
           </n-card>
         </n-layout-content>
       </n-scrollbar>
+
+      <DialogIconEdit v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
     </n-layout>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .detail-view {
   height: 100%;

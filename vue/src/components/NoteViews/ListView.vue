@@ -52,6 +52,8 @@ export default defineComponent({
                 })
               },
               icon: row.icon,
+              bgColor: row.bgColor,
+              fgColor: row.fgColor,
               size: 24,
             })
           },
