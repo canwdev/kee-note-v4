@@ -1,13 +1,6 @@
 export const API_BASE_URL = import.meta.env.VITE_API_HOST || ''
 export const API_PROXY_BASE = import.meta.env.VITE_PROXY_BASE || ''
 
-export enum ThemeType {
-  SYSTEM = 0,
-  LIGHT = 1,
-  DARK = 2,
-}
-export const getUserTheme = () =>
-  Number(localStorage.getItem(LsKeys.LS_KEY_THEME)) || ThemeType.SYSTEM
 export const getMyCryptKey = () => localStorage.getItem(LsKeys.LS_KEY_MY_CRYPT_KEY)
 
 export const LsKeys = {

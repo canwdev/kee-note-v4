@@ -49,5 +49,5 @@ export default defineComponent({
 </script>
 <template>
   <AutoRouterView />
-  <GlobalSettings @themeChange="(v) => $emit('themeChange', v)" v-model:visible="settingsVisible" />
+  <GlobalSettings v-model:visible="settingsVisible" />
 </template>

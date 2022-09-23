@@ -1,59 +1,23 @@
 <script lang="ts">
 import {darkTheme, GlobalThemeOverrides, NDialogProvider, NNotificationProvider} from 'naive-ui'
 import AppContent from './AppContent.vue'
-import {getUserTheme, LsKeys, ThemeType} from '@/enum'
 import {NThemeEditor, NConfigProvider, NLoadingBarProvider, NMessageProvider} from 'naive-ui'
+import {useGlobalTheme} from './hooks/use-global-theme'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
-import {useMainStore} from '@/store/main-store'
+import {LsKeys} from '@/enum'
 
 export default defineComponent({
   setup() {
-    const getSystemIsDarkMode = () =>
-      window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
-    const mainStore = useMainStore()
-
-    const handleThemeChange = (val: ThemeType) => {
-      if (val === ThemeType.SYSTEM) {
-        mainStore.isAppDarkMode = getSystemIsDarkMode()
-      } else if (val === ThemeType.LIGHT) {
-        mainStore.isAppDarkMode = false
-      } else if (val === ThemeType.DARK) {
-        mainStore.isAppDarkMode = true
-      }
-    }
-
-    handleThemeChange(getUserTheme())
-
-    const handleSystemThemeChange = (event: any) => {
-      if (getUserTheme() === ThemeType.SYSTEM) {
-        mainStore.isAppDarkMode = Boolean(event.matches)
-      }
-    }
-
-    onMounted(() => {
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', handleSystemThemeChange)
-    })
-
-    onBeforeUnmount(() => {
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .removeEventListener('change', handleSystemThemeChange)
-    })
-
     const themeOverrides: GlobalThemeOverrides = {
       common: {
         borderRadiusSmall: '4px',
         borderRadius: '8px',
       },
     }
+    const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
     return {
-      mainStore,
-      handleThemeChange,
+      ...useGlobalTheme(),
       themeOverrides,
-      darkTheme,
       isEnableThemeEdit,
     }
   },
@@ -61,7 +25,7 @@ export default defineComponent({
     const contentVNode = h(
       NConfigProvider,
       {
-        theme: this.mainStore.isAppDarkMode ? this.darkTheme : null,
+        theme: this.isAppDarkMode ? darkTheme : null,
         'theme-overrides': this.themeOverrides,
       },
       {
@@ -83,10 +47,7 @@ export default defineComponent({
                             placement: 'bottom',
                           },
                           {
-                            default: () =>
-                              h(AppContent, {
-                                onThemeChange: this.handleThemeChange,
-                              }),
+                            default: () => h(AppContent),
                           }
                         ),
                     }

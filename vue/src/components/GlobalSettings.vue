@@ -1,9 +1,10 @@
 <script lang="ts">
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {getMyCryptKey, getUserTheme, LsKeys, ThemeType} from '@/enum'
+import {getMyCryptKey, LsKeys} from '@/enum'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
+import {getUserTheme, themeOptions, ThemeType, useHandleThemeChange} from '@/hooks/use-global-theme'
 export default defineComponent({
   name: 'GlobalSettings',
   props: {
@@ -26,10 +27,7 @@ export default defineComponent({
       })
     })
 
-    const handleThemeSelectChange = (val: ThemeType) => {
-      localStorage.setItem(LsKeys.LS_KEY_THEME, String(val))
-      emit('themeChange', val)
-    }
+    const {handleThemeChange} = useHandleThemeChange()
 
     const handleMyCryptKeyChange = () => {
       if (getMyCryptKey() === myCryptKey.value) {
@@ -44,22 +42,9 @@ export default defineComponent({
       isElectron,
       mVisible,
       themeValue,
-      handleThemeSelectChange,
+      handleThemeChange,
       myCryptKey,
-      themeOptions: [
-        {
-          label: 'Follow System',
-          value: ThemeType.SYSTEM,
-        },
-        {
-          label: 'Light Theme',
-          value: ThemeType.LIGHT,
-        },
-        {
-          label: 'Dark Theme',
-          value: ThemeType.DARK,
-        },
-      ],
+      themeOptions,
       handleMyCryptKeyChange,
       isEnableThemeEdit,
     }
@@ -77,7 +62,7 @@ export default defineComponent({
             v-model:value="themeValue"
             :options="themeOptions"
             style="width: 150px"
-            @update:value="handleThemeSelectChange"
+            @update:value="handleThemeChange"
           />
         </template>
       </n-list-item>
