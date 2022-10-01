@@ -13,3 +13,12 @@ export function formatDate(date: Date) {
   const minutes = pad2Num(date.getMinutes())
   return [year, month, day, hours, minutes].join('')
 }
+
+export const copyToClipboard = (text: string) => {
+  const input = document.createElement('textarea')
+  input.value = text
+  document.body.appendChild(input)
+  input.select()
+  document.execCommand('Copy')
+  document.body.removeChild(input)
+}

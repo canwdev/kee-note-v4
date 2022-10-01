@@ -1,5 +1,4 @@
 import {DropdownOption} from 'naive-ui'
-import {GroupItem} from '@/enum/kdbx'
 
 export const useContextMenu = (getOptions) => {
   const rightMenuOptions = ref<DropdownOption[]>([])

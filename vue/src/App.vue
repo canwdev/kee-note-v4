@@ -5,6 +5,7 @@ import {NThemeEditor, NConfigProvider, NLoadingBarProvider, NMessageProvider} fr
 import {useGlobalTheme} from './hooks/use-global-theme'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
+import {registerKeyShortcuts, unRegisterKeyShortcuts} from '@/utils/key-shortcuts'
 
 export default defineComponent({
   setup() {
@@ -15,6 +16,14 @@ export default defineComponent({
       },
     }
     const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
+
+    onMounted(() => {
+      registerKeyShortcuts()
+    })
+    onBeforeUnmount(() => {
+      unRegisterKeyShortcuts()
+    })
+
     return {
       ...useGlobalTheme(),
       themeOverrides,
