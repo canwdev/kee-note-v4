@@ -2,6 +2,9 @@
 
 A safe note editor server & web client, powered by KeePass (kdbxweb) + Nest.js / Electron + Vue 3 (NaiveUI)
 
+![screenshot](./nest/test/screenshot1.jpg)
+![screenshot](./nest/test/screenshot2.jpg)
+
 ## Build Frontend (First)
 
 ```sh
