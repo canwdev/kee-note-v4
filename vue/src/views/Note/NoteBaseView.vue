@@ -374,7 +374,6 @@ export default defineComponent({
       ...contextMenuEtc,
       renderPrefix({option}: {option: GroupItem}) {
         return h(IconDisplay, {
-          onClick: (e: Event) => e.stopPropagation(),
           icon: option.icon,
           size: 18,
         })
@@ -420,7 +419,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="click"
           >
-            <n-button size="small">⚙ Menu</n-button>
+            <n-button size="small">⚙️ Menu</n-button>
           </n-dropdown>
         </n-space>
       </n-layout-header>

@@ -71,6 +71,9 @@ export default defineComponent({
             },
             multiple: 3,
           },
+          ellipsis: {
+            tooltip: true,
+          },
         },
         {
           title: 'Create Time',

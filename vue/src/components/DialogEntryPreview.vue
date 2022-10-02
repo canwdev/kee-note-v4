@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {kService} from '@/api'
 import {EntryItem} from '@/enum/kdbx'
@@ -24,10 +24,14 @@ export default defineComponent({
       type: String,
       default: null,
     },
+    previewDetail: {
+      type: Object as PropType<EntryItem | null>,
+      default: null,
+    },
   },
   setup(props, {emit}) {
     const mainStore = useMainStore()
-    const {uuid} = toRefs(props)
+    const {uuid, previewDetail} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
     const entryDetail = ref<EntryItem | null>(null)
 
@@ -39,11 +43,15 @@ export default defineComponent({
       }
     })
 
+    const detailData = computed(() => {
+      return previewDetail.value || entryDetail.value
+    })
+
     const htmlContent = computed(() => {
-      if (!entryDetail.value) {
+      if (!detailData.value) {
         return ''
       }
-      return marked.parse(entryDetail.value.notes)
+      return marked.parse(detailData.value.notes)
     })
 
     return {
@@ -52,6 +60,7 @@ export default defineComponent({
       mVisible,
       formatDate,
       htmlContent,
+      detailData,
     }
   },
 })
@@ -59,26 +68,26 @@ export default defineComponent({
 
 <template>
   <n-modal
-    class="global-settings"
+    class="dialog-entry-preview"
     v-model:show="mVisible"
     preset="dialog"
-    :title="entryDetail && entryDetail.title"
+    :title="detailData && detailData.title"
   >
     <template #icon>
       <IconDisplay
-        v-if="entryDetail"
-        :icon="entryDetail.icon"
-        :bg-color="entryDetail.bgColor"
-        :fg-color="entryDetail.fgColor"
+        v-if="detailData"
+        :icon="detailData.icon"
+        :bg-color="detailData.bgColor"
+        :fg-color="detailData.fgColor"
       />
     </template>
-    <template v-if="entryDetail">
+    <template v-if="detailData">
       <n-space justify="space-between" style="font-size: 12px">
         <n-space align="center" style="font-weight: 500">
-          Created: {{ formatDate(new Date(entryDetail.creationTime)) }}
+          Created: {{ formatDate(new Date(detailData.creationTime)) }}
         </n-space>
         <n-space align="center">
-          Updated: {{ formatDate(new Date(entryDetail.lastModTime)) }}
+          Updated: {{ formatDate(new Date(detailData.lastModTime)) }}
         </n-space>
       </n-space>
       <n-divider style="margin-top: 10px; margin-bottom: 10px" />
@@ -90,3 +99,11 @@ export default defineComponent({
     </template>
   </n-modal>
 </template>
+
+<style lang="scss">
+.dialog-entry-preview {
+  width: 600px !important;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+</style>

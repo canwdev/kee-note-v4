@@ -10,6 +10,7 @@ import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import {LsKeys} from '@/enum'
 import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
+import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
 
 export default defineComponent({
   name: 'DetailView',
@@ -17,6 +18,7 @@ export default defineComponent({
     MarkdownEditor,
     DialogEntryIconColor,
     IconDisplay,
+    DialogEntryPreview,
   },
   setup() {
     const router = useRouter()
@@ -35,10 +37,15 @@ export default defineComponent({
 
     const handleKeyDown = (event) => {
       if (event.ctrlKey || event.metaKey) {
-        switch (String.fromCharCode(event.which).toLowerCase()) {
+        const key = String.fromCharCode(event.which).toLowerCase()
+        switch (key) {
           case 's':
             event.preventDefault()
             handleSave()
+            break
+          case '¿': // Keyboard symbol: "/"
+            isShowPreviewModal.value = true
+            event.preventDefault()
             break
           default:
             return
@@ -93,6 +100,28 @@ export default defineComponent({
 
     const complexEditorRef = ref()
     const isShowIconEdit = ref(false)
+    const isShowPreviewModal = ref(false)
+
+    const menuOptions = computed(() => {
+      return [
+        {
+          label: '👁️ Preview (Ctrl+/)',
+          props: {
+            onClick: async () => {
+              isShowPreviewModal.value = true
+            },
+          },
+        },
+        !isComplexEditor.value && {
+          label: '💫 Enable HyperMD Editor',
+          props: {
+            onClick: async () => {
+              isComplexEditor.value = true
+            },
+          },
+        },
+      ].filter(Boolean)
+    })
 
     return {
       handleBack() {
@@ -119,13 +148,11 @@ export default defineComponent({
       isComplexEditor,
       complexEditorRef,
       showEditorSettings() {
-        if (!isComplexEditor.value) {
-          isComplexEditor.value = true
-          return
-        }
         complexEditorRef.value.showSettings()
       },
       isShowIconEdit,
+      menuOptions,
+      isShowPreviewModal,
     }
   },
 })
@@ -140,14 +167,14 @@ export default defineComponent({
           justify="space-between"
           style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
         >
-          <n-button @click="handleBack">Back</n-button>
+          <n-button @click="handleBack">🔙 Back</n-button>
 
-          <div>
+          <div class="entry-title">
             <span v-if="isChanged">* </span>
             {{ entryDetail && entryDetail.title }}
           </div>
 
-          <n-button :disabled="!isChanged" @click="handleSave">Save</n-button>
+          <n-button :disabled="!isChanged" @click="handleSave">💾 Save</n-button>
         </n-space>
       </n-layout-header>
 
@@ -156,18 +183,23 @@ export default defineComponent({
           <n-card v-if="entryDetail" class="detail-card" size="small" hoverable>
             <n-space vertical>
               <n-input-group>
-                <n-button @click="isShowIconEdit = true">
-                  <IconDisplay
-                    :icon="entryDetail.icon"
-                    :bg-color="entryDetail.bgColor"
-                    :fg-color="entryDetail.fgColor"
-                  />
-                </n-button>
+                <n-dropdown
+                  :options="menuOptions"
+                  key-field="label"
+                  placement="bottom-start"
+                  trigger="hover"
+                >
+                  <n-button @click="isShowIconEdit = true">
+                    <IconDisplay
+                      :icon="entryDetail.icon"
+                      :bg-color="entryDetail.bgColor"
+                      :fg-color="entryDetail.fgColor"
+                    />
+                  </n-button>
+                </n-dropdown>
                 <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
-                <n-button @click="showEditorSettings">
-                  {{ isComplexEditor ? '⚙' : '_' }}
-                </n-button>
+                <n-button v-if="isComplexEditor" @click="showEditorSettings"> ⚙️ </n-button>
               </n-input-group>
 
               <n-space justify="space-between">
@@ -207,6 +239,8 @@ export default defineComponent({
       </n-scrollbar>
 
       <DialogEntryIconColor v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
+
+      <DialogEntryPreview v-model:visible="isShowPreviewModal" :preview-detail="entryDetail" />
     </n-layout>
   </div>
 </template>
@@ -214,6 +248,15 @@ export default defineComponent({
 <style lang="scss" scoped>
 .detail-view {
   height: 100%;
+
+  .entry-title {
+    max-width: 50vw;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .layout-inner-root {
     height: 100%;
     :deep(.n-layout-scroll-container) {

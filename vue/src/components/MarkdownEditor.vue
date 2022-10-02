@@ -6,21 +6,6 @@ import 'codemirror/mode/htmlmixed/htmlmixed' // Markdown 内嵌HTML
 import 'codemirror/mode/stex/stex' // TeX 数学公式
 import 'codemirror/mode/yaml/yaml'
 
-// CodeMirror Theme
-import 'codemirror/theme/idea.css'
-import 'codemirror/theme/elegant.css'
-import 'codemirror/theme/yeti.css'
-import 'codemirror/theme/darcula.css'
-import 'codemirror/theme/dracula.css'
-import 'codemirror/theme/gruvbox-dark.css'
-import 'codemirror/theme/lesser-dark.css'
-import 'codemirror/theme/material.css'
-import 'codemirror/theme/monokai.css'
-import 'codemirror/theme/mdn-like.css'
-import 'codemirror/theme/rubyblue.css'
-import 'codemirror/theme/solarized.css'
-import 'codemirror/theme/the-matrix.css'
-
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {
   useLocalStorageBoolean,
@@ -29,27 +14,47 @@ import {
 } from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum' // Front Matter
 
-// do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
-let editorInstance: any = null
+// CodeMirror Theme
+import '@/styles/editor/keenote-dark.scss'
+import '@/styles/editor/keenote-light.scss'
+import 'codemirror/theme/idea.css'
+import 'codemirror/theme/elegant.css'
+import 'codemirror/theme/darcula.css'
+import 'codemirror/theme/dracula.css'
+import 'codemirror/theme/gruvbox-dark.css'
+import 'codemirror/theme/monokai.css'
+import 'codemirror/theme/mdn-like.css'
+import 'codemirror/theme/solarized.css'
+import 'codemirror/theme/the-matrix.css'
+import 'codemirror/theme/base16-light.css'
+import 'codemirror/theme/duotone-light.css'
+import 'codemirror/theme/lucario.css'
+import 'codemirror/theme/zenburn.css'
+import {useMainStore} from '@/store/main-store'
 
 const cmThemeList = [
+  'keenote-light',
+  'keenote-dark',
   'hypermd-light',
   'default',
   'idea',
   'elegant',
-  'yeti',
   'darcula',
   'dracula',
   'gruvbox-dark',
-  'lesser-dark',
-  'material',
   'monokai',
   'mdn-like',
-  'rubyblue',
+  'lucario',
   'solarized dark',
   'solarized light',
   'the-matrix',
+  'base16-light',
+  'duotone-light',
+  'zenburn',
 ]
+
+// do not use vue ref for CodeMirror: https://github.com/codemirror/codemirror5/issues/6805#issuecomment-955151134
+let editorInstance: any = null
 
 export default defineComponent({
   name: 'MarkdownEditor',
@@ -60,12 +65,13 @@ export default defineComponent({
     },
   },
   setup(props, {emit}) {
+    const mainStore = useMainStore()
     const mValue = useModelWrapper(props, emit)
     const textareaRef = ref()
     const editorFontSize = useLocalStorageNumber(LsKeys.LS_KEY_EDITOR_FONT_SIZE, 14)
     const isEditWYSIWYG = useLocalStorageBoolean(LsKeys.LS_KEY_EDITOR_NO_WYSIWYG, true)
     const editorFontFamily = useLocalStorageString(LsKeys.LS_KEY_EDITOR_FONT_FAMILY, 'inherit')
-    const editorTheme = useLocalStorageString(LsKeys.LS_KEY_EDITOR_THEME, 'hypermd-light')
+    const editorTheme = useLocalStorageString(LsKeys.LS_KEY_EDITOR_THEME, '')
 
     watch(editorFontSize, () => {
       setFontSize()
@@ -76,14 +82,27 @@ export default defineComponent({
       } else {
         HyperMD.switchToNormal(editorInstance)
       }
-      editorInstance.setOption('theme', editorTheme.value)
+      setEditorTheme(editorTheme.value)
     })
     watch(editorFontFamily, () => {
       setFontFamily()
     })
     watch(editorTheme, (val) => {
-      editorInstance.setOption('theme', val)
+      setEditorTheme(val)
     })
+    watch(
+      () => mainStore.isAppDarkMode,
+      () => {
+        setEditorTheme(editorTheme.value)
+      }
+    )
+
+    const setEditorTheme = (theme) => {
+      if (!theme) {
+        theme = mainStore.isAppDarkMode ? 'keenote-dark' : 'keenote-light'
+      }
+      editorInstance.setOption('theme', theme)
+    }
 
     const setFontFamily = (editor = editorInstance) => {
       const el = editorInstance.display.wrapper
@@ -110,7 +129,7 @@ export default defineComponent({
       editor.setSize(null, '100%') // set height
       setFontFamily()
       setFontSize()
-      editor.setOption('theme', editorTheme.value)
+      setEditorTheme(editorTheme.value)
       editor.on('change', () => {
         mValue.value = editor.getValue()
       })
@@ -156,10 +175,13 @@ export default defineComponent({
       isEditWYSIWYG,
       editorFontFamily,
       editorTheme,
-      editorThemeOptions: cmThemeList.map((i) => ({
-        label: i,
-        value: i,
-      })),
+      editorThemeOptions: [
+        {label: 'Auto (Follow System)', value: ''},
+        ...cmThemeList.map((i) => ({
+          label: i,
+          value: i,
+        })),
+      ],
       showSettings() {
         isShowEditorSettings.value = true
       },

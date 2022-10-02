@@ -10,6 +10,7 @@ import {useRouter} from 'vue-router'
 import IconDisplay from '@/components/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
+import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
 
 export default defineComponent({
   name: 'CalendarView',
@@ -18,6 +19,7 @@ export default defineComponent({
     LunarDay,
     IconDisplay,
     DialogGroupSelect,
+    DialogEntryPreview,
   },
   setup() {
     const router = useRouter()
@@ -154,14 +156,15 @@ export default defineComponent({
                       v-if="attr.customData"
                       :key="attr.key"
                       class="entry-item cursor-pointer overflow-hidden"
-                      :style="{
-                        background: attr.customData.bgColor,
-                        color: attr.customData.fgColor,
-                      }"
                       @click="handlePreview(attr)"
                       @contextmenu="handleItemContextMenu($event, attr)"
                     >
-                      <IconDisplay :icon="attr.customData.icon" :size="16" />
+                      <IconDisplay
+                        :icon="attr.customData.icon"
+                        :size="16"
+                        :bg-color="attr.customData.bgColor"
+                        :fg-color="attr.customData.fgColor"
+                      />
                       <span class="entry-title">{{ attr.customData.title }}</span>
                     </div>
                   </template>
@@ -348,31 +351,34 @@ export default defineComponent({
         flex-grow: 1;
 
         .n-scrollbar-content {
-          padding: 4px 4px;
         }
       }
 
       .entry-item {
+        padding: 3px 4px;
         font-size: 11px;
-        padding: 2px;
         line-height: 1.2;
-        box-shadow: 0 0 1px 1px rgba(134, 134, 134, 0.5);
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px dashed rgba(134, 134, 134, 0.23);
 
         &:hover {
           opacity: 0.8;
         }
 
         .icon-display {
+          flex-shrink: 0;
         }
 
         .entry-title {
           display: inline;
           margin-left: 2px;
-        }
-
-        & + .entry-item {
-          margin-top: 4px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
     }
