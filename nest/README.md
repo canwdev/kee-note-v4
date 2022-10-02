@@ -1,7 +1,5 @@
 # KeeNote - Nest
 
-A safe note editor server & web client, powered by KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
-
 ## Installation
 
 ```shell
