@@ -3,15 +3,14 @@ import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {EntryItem} from '@/enum/kdbx'
 import IconDisplay from '@/components/IconDisplay.vue'
-import {formatDate} from '@/utils'
-import {useMainStore} from '@/store/main-store'
 import {Palette} from '@/enum'
-import keepassIcons from '@/assets/icons'
+import DialogIconChooser from '@/components/DialogIconChooser.vue'
 
 export default defineComponent({
-  name: 'DialogIconEdit',
+  name: 'DialogEntryIconColor',
   components: {
     IconDisplay,
+    DialogIconChooser,
   },
   props: {
     visible: {
@@ -25,19 +24,15 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const {entryDetail} = toRefs(props)
-    const mainStore = useMainStore()
     const mVisible = useModelWrapper(props, emit, 'visible')
 
     const isShowIconChooser = ref(false)
 
     return {
-      mainStore,
       mVisible,
-      formatDate,
       swatches: Palette.map((i) => i.color),
       isShowIconChooser,
-      keepassIcons,
-      handleIconClick(index) {
+      handleSelectIcon(index) {
         entryDetail.value.icon = index
         isShowIconChooser.value = false
       },
@@ -88,19 +83,6 @@ export default defineComponent({
       </n-list-item>
     </n-list>
 
-    <n-modal
-      class="global-settings"
-      v-model:show="isShowIconChooser"
-      preset="dialog"
-      title="Choose Icon"
-    >
-      <n-grid :x-gap="4" :y-gap="4" :cols="5">
-        <n-grid-item v-for="(item, index) in keepassIcons" :key="index" style="text-align: center">
-          <n-button @click="handleIconClick(index)">
-            <IconDisplay :icon="Number(index)" />
-          </n-button>
-        </n-grid-item>
-      </n-grid>
-    </n-modal>
+    <DialogIconChooser v-model:visible="isShowIconChooser" @onSelectIcon="handleSelectIcon" />
   </n-modal>
 </template>

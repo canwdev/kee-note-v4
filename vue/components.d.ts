@@ -9,9 +9,10 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
+    DialogEntryIconColor: typeof import('./src/components/DialogEntryIconColor.vue')['default']
     DialogEntryPreview: typeof import('./src/components/DialogEntryPreview.vue')['default']
     DialogGroupSelect: typeof import('./src/components/DialogGroupSelect.vue')['default']
-    DialogIconEdit: typeof import('./src/components/DialogIconEdit.vue')['default']
+    DialogIconChooser: typeof import('./src/components/DialogIconChooser.vue')['default']
     DialogInput: typeof import('./src/components/DialogInput.vue')['default']
     GlobalSettings: typeof import('./src/components/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/HistoryDialog.vue')['default']

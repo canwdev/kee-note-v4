@@ -8,14 +8,14 @@ import {useUnSavedChanges} from '@/hooks/use-changed'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import {LsKeys} from '@/enum'
-import DialogIconEdit from '@/components/DialogIconEdit.vue'
+import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 
 export default defineComponent({
   name: 'DetailView',
   components: {
     MarkdownEditor,
-    DialogIconEdit,
+    DialogEntryIconColor,
     IconDisplay,
   },
   setup() {
@@ -206,7 +206,7 @@ export default defineComponent({
         </n-layout-content>
       </n-scrollbar>
 
-      <DialogIconEdit v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
+      <DialogEntryIconColor v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
     </n-layout>
   </div>
 </template>

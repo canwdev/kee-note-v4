@@ -15,6 +15,7 @@ import {LsKeys} from '@/enum'
 import ListView from '@/components/NoteViews/ListView.vue'
 import CalendarView from '@/components/NoteViews/CalendarView.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
+import DialogIconChooser from '@/components/DialogIconChooser.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -22,6 +23,7 @@ export default defineComponent({
     DialogInput,
     ListView,
     CalendarView,
+    DialogIconChooser,
   },
   setup() {
     const router = useRouter()
@@ -152,6 +154,21 @@ export default defineComponent({
       editingNode.value = null
     }
 
+    const handleSelectIcon = async (icon: number) => {
+      if (!editingUuid.value) {
+        return
+      }
+
+      await kService.updateGroup({
+        uuid: editingUuid.value,
+        updates: [{path: 'icon', value: icon}],
+      })
+      await saveDatabaseAsync()
+      await getGroupTree()
+      editingNode.value = null
+      showChooseIconModal.value = false
+    }
+
     const handleCloseDatabase = async () => {
       await kService.closeDatabase()
       keeStore.isDbOpened = false
@@ -192,48 +209,59 @@ export default defineComponent({
       await getGroupTree()
     }
 
-    const getMenuOptions = (option) => [
-      {
-        label: '🗒️ Create Entry',
-        props: {
-          onClick: () => {
-            nodeAction(option, () => {
-              handleCreateEntry()
-            })
+    const getMenuOptions = (option) =>
+      [
+        {
+          label: '🗒️ Create Entry',
+          props: {
+            onClick: () => {
+              nodeAction(option, () => {
+                handleCreateEntry()
+              })
+            },
           },
         },
-      },
-      {
-        label: '📁 Create Group',
-        props: {
-          onClick: () => {
-            nodeAction(option, () => {
-              handleCreateGroup()
-            })
+        {
+          label: '📁 Create Group',
+          props: {
+            onClick: () => {
+              nodeAction(option, () => {
+                handleCreateGroup()
+              })
+            },
           },
         },
-      },
-      {
-        label: '📝 Edit Group',
-        props: {
-          onClick: () => {
-            nodeAction(option, () => {
-              showEditModal.value = true
-            })
+        option && {
+          label: '📝 Rename Group',
+          props: {
+            onClick: () => {
+              nodeAction(option, () => {
+                showRenameModal.value = true
+              })
+            },
           },
         },
-      },
-      {
-        label: '🚮 Delete Group',
-        props: {
-          onClick: () => {
-            nodeAction(option, () => {
-              confirmDeleteGroup()
-            })
+        option && {
+          label: '🌠 Change Icon',
+          props: {
+            onClick: () => {
+              nodeAction(option, () => {
+                showChooseIconModal.value = true
+              })
+            },
           },
         },
-      },
-    ]
+        {
+          label: '🚮 Delete Group',
+          props: {
+            onClick: () => {
+              nodeAction(option, () => {
+                confirmDeleteGroup()
+              })
+            },
+          },
+        },
+      ].filter(Boolean)
 
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)
@@ -327,7 +355,8 @@ export default defineComponent({
       return options
     })
 
-    const showEditModal = ref(false)
+    const showRenameModal = ref(false)
+    const showChooseIconModal = ref(false)
 
     const editingUuid = computed(() => {
       return editingNode.value ? editingNode.value.uuid : groupUuid.value
@@ -340,7 +369,8 @@ export default defineComponent({
       menuOptions,
       handleTreeDrop,
       editingNode,
-      showEditModal,
+      showRenameModal,
+      showChooseIconModal,
       ...contextMenuEtc,
       renderPrefix({option}: {option: GroupItem}) {
         return h(IconDisplay, {
@@ -350,6 +380,7 @@ export default defineComponent({
         })
       },
       handleGroupEdit,
+      handleSelectIcon,
       showOpenDbModal,
       handleOpenDatabase,
       nodeProps: ({option}: {option: any}) => {
@@ -433,11 +464,15 @@ export default defineComponent({
           </n-scrollbar>
 
           <DialogInput
-            v-model:visible="showEditModal"
+            v-model:visible="showRenameModal"
             :value="editingNode?.title"
             @onSubmit="handleGroupEdit"
             dialog-title="Rename Group"
             input-label="Group name"
+          />
+          <DialogIconChooser
+            v-model:visible="showChooseIconModal"
+            @onSelectIcon="handleSelectIcon"
           />
         </n-layout-sider>
 
