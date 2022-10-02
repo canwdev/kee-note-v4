@@ -619,7 +619,7 @@
         .hmd-table-column-content {
             // do NOT delete padding, otherwise measuring will be inaccurate!
             // something about layout Grid and Block Formatting Contexts
-            padding: ($table-row1-height / 2) 1px;
+            padding: calc($table-row1-height / 2) 1px;
         }
 
         &.HyperMD-table-row-1 {
