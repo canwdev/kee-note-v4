@@ -256,6 +256,7 @@ export default defineComponent({
 .note-list-view {
   position: relative;
   height: 100%;
+  user-select: none;
   .note-list-table {
     min-width: 700px;
   }

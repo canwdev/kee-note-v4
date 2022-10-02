@@ -27,12 +27,12 @@ export const useContextMenu = (getOptions) => {
       showRightMenu.value = false
       nodeAction(null, () => {})
     },
-    handleContextmenu(e: MouseEvent, option: any): void {
-      rightMenuOptions.value = getOptions(option)
+    handleContextmenu(event: MouseEvent, option: any): void {
+      rightMenuOptions.value = getOptions(option, event)
       showRightMenu.value = true
-      xRef.value = e.clientX
-      yRef.value = e.clientY
-      e.preventDefault()
+      xRef.value = event.clientX
+      yRef.value = event.clientY
+      event.preventDefault()
     },
   }
 }

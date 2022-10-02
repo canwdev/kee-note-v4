@@ -320,15 +320,16 @@ export class KdbxHelper {
       }
     }
 
-    const group = this.db.getGroup(groupUuid)
+    // if groupUuid is empty, delete permanently
+    const target = groupUuid ? this.db.getGroup(groupUuid) : null
     if (Array.isArray(items)) {
       items.forEach((item) => {
         checkIllegal(item)
-        this.db.move(item, group)
+        this.db.move(item, target)
       })
     } else {
       checkIllegal(items)
-      this.db.move(items, group)
+      this.db.move(items, target)
     }
     this.isChanged = true
   }

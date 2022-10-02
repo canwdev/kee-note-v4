@@ -208,6 +208,7 @@ export default defineComponent({
 <style lang="scss">
 .calendar-view {
   height: 100%;
+  user-select: none;
   .vc-container {
     min-width: 620px;
     --day-border: 1px solid rgba(160, 174, 192, 0.4);

@@ -16,6 +16,7 @@ import ListView from '@/components/NoteViews/ListView.vue'
 import CalendarView from '@/components/NoteViews/CalendarView.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogIconChooser from '@/components/DialogIconChooser.vue'
+import {useMainStore} from '@/store/main-store'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -31,6 +32,7 @@ export default defineComponent({
 
     const groupTree = ref<GroupItem[]>([])
     const keeStore = useKeeStore()
+    const mainStore = useMainStore()
 
     const isCalendarView = useLocalStorageBoolean(LsKeys.LS_KEY_IS_CALENDAR_VIEW)
 
@@ -53,6 +55,10 @@ export default defineComponent({
 
     const groupUuid = computed(() => {
       return route.query.groupUuid
+    })
+
+    const rootGroupUuid = computed(() => {
+      return groupTree.value[0]?.uuid
     })
 
     const selectedKeys = computed({
@@ -107,23 +113,32 @@ export default defineComponent({
       await getGroupTree()
     }
 
-    const confirmDeleteGroup = () => {
+    const confirmRemoveGroup = (isDelete = false) => {
       window.$dialog.warning({
         title: 'Confirm',
-        content: 'Delete selected group? Permanently emptied if group is RecycleBin.',
+        content: isDelete
+          ? 'Permanent delete selected group?'
+          : 'Delete selected group? Permanently emptied if group is RecycleBin.',
         positiveText: 'OK',
         negativeText: 'Cancel',
         onPositiveClick: () => {
-          handleDeleteGroup()
+          handleDeleteGroup(isDelete)
         },
         onNegativeClick: () => {},
       })
     }
 
-    const handleDeleteGroup = async () => {
-      await kService.removeGroup({
-        groupUuid: editingUuid.value,
-      })
+    const handleDeleteGroup = async (isDelete = false) => {
+      if (isDelete) {
+        await kService.moveGroup({
+          uuid: editingUuid.value,
+          targetUuid: null,
+        })
+      } else {
+        await kService.removeGroup({
+          groupUuid: editingUuid.value,
+        })
+      }
       await saveDatabaseAsync()
       await getGroupTree()
     }
@@ -209,8 +224,14 @@ export default defineComponent({
       await getGroupTree()
     }
 
-    const getMenuOptions = (option) =>
-      [
+    const getMenuOptions = (option, event?: MouseEvent) => {
+      let isRootSelected = option
+        ? option.uuid === rootGroupUuid.value
+        : groupUuid.value === rootGroupUuid.value
+
+      const isShiftPressed = event?.shiftKey
+
+      return [
         {
           label: '🗒️ Create Entry',
           props: {
@@ -251,17 +272,18 @@ export default defineComponent({
             },
           },
         },
-        {
-          label: '🚮 Delete Group',
+        !isRootSelected && {
+          label: isShiftPressed ? '❌ Permanent Delete' : '🚮 Remove to Trash',
           props: {
             onClick: () => {
               nodeAction(option, () => {
-                confirmDeleteGroup()
+                confirmRemoveGroup(isShiftPressed)
               })
             },
           },
         },
       ].filter(Boolean)
+    }
 
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)

@@ -2,6 +2,7 @@ import {useContextMenu} from '@/hooks/use-context-menu'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {kService} from '@/api'
 import {useRouter} from 'vue-router'
+import {EntryItem} from '@/enum/kdbx'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -9,71 +10,87 @@ export const useCommonActions = (options) => {
   const isShowGroupSelectModal = ref(false)
   const isShowPreviewModal = ref(false)
 
-  const handleDeleteEntry = async (uuid: string) => {
-    await kService.removeEntry({
-      uuid: uuid,
-    })
+  const handleDeleteEntry = async (uuid: string, isDelete = false) => {
+    if (isDelete) {
+      await kService.moveEntry({
+        uuid: uuid,
+        groupUuid: null,
+      })
+    } else {
+      await kService.removeEntry({
+        uuid: uuid,
+      })
+    }
     await saveDatabaseAsync()
     await getEntryList()
     globalEventBus.emit(GlobalEvents.REFRESH_GROUP_TREE)
   }
 
-  const getMenuOptions = (option) => [
-    {
-      label: '👁️ Preview',
-      props: {
-        onClick: () => {
-          nodeAction(option, () => {
-            isShowPreviewModal.value = true
-          })
+  const getMenuOptions = (item: EntryItem, event?: MouseEvent) => {
+    const isShiftPressed = event?.shiftKey
+
+    return [
+      {
+        label: '👁️ Preview',
+        props: {
+          onClick: () => {
+            nodeAction(item, () => {
+              isShowPreviewModal.value = true
+            })
+          },
         },
       },
-    },
-    {
-      label: '✒️ Edit',
-      props: {
-        onClick: () => {
-          router.push({
-            name: 'NoteDetailView',
-            query: {uuid: option.uuid},
-          })
+      {
+        label: '✒️ Edit',
+        props: {
+          onClick: () => {
+            router.push({
+              name: 'NoteDetailView',
+              query: {uuid: item.uuid},
+            })
+          },
         },
       },
-    },
-    {
-      label: '📁 Move to group',
-      props: {
-        onClick: () => {
-          nodeAction(option, () => {
-            isShowGroupSelectModal.value = true
-          })
+      {
+        label: '📁 Move to group',
+        props: {
+          onClick: () => {
+            nodeAction(item, () => {
+              isShowGroupSelectModal.value = true
+            })
+          },
         },
       },
-    },
-    {
-      label: '🚮 Delete Entry',
-      props: {
-        onClick: () => {
-          const isMultiple = Boolean(checkedRowKeys.value.length)
-          window.$dialog.warning({
-            title: 'Confirm',
-            content: `Delete ${
-              isMultiple ? 'selected items' : 'item'
-            }? If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.`,
-            positiveText: 'OK',
-            negativeText: 'Cancel',
-            onPositiveClick: () => {
-              handleDeleteEntry(isMultiple ? checkedRowKeys.value : option.uuid)
-            },
-            onNegativeClick: () => {},
-          })
+      {
+        label: isShiftPressed ? '❌ Permanent Delete' : '🚮 Remove to Trash',
+        props: {
+          onClick: () => {
+            confirmRemoveEntry(item, isShiftPressed)
+          },
         },
       },
-    },
-  ]
+    ]
+  }
 
   const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
     useContextMenu(getMenuOptions)
+
+  const confirmRemoveEntry = (item, isDelete = false) => {
+    const isMultiple = Boolean(checkedRowKeys.value.length)
+    const itemText = isMultiple ? 'selected items' : 'item'
+    window.$dialog.warning({
+      title: 'Confirm',
+      content: isDelete
+        ? `Permanent delete ${itemText}?`
+        : `Delete ${itemText}? (If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.)`,
+      positiveText: 'OK',
+      negativeText: 'Cancel',
+      onPositiveClick: () => {
+        handleDeleteEntry(isMultiple ? checkedRowKeys.value : item.uuid, isDelete)
+      },
+      onNegativeClick: () => {},
+    })
+  }
 
   const handleSelectGroup = async (groupUuid: string) => {
     // console.log(groupUuid)

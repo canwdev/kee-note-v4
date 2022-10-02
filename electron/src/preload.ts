@@ -4,5 +4,4 @@ import {contextBridge, ipcRenderer} from 'electron'
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('$electronAPI', {
   ipcInvoke: (key, params) => ipcRenderer.invoke(key, params),
-  openFileChooser: (key, params) => ipcRenderer.invoke(key, params),
 })
