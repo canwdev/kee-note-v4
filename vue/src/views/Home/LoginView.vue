@@ -100,7 +100,7 @@ export default defineComponent({
 <template>
   <n-layout class="login-view">
     <n-layout-content>
-      <n-card class="card-wrap" title="Login" hoverable>
+      <n-card class="card-wrap" title="Login to KeeNote Server" hoverable>
         <n-form ref="formRef" :model="model" :rules="rules">
           <n-form-item path="username" label="Username">
             <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
