@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import {Calendar} from 'v-calendar'
 import 'v-calendar/dist/style.css'
 import {useMainStore} from '@/store/main-store'
-import LunarDay from '@/components/Calendar/LunarDay.vue'
+import LunarDay from '@/components/NoteViews/Calendar/LunarDay.vue'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
@@ -231,7 +231,7 @@ export default defineComponent({
       --day-height: 60px;
     }
 
-    &.vc-is-dark {
+    &.vc-dark {
       background: #1d1d1d;
 
       .vc-weekday {
@@ -239,8 +239,17 @@ export default defineComponent({
       }
     }
 
+    &.vc-light {
+      .vc-header {
+        button {
+          background-color: white;
+        }
+      }
+    }
+
     .vc-header {
-      padding: 10px 0 10px 20px;
+      padding-bottom: 10px;
+      height: auto;
     }
 
     .vc-weeks {

@@ -1,36 +1,33 @@
 # KeeNote - Nest
 
-## Installation
+## Development
 
 ```shell
-# Install backend
+# Install deps
 yarn install
 
-# Install frontend
-cd frontend && yarn install
+# Start backend
+yarn dev
 ```
 
-## Dev
+## Config
 
-```shell
-# Start backend
-yarn start:dev
+You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`.
 
-# Start frontend
-cd frontend
-yarn dev
-
+```sh
 # Generate user (password with hashed) and other `.env` configs
 yarn gen:config
 ```
 
-You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`.
+[db-config.json](test/db-config.json) description
 
-## Windows install bcrypt
-
-run cmd as Administrator:
-
-```sh
-npm i -g node-gyp
-npm i -g --production windows-build-tools
+```json5
+{
+ "kdbxOpenOptions": {
+  "dbPath": "databases/test[123456].kdbx",
+  "password": "", // If written, will try auto unlock
+  "keyPath": "databases/test[123456].key" // Recommend write here if you have a key
+ },
+ "isRelativeBase": true // If set to false, will use absolute path
+}
 ```

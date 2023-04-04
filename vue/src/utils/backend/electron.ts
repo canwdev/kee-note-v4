@@ -1,6 +1,6 @@
 export default {
   async post(url, params) {
-    console.log('post1', {url, params})
+    // console.log('post1', {url, params})
     try {
       window.$loadingBar.start()
       const res = await window.$electronAPI.ipcInvoke(url, params)

@@ -338,7 +338,7 @@ export default defineComponent({
       const options = [
         keeStore.isDbOpened
           ? {
-              label: '🔐 Close Database',
+              label: '🔐 Lock Database',
               props: {
                 onClick: async () => {
                   await handleCloseDatabase()
@@ -346,7 +346,7 @@ export default defineComponent({
               },
             }
           : {
-              label: '🔓 Open Database',
+              label: '🔓 Unlock Database',
               props: {
                 onClick: async () => {
                   showOpenDbModal.value = true
@@ -450,7 +450,7 @@ export default defineComponent({
         v-model:visible="showOpenDbModal"
         :value="''"
         @onSubmit="handleOpenDatabase"
-        dialog-title="Open Database"
+        dialog-title="Unlock Database"
         input-label="Database password"
         is-password
         :required="false"
