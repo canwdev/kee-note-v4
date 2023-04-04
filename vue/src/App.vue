@@ -12,7 +12,7 @@ export default defineComponent({
     const themeOverrides: GlobalThemeOverrides = {
       common: {
         borderRadiusSmall: '4px',
-        borderRadius: '8px',
+        borderRadius: '4px',
       },
     }
     const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)

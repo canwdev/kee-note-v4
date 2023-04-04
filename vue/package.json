@@ -15,6 +15,7 @@
   "axios": "^0.27.2",
   "codemirror": "5.65.8",
   "crypto-js": "^4.1.1",
+  "bcryptjs": "^2.4.3",
   "hypermd": "^0.3.11",
   "js-cookie": "^3.0.1",
   "marked": "^4.3.0",

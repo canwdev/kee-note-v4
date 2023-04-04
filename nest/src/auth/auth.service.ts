@@ -11,9 +11,13 @@ export class AuthService {
     const user = await this.usersService.findOne(username)
 
     // bcrypt.compareSync hash匹配
-    if (user && bcrypt.compareSync(pass, user.password)) {
+    if (user && bcrypt.compareSync(pass, user.password_salted)) {
       // strip password
-      const {password, ...result} = user
+      const result = {...user}
+
+      delete result.password_salted
+      delete result.password
+
       return result
     }
     return null

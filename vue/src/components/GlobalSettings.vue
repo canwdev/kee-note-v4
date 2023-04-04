@@ -33,9 +33,9 @@ export default defineComponent({
       if (getMyCryptKey() === myCryptKey.value) {
         return
       }
-      localStorage.setItem(LsKeys.LS_KEY_MY_CRYPT_KEY, String(myCryptKey.value))
-      window.$message.success('MY_CRYPT_KEY is set!')
-      globalEventBus.emit(GlobalEvents.UPDATE_MY_CRYPT_KEY, String(myCryptKey.value))
+      localStorage.setItem(LsKeys.LS_KEY_KN_HTTP_CRYPT_KEY, String(myCryptKey.value))
+      window.$message.success('KN_HTTP_CRYPT_KEY is set!')
+      globalEventBus.emit(GlobalEvents.UPDATE_KN_HTTP_CRYPT_KEY, String(myCryptKey.value))
     }
 
     return {
@@ -73,11 +73,7 @@ export default defineComponent({
         </template>
       </n-list-item>
       <n-list-item v-if="!isElectron">
-        <n-thing
-          title="Client-Server communication key"
-          description="MY_CRYPT_KEY"
-          style="line-height: 1"
-        />
+        <n-thing title="HTTP Crypt key" description="KN_HTTP_CRYPT_KEY" style="line-height: 1" />
         <template #suffix>
           <n-input
             v-model:value="myCryptKey"

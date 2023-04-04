@@ -12,12 +12,9 @@ yarn dev
 
 ## Config
 
-You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`.
+You can create a `.env` file in the project root folder as a production configuration with content similar to `.env.development`. 
 
-```sh
-# Generate user (password with hashed) and other `.env` configs
-yarn gen:config
-```
+You can generate `.env` file with a Vue Web UI(development mode) at http://127.0.0.1:3030/#/gen
 
 [db-config.json](test/db-config.json) description
 

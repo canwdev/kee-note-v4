@@ -44,7 +44,7 @@ export default defineComponent({
         password: modelRef.value.password,
       })
       if (!access_token) {
-        message.error('Invalid token! Check crypt key in settings?')
+        message.error('Invalid token! Check HTTP Crypt key in settings?')
         return
       }
       localStorage.setItem(LsKeys.LS_KEY_AUTHORIZATION, access_token)
@@ -113,7 +113,7 @@ export default defineComponent({
               @keyup.enter="handleValidateButtonClick"
             />
           </n-form-item>
-          <n-space style="display: flex; justify-content: flex-end">
+          <n-space justify="end">
             <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
             <n-button round @click="handleSettings"> Settings </n-button>
           </n-space>

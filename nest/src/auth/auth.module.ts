@@ -6,6 +6,7 @@ import {LocalStrategy} from './strategies/local.strategy'
 import {JwtModule} from '@nestjs/jwt'
 import {JwtStrategy} from './strategies/jwt.strategy'
 import {ConfigModule} from '@nestjs/config'
+import {APP_JWT_SECRET_FALLBACK} from '../common/enum'
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import {ConfigModule} from '@nestjs/config'
     PassportModule,
     // https://github.com/auth0/node-jsonwebtoken#usage
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_SECRET || APP_JWT_SECRET_FALLBACK,
       signOptions: {expiresIn: process.env.JWT_EXPIRES_IN || '1d'},
     }),
   ],

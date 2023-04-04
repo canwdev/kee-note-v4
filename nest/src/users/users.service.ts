@@ -3,7 +3,8 @@ import {Injectable} from '@nestjs/common'
 export type User = {
   userId: number
   username: string
-  password: string
+  password?: string
+  password_salted: string
 }
 
 @Injectable()
@@ -13,11 +14,9 @@ export class UsersService {
   constructor() {
     const usersJson = process.env.AUTH_USERS
     if (!usersJson) {
-      throw new Error(
-        'Must have users, please add them in .env file!\nYou can generate users JSON by test/generate-user.js'
-      )
+      console.warn(`Warning! No user set`)
     }
-    this.users = JSON.parse(usersJson)
+    this.users = JSON.parse(usersJson || '{}')
     // console.log('users', this.users)
   }
 

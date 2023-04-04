@@ -12,8 +12,8 @@ function Service(config: any) {
     isAuth = true,
     isToast = true,
     isRawResponse = false,
-    encryptionKey = import.meta.env.VITE_MY_CRYPT_KEY ||
-      localStorage.getItem(LsKeys.LS_KEY_MY_CRYPT_KEY),
+    encryptionKey = import.meta.env.VITE_KN_HTTP_CRYPT_KEY ||
+      localStorage.getItem(LsKeys.LS_KEY_KN_HTTP_CRYPT_KEY),
   } = config || {}
 
   let myCrypt: MyCrypt
@@ -21,7 +21,7 @@ function Service(config: any) {
     myCrypt = new MyCrypt(encryptionKey)
   }
 
-  globalEventBus.on(GlobalEvents.UPDATE_MY_CRYPT_KEY, (myCryptKey) => {
+  globalEventBus.on(GlobalEvents.UPDATE_KN_HTTP_CRYPT_KEY, (myCryptKey) => {
     if (myCrypt) {
       myCrypt.setKey(String(myCryptKey))
     } else {

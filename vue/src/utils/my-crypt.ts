@@ -34,3 +34,8 @@ export class MyCrypt {
     return decrypted.toString(crypto.enc.Utf8)
   }
 }
+
+export const getRandomHex = (len = 16) => {
+  const iv = crypto.lib.WordArray.random(len)
+  return iv.toString(crypto.enc.Hex)
+}

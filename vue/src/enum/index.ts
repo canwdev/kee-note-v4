@@ -1,13 +1,13 @@
 export const API_BASE_URL = import.meta.env.VITE_API_HOST || ''
 export const API_PROXY_BASE = import.meta.env.VITE_PROXY_BASE || ''
 
-export const getMyCryptKey = () => localStorage.getItem(LsKeys.LS_KEY_MY_CRYPT_KEY)
+export const getMyCryptKey = () => localStorage.getItem(LsKeys.LS_KEY_KN_HTTP_CRYPT_KEY)
 
 export const LsKeys = {
   LS_KEY_AUTHORIZATION: 'ck_keenote_authorization',
   LS_KEY_THEME: 'ck_keenote_theme',
   LS_KEY_ENABLE_THEME_EDITOR: 'ck_keenote_enable_theme_editor',
-  LS_KEY_MY_CRYPT_KEY: 'ck_keenote_MY_CRYPT_KEY',
+  LS_KEY_KN_HTTP_CRYPT_KEY: 'ck_keenote_KN_HTTP_CRYPT_KEY',
   LS_KEY_IS_CALENDAR_VIEW: 'ck_keenote_is_calendar_view',
   LS_KEY_DONT_SAVE_HISTORY: 'ck_keenote_dont_save_history',
   LS_KEY_HISTORY_LIST: 'ck_keenote_history_list',

@@ -11,6 +11,11 @@ const constantRoutes = [
     component: isElectron ? UnlockView : LoginView,
   },
   {
+    name: 'EnvGenerator',
+    path: '/gen',
+    component: () => import('@/views/EnvGenerator.vue'),
+  },
+  {
     name: 'NoteRoot',
     path: '/note',
     redirect: '/note/view/list',
