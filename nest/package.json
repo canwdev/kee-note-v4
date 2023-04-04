@@ -8,6 +8,7 @@
   "build:all": "rimraf dist && npm run build && npm run bundle-single",
   "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
   "start": "nest start",
+  "dev": "npm run start:dev",
   "start:dev": "cross-env IS_DEV=1 nest start --watch",
   "start:debug": "nest start --debug --watch",
   "start:prod": "cross-env PORT=12023 node dist/main",

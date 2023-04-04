@@ -46,7 +46,7 @@ async function generateConfig() {
     'test/db-config.json'
   )
 
-  const MY_CRYPT_KEY_TIP = `Recommended to turn on in production mode, it can encrypt/decrypt request query/body and response body`
+  const MY_CRYPT_KEY_TIP = `Recommended enable in production mode, it can encrypt/decrypt request query/body and response body`
   const MY_CRYPT_KEY = await inquireInputString(
     `[MY_CRYPT_KEY] ${MY_CRYPT_KEY_TIP}`,
     crypto.randomBytes(16).toString('hex')
