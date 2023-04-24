@@ -162,7 +162,7 @@ export default defineComponent({
       v-model:visible="isShowHistoryDialog"
     />
     <n-layout-content>
-      <n-card class="card-wrap" title="Open Kdbx Database" hoverable>
+      <n-card class="card-wrap" title="Open Kdbx Database">
         <template #header-extra>
           <n-button quaternary size="small" @click="isShowHistoryDialog = true" title="History">
             <n-icon size="20"><History16Regular /></n-icon>

@@ -83,21 +83,39 @@ export default defineComponent({
           <n-switch v-model:value="isEnableThemeEdit" />
         </template>
       </n-list-item>
-      <n-list-item v-if="!isElectron">
-        <n-thing title="HTTP Crypt key" description="KN_HTTP_CRYPT_KEY" style="line-height: 1" />
-        <template #suffix>
-          <n-input
-            v-model:value="myCryptKey"
-            type="password"
-            style="width: 200px"
-            show-password-on="click"
-            placeholder="keep default"
-            clearable
-            @keyup.enter="handleMyCryptKeyChange"
-            @blur="handleMyCryptKeyChange"
+
+      <template v-if="!isElectron">
+        <n-list-item>
+          <n-thing
+            title="HTTP Crypt key"
+            description="(KN_HTTP_CRYPT_KEY)"
+            style="line-height: 1"
           />
-        </template>
-      </n-list-item>
+          <template #suffix>
+            <n-input
+              v-model:value="myCryptKey"
+              type="password"
+              style="width: 200px"
+              show-password-on="click"
+              placeholder="keep default"
+              clearable
+              @keyup.enter="handleMyCryptKeyChange"
+              @blur="handleMyCryptKeyChange"
+            />
+          </template>
+        </n-list-item>
+        <n-list-item>
+          <n-thing title=".env generator" />
+          <template #suffix>
+            <router-link
+              style="display: inline-block; word-break: keep-all"
+              to="/gen"
+              target="_blank"
+              >Go</router-link
+            >
+          </template>
+        </n-list-item>
+      </template>
     </n-list>
   </n-modal>
 </template>

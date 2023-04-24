@@ -1,12 +1,13 @@
 <script lang="ts">
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {FormInst} from 'naive-ui'
 import {ref} from 'vue'
 import {GroupItem} from '@/enum/kdbx'
 import {kService} from '@/api'
+import {TextBulletListTree16Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DialogGroupSelect',
+  components: {TextBulletListTree16Regular},
   props: {
     visible: {
       type: Boolean,
@@ -68,13 +69,16 @@ export default defineComponent({
         emit('onSubmit', groupUuid.value)
         mVisible.value = false
       },
+      dialogIconRender() {
+        return h(TextBulletListTree16Regular)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" title="Select Group">
+  <n-modal v-model:show="mVisible" :icon="dialogIconRender" preset="dialog" title="Select Group">
     <n-tree
       :data="groupTree"
       key-field="uuid"

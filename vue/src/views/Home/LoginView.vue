@@ -5,6 +5,7 @@ import {userLogin, userProfile} from '@/api'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {LsKeys} from '@/enum'
+import {Key16Regular, Person16Regular} from '@vicons/fluent'
 
 interface ModelType {
   username: string | null
@@ -12,6 +13,10 @@ interface ModelType {
 }
 
 export default defineComponent({
+  components: {
+    Key16Regular,
+    Person16Regular,
+  },
   setup() {
     const router = useRouter()
     const formRef = ref<FormInst | null>(null)
@@ -100,19 +105,29 @@ export default defineComponent({
 <template>
   <n-layout class="login-view">
     <n-layout-content>
-      <n-card class="card-wrap" title="Login to KeeNote Server" hoverable>
+      <n-card class="card-wrap" title="Login to KeeNote Server">
         <n-form ref="formRef" :model="model" :rules="rules">
           <n-form-item path="username" label="Username">
-            <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
+            <n-input-group>
+              <n-input-group-label>
+                <n-icon size="16"><Person16Regular /></n-icon>
+              </n-input-group-label>
+              <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
+            </n-input-group>
           </n-form-item>
+
           <n-form-item path="password" label="Password">
-            <n-input
-              v-model:value="model.password"
-              type="password"
-              show-password-on="click"
-              @keyup.enter="handleValidateButtonClick"
-              class="font-code"
-            />
+            <n-input-group>
+              <n-input-group-label>
+                <n-icon size="16"><Key16Regular /></n-icon>
+              </n-input-group-label>
+              <n-input
+                v-model:value="model.password"
+                type="password"
+                show-password-on="click"
+                @keyup.enter="handleValidateButtonClick"
+                class="font-code"
+            /></n-input-group>
           </n-form-item>
           <n-space justify="end">
             <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>

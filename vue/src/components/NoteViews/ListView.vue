@@ -203,13 +203,12 @@ export default defineComponent({
       <div class="content-padding">
         <n-data-table
           ref="tableRef"
-          hoverable
           class="note-list-table"
           :columns="columns"
           :rowProps="rowProps"
           :data="entryList"
           :pagination="paginationReactive"
-          :bordered="true"
+          :bordered="false"
           max-height="72vh"
           :row-key="(row) => row.uuid"
           :checked-row-keys="checkedRowKeys"
@@ -222,7 +221,7 @@ export default defineComponent({
             secondary
             type="tertiary"
             size="small"
-            style="position: absolute; top: 0; left: 0; z-index: 10"
+            style="position: absolute; top: 0; left: 50px; z-index: 10"
           >
             You selected {{ checkedRowKeys.length }} items
           </n-button>

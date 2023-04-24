@@ -169,7 +169,7 @@ export default defineComponent({
         <n-space
           align="center"
           justify="space-between"
-          style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
+          style="width: 100%; height: 100%; padding: 6px 24px; box-sizing: border-box"
         >
           <n-button quaternary @click="handleBack">
             <n-icon size="18"> <ArrowLeft16Regular /> </n-icon>&nbsp;Back</n-button
@@ -263,6 +263,7 @@ export default defineComponent({
 
   .entry-title {
     max-width: 50vw;
+    font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;

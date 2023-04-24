@@ -176,7 +176,7 @@ export default defineComponent({
           </n-form-item>
           <n-space justify="end">
             <n-button round @click="handleGenerate" type="primary" class="font-emoji">
-              Generate ▶
+              Generate
             </n-button>
           </n-space>
         </n-form>

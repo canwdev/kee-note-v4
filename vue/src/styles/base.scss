@@ -43,18 +43,18 @@ a:hover {
 }
 
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
+//@media (prefers-color-scheme: light) {
+//  :root {
+//    color: #213547;
+//    background-color: #ffffff;
+//  }
+//  a:hover {
+//    color: #747bff;
+//  }
+//  button {
+//    background-color: #f9f9f9;
+//  }
+//}
 
 .scrollbar-mini {
   $radius: 8px;
@@ -76,15 +76,15 @@ a:hover {
   }
 
   ::-webkit-scrollbar-track {
-    border-radius: $radius/2;
+    border-radius: 4px;
     background: transparent;
   }
 }
 
 .content-padding {
-  @media screen and (min-width: 500px) {
-    padding: 24px;
-  }
+  //@media screen and (min-width: 500px) {
+  //  padding: 24px;
+  //}
 }
 
 .n-color-picker-trigger__fill {
@@ -111,4 +111,8 @@ a:hover {
 .n-input-group-label {
   display: inline-flex;
   align-items: center;
+}
+
+.n-data-table__pagination {
+  padding: 0 15px;
 }

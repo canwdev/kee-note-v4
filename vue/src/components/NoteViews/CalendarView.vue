@@ -139,6 +139,7 @@ export default defineComponent({
     <n-scrollbar trigger="none" x-scrollable>
       <div class="content-padding">
         <Calendar
+          borderless
           ref="calendarRef"
           is-expanded
           :is-dark="mainStore.isAppDarkMode"
@@ -209,6 +210,16 @@ export default defineComponent({
 .calendar-view {
   height: 100%;
   user-select: none;
+  .vc-popover-content-wrapper {
+    button {
+      background-color: white;
+      color: black;
+      &.is-active {
+        background-color: #3b82f6;
+        color: white;
+      }
+    }
+  }
   .vc-container {
     min-width: 620px;
     --day-border: 1px solid rgba(160, 174, 192, 0.4);
@@ -232,10 +243,13 @@ export default defineComponent({
     }
 
     &.vc-dark {
-      background: #1d1d1d;
+      background: transparent;
 
       .vc-weekday {
         color: $bg_color;
+      }
+      button {
+        background-color: inherit !important;
       }
     }
 

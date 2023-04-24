@@ -3,6 +3,7 @@ import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import IconDisplay from '@/components/IconDisplay.vue'
 import keepassIcons from '@/assets/icons'
+import {Icons20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DialogIconChooser',
@@ -28,13 +29,22 @@ export default defineComponent({
       onSelectIcon(index) {
         emit('onSelectIcon', index)
       },
+      dialogIconRender() {
+        return h(Icons20Regular)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal class="global-settings" v-model:show="mVisible" preset="dialog" title="Choose Icon">
+  <n-modal
+    class="global-settings"
+    :icon="dialogIconRender"
+    v-model:show="mVisible"
+    preset="dialog"
+    title="Choose Icon"
+  >
     <n-grid :x-gap="4" :y-gap="4" :cols="5">
       <n-grid-item v-for="(item, index) in keepassIcons" :key="index" style="text-align: center">
         <n-button @click="onSelectIcon(index)">

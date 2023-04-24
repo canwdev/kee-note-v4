@@ -2,9 +2,11 @@
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {FormInst, FormRules, FormValidationError} from 'naive-ui'
 import {ref} from 'vue'
+import {NotepadEdit16Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DialogInput',
+  components: {NotepadEdit16Regular},
   props: {
     visible: {
       type: Boolean,
@@ -81,13 +83,16 @@ export default defineComponent({
           mVisible.value = false
         })
       },
+      dialogIconRender() {
+        return h(NotepadEdit16Regular)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" :title="dialogTitle">
+  <n-modal v-model:show="mVisible" preset="dialog" :icon="dialogIconRender" :title="dialogTitle">
     <n-form ref="formRef" :model="modelRef" :rules="rules">
       <n-form-item path="name" :label="inputLabel">
         <n-input
