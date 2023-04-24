@@ -17,7 +17,7 @@ import CalendarView from '@/components/NoteViews/CalendarView.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogIconChooser from '@/components/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main-store'
-import {Settings20Filled} from '@vicons/fluent'
+import {Settings20Filled, LockOpen16Filled} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -27,6 +27,7 @@ export default defineComponent({
     CalendarView,
     DialogIconChooser,
     Settings20Filled,
+    LockOpen16Filled,
   },
   setup() {
     const router = useRouter()
@@ -295,46 +296,45 @@ export default defineComponent({
         type: 'divider',
         label: 'd0',
       },
-      {
-        label: 'Others',
-        children: [
-          isElectron
-            ? null
-            : {
-                label: '🏃 Logout',
-                props: {
-                  onClick: async () => {
-                    try {
-                      await handleCloseDatabase()
-                    } catch (e) {
-                      window.$message.warning('Database close failed')
-                    }
-                    localStorage.removeItem(LsKeys.LS_KEY_AUTHORIZATION)
-                    await router.replace({
-                      name: 'HomeView',
-                    })
-                  },
-                },
-              },
-          {
-            label: '⚙️ Settings',
+      isElectron
+        ? null
+        : {
+            label: '🏃 Logout',
             props: {
-              onClick: () => {
-                globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
+              onClick: async () => {
+                try {
+                  await handleCloseDatabase()
+                } catch (e) {
+                  window.$message.warning('Database close failed')
+                }
+                localStorage.removeItem(LsKeys.LS_KEY_AUTHORIZATION)
+                await router.replace({
+                  name: 'HomeView',
+                })
               },
             },
           },
-          // {
-          //   label: 'About',
-          //   props: {
-          //     onClick: () => {
-          //       window.$message.success('Good!')
-          //     },
-          //   },
-          // },
-        ].filter(Boolean),
+      {
+        label: '⚙️ Settings',
+        props: {
+          onClick: () => {
+            globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
+          },
+        },
       },
-    ]
+      // {
+      //   label: 'About',
+      //   props: {
+      //     onClick: () => {
+      //       window.$message.success('Good!')
+      //     },
+      //   },
+      // },
+      // {
+      //   label: 'Others',
+      //   children: [],
+      // },
+    ].filter(Boolean)
 
     const menuOptions = computed(() => {
       const options = [
@@ -436,7 +436,12 @@ export default defineComponent({
             user-select: none;
           "
         >
-          🔓 KeeNote
+          <n-space align="center" size="small">
+            <n-icon size="16">
+              <LockOpen16Filled />
+            </n-icon>
+            KeeNote
+          </n-space>
           <n-dropdown
             :options="menuOptions"
             key-field="label"
@@ -444,7 +449,7 @@ export default defineComponent({
             trigger="click"
           >
             <n-button secondary size="small">
-              <n-icon size="16"> <Settings20Filled /> </n-icon> Menu
+              <n-icon size="16"> <Settings20Filled /> </n-icon>&nbsp;Menu
             </n-button>
           </n-dropdown>
         </n-space>

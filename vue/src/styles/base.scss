@@ -56,6 +56,30 @@ a:hover {
   }
 }
 
+.scrollbar-mini {
+  $radius: 8px;
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    overflow: overlay;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: $radius;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    background-color: rgba(192, 192, 192, 0.63);
+
+    &:hover {
+      background-color: #bebebe;
+    }
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: $radius/2;
+    background: transparent;
+  }
+}
 
 .content-padding {
   @media screen and (min-width: 500px) {
@@ -82,4 +106,9 @@ a:hover {
 
 .n-dialog__icon {
   margin-right: 10px !important;
+}
+
+.n-input-group-label {
+  display: inline-flex;
+  align-items: center;
 }

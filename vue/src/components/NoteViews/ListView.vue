@@ -1,5 +1,5 @@
 <script lang="ts">
-import {DataTableColumns, DataTableRowKey, NButton, NDataTable, NDropdown} from 'naive-ui'
+import {DataTableColumns, DataTableRowKey, NButton, NIcon, NDataTable, NDropdown} from 'naive-ui'
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
@@ -8,6 +8,7 @@ import {useKeepassEntryList} from '@/hooks/use-keepass'
 import IconDisplay from '@/components/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
+import {MoreHorizontal20Filled} from '@vicons/fluent'
 
 export default defineComponent({
   components: {
@@ -40,7 +41,7 @@ export default defineComponent({
           type: 'selection',
         },
         {
-          title: '🌟',
+          title: '★', // 🌟
           key: 'icon',
           width: 80,
           render(row, index) {
@@ -115,9 +116,10 @@ export default defineComponent({
                       onClick: (e: Event) => {
                         e.stopPropagation()
                       },
+                      quaternary: true,
                       size: 'small',
                     },
-                    {default: () => '⚙️'}
+                    {default: () => h(NIcon, {size: 20}, () => h(MoreHorizontal20Filled))}
                   ),
               }
             )

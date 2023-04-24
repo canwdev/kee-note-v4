@@ -11,7 +11,7 @@ import {LsKeys} from '@/enum'
 import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
-import {TextBoxSettings24Regular} from '@vicons/fluent'
+import {TextBoxSettings24Regular, ArrowLeft16Regular, Save20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DetailView',
@@ -21,6 +21,8 @@ export default defineComponent({
     IconDisplay,
     DialogEntryPreview,
     TextBoxSettings24Regular,
+    ArrowLeft16Regular,
+    Save20Regular,
   },
   setup() {
     const router = useRouter()
@@ -169,80 +171,84 @@ export default defineComponent({
           justify="space-between"
           style="width: 100%; height: 100%; padding: 10px 24px; box-sizing: border-box"
         >
-          <n-button @click="handleBack">🔙 Back</n-button>
+          <n-button quaternary @click="handleBack">
+            <n-icon size="18"> <ArrowLeft16Regular /> </n-icon>&nbsp;Back</n-button
+          >
 
           <div class="entry-title">
             <span v-if="isChanged">* </span>
             {{ entryDetail && entryDetail.title }}
           </div>
 
-          <n-button :disabled="!isChanged" @click="handleSave">💾 Save</n-button>
+          <n-button quaternary :disabled="!isChanged" @click="handleSave">
+            <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;Save</n-button
+          >
         </n-space>
       </n-layout-header>
 
-      <n-scrollbar trigger="none">
-        <n-layout-content>
-          <n-card v-if="entryDetail" class="detail-card" size="small" hoverable>
-            <n-space vertical>
-              <n-input-group>
-                <n-dropdown
-                  :options="menuOptions"
-                  key-field="label"
-                  placement="bottom-start"
-                  trigger="hover"
-                >
-                  <n-button secondary @click="isShowIconEdit = true">
-                    <IconDisplay
-                      :icon="entryDetail.icon"
-                      :bg-color="entryDetail.bgColor"
-                      :fg-color="entryDetail.fgColor"
-                    />
-                  </n-button>
-                </n-dropdown>
-                <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
+      <div v-if="entryDetail" class="detail-card">
+        <n-space vertical>
+          <n-input-group>
+            <n-dropdown
+              :options="menuOptions"
+              key-field="label"
+              placement="bottom-start"
+              trigger="hover"
+            >
+              <n-button
+                style="padding-left: 10px; padding-right: 10px"
+                secondary
+                @click="isShowIconEdit = true"
+              >
+                <IconDisplay
+                  :icon="entryDetail.icon"
+                  :bg-color="entryDetail.bgColor"
+                  :fg-color="entryDetail.fgColor"
+                />
+              </n-button>
+            </n-dropdown>
+            <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
-                <n-button secondary v-if="isComplexEditor" @click="showEditorSettings">
-                  <n-icon size="18">
-                    <TextBoxSettings24Regular />
-                  </n-icon>
-                </n-button>
-              </n-input-group>
+            <n-button secondary v-if="isComplexEditor" @click="showEditorSettings">
+              <n-icon size="18">
+                <TextBoxSettings24Regular />
+              </n-icon>
+            </n-button>
+          </n-input-group>
 
-              <n-space justify="space-between">
-                <n-space align="center">
-                  Create Time
-                  <n-date-picker
-                    v-model:value="times[0]"
-                    type="datetime"
-                    @update:value="isChanged = true"
-                  />
-                </n-space>
-                <n-space align="center">
-                  Update Time
-                  <n-date-picker v-model:value="times[1]" type="datetime" disabled />
-                </n-space>
-              </n-space>
-
-              <MarkdownEditor
-                ref="complexEditorRef"
-                v-if="isComplexEditor"
-                v-model="entryDetail.notes"
-                @turnOff="isComplexEditor = false"
-              />
-              <n-input
-                v-else
-                v-model:value="entryDetail.notes"
-                type="textarea"
-                placeholder="Input your Note here."
-                :autosize="{
-                  minRows: 20,
-                }"
-                style="background-color: inherit !important"
+          <n-space justify="space-between">
+            <n-space align="center">
+              Create Time
+              <n-date-picker
+                v-model:value="times[0]"
+                type="datetime"
+                @update:value="isChanged = true"
               />
             </n-space>
-          </n-card>
-        </n-layout-content>
-      </n-scrollbar>
+            <n-space align="center">
+              Update Time
+              <n-date-picker v-model:value="times[1]" type="datetime" disabled />
+            </n-space>
+          </n-space>
+
+          <MarkdownEditor
+            ref="complexEditorRef"
+            v-if="isComplexEditor"
+            v-model="entryDetail.notes"
+            @turnOff="isComplexEditor = false"
+          />
+          <n-input
+            v-else
+            v-model:value="entryDetail.notes"
+            type="textarea"
+            placeholder="Input your Note here."
+            :autosize="{
+              minRows: 20,
+            }"
+            style="background-color: inherit !important"
+          />
+        </n-space>
+      </div>
 
       <DialogEntryIconColor v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
 
@@ -271,7 +277,11 @@ export default defineComponent({
     }
 
     .detail-card {
-      max-width: 800px;
+      width: 800px;
+      @media screen and (max-width: 800px) {
+        width: 100%;
+      }
+
       margin: 24px auto;
 
       @media screen and (max-width: 1200px) {

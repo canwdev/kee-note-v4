@@ -5,6 +5,7 @@ import {EntryItem} from '@/enum/kdbx'
 import IconDisplay from '@/components/IconDisplay.vue'
 import {Palette} from '@/enum'
 import DialogIconChooser from '@/components/DialogIconChooser.vue'
+import {Icons20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DialogEntryIconColor',
@@ -36,6 +37,9 @@ export default defineComponent({
         entryDetail.value.icon = index
         isShowIconChooser.value = false
       },
+      dialogIconRender() {
+        return h(Icons20Regular)
+      },
     }
   },
 })
@@ -46,6 +50,7 @@ export default defineComponent({
     class="global-settings"
     v-model:show="mVisible"
     preset="dialog"
+    :icon="dialogIconRender"
     title="Edit Icon & Color"
   >
     <n-list>
