@@ -11,6 +11,7 @@ import {LsKeys} from '@/enum'
 import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
+import {TextBoxSettings24Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DetailView',
@@ -19,6 +20,7 @@ export default defineComponent({
     DialogEntryIconColor,
     IconDisplay,
     DialogEntryPreview,
+    TextBoxSettings24Regular,
   },
   setup() {
     const router = useRouter()
@@ -200,7 +202,9 @@ export default defineComponent({
                 <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
                 <n-button secondary v-if="isComplexEditor" @click="showEditorSettings">
-                  ⚙️
+                  <n-icon size="18">
+                    <TextBoxSettings24Regular />
+                  </n-icon>
                 </n-button>
               </n-input-group>
 

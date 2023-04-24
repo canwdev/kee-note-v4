@@ -31,6 +31,7 @@ import 'codemirror/theme/duotone-light.css'
 import 'codemirror/theme/lucario.css'
 import 'codemirror/theme/zenburn.css'
 import {useMainStore} from '@/store/main-store'
+import {TextBoxSettings24Regular} from '@vicons/fluent'
 
 const cmThemeList = [
   'keenote-light',
@@ -185,6 +186,9 @@ export default defineComponent({
       showSettings() {
         isShowEditorSettings.value = true
       },
+      dialogIconRender() {
+        return h(TextBoxSettings24Regular)
+      },
     }
   },
 })
@@ -194,7 +198,12 @@ export default defineComponent({
   <div style="overflow: auto; height: calc(100vh - 200px); border-radius: 4px">
     <textarea ref="textareaRef"></textarea>
 
-    <n-modal v-model:show="isShowEditorSettings" preset="dialog" title="HyperMD Editor Settings">
+    <n-modal
+      v-model:show="isShowEditorSettings"
+      :icon="dialogIconRender"
+      preset="dialog"
+      title="HyperMD Editor Settings"
+    >
       <n-list>
         <n-list-item>
           <n-thing title="Font Size" description="" />
