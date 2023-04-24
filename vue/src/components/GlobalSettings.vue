@@ -5,6 +5,8 @@ import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {getUserTheme, themeOptions, ThemeType, useHandleThemeChange} from '@/hooks/use-global-theme'
+import {Settings20Filled} from '@vicons/fluent'
+
 export default defineComponent({
   name: 'GlobalSettings',
   props: {
@@ -47,13 +49,22 @@ export default defineComponent({
       themeOptions,
       handleMyCryptKeyChange,
       isEnableThemeEdit,
+      dialogIconRender() {
+        return h(Settings20Filled)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal class="global-settings" v-model:show="mVisible" preset="dialog" title="Settings">
+  <n-modal
+    class="global-settings"
+    v-model:show="mVisible"
+    preset="dialog"
+    :icon="dialogIconRender"
+    title="Settings"
+  >
     <n-list>
       <n-list-item>
         <n-thing title="Toggle light/dark theme" />

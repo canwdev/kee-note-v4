@@ -111,6 +111,7 @@ export default defineComponent({
               type="password"
               show-password-on="click"
               @keyup.enter="handleValidateButtonClick"
+              class="font-code"
             />
           </n-form-item>
           <n-space justify="end">

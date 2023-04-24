@@ -11,8 +11,12 @@ export default defineComponent({
   setup() {
     const themeOverrides: GlobalThemeOverrides = {
       common: {
-        borderRadiusSmall: '4px',
-        borderRadius: '4px',
+        // borderRadiusSmall: '4px',
+        // borderRadius: '4px',
+        primaryColor: '#189BA0FF',
+        primaryColorHover: '#36ADA9FF',
+        primaryColorPressed: '#0C7A71FF',
+        primaryColorSuppl: '#36AD95FF',
       },
     }
     const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)

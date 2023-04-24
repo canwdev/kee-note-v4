@@ -5,8 +5,14 @@ import {kService} from '@/api'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
-import HistoryDialog from '@/components/HistoryDialog.vue'
 import {getLocalStorageObject, LsKeys, setLocalStorageObject} from '@/enum'
+import {
+  Folder16Regular,
+  DatabasePerson20Regular,
+  Key16Regular,
+  KeyMultiple20Regular,
+  History16Regular,
+} from '@vicons/fluent'
 
 interface ModelType {
   dbPath: string | null
@@ -15,6 +21,13 @@ interface ModelType {
 }
 
 export default defineComponent({
+  components: {
+    Folder16Regular,
+    DatabasePerson20Regular,
+    Key16Regular,
+    KeyMultiple20Regular,
+    History16Regular,
+  },
   setup() {
     const router = useRouter()
     const formRef = ref<FormInst | null>(null)
@@ -143,7 +156,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <n-layout class="login-view">
+  <n-layout class="login-view f">
     <HistoryDialog
       @historyItemClick="handleHistoryItemClick"
       v-model:visible="isShowHistoryDialog"
@@ -151,33 +164,49 @@ export default defineComponent({
     <n-layout-content>
       <n-card class="card-wrap" title="Open Kdbx Database" hoverable>
         <template #header-extra>
-          <n-button size="small" @click="isShowHistoryDialog = true">History</n-button>
+          <n-button quaternary size="small" @click="isShowHistoryDialog = true" title="History">
+            <n-icon size="20"><History16Regular /></n-icon>
+          </n-button>
         </template>
 
         <n-form ref="formRef" :model="model" :rules="rules">
-          <n-form-item path="dbPath" label="🔒 Kdbx Path">
+          <n-form-item path="dbPath" label="Kdbx Path">
             <n-input-group>
+              <n-input-group-label>
+                <n-icon size="16"><DatabasePerson20Regular /></n-icon>
+              </n-input-group-label>
               <n-input
                 v-model:value="model.dbPath"
                 @keyup.enter="handleValidateButtonClick"
                 clearable
                 placeholder="Input or select file path"
               />
-              <n-button @click="handleChooseFile('dbPath')">📂</n-button>
+              <n-button secondary @click="handleChooseFile('dbPath')">
+                <n-icon size="16"><Folder16Regular /></n-icon>
+              </n-button>
             </n-input-group>
           </n-form-item>
-          <n-form-item path="password" label="🔑 Password">
-            <n-input
-              v-model:value="model.password"
-              type="password"
-              show-password-on="click"
-              clearable
-              @keyup.enter="handleValidateButtonClick"
-              placeholder="Please input password"
-            />
-          </n-form-item>
-          <n-form-item path="keyPath" label="🔑 Key Path (Optional)">
+          <n-form-item path="password" label="Password">
             <n-input-group>
+              <n-input-group-label>
+                <n-icon size="16"><Key16Regular /></n-icon>
+              </n-input-group-label>
+              <n-input
+                v-model:value="model.password"
+                type="password"
+                show-password-on="click"
+                clearable
+                @keyup.enter="handleValidateButtonClick"
+                placeholder="Please input password"
+                class="font-code"
+              />
+            </n-input-group>
+          </n-form-item>
+          <n-form-item path="keyPath" label="Key Path (Optional)">
+            <n-input-group>
+              <n-input-group-label>
+                <n-icon size="16"><KeyMultiple20Regular /></n-icon>
+              </n-input-group-label>
               <n-input
                 v-model:value="model.keyPath"
                 @keyup.enter="handleValidateButtonClick"
@@ -185,13 +214,18 @@ export default defineComponent({
                 clearable
                 type="password"
                 placeholder="Input or select file path"
+                class="font-code"
               />
-              <n-button @click="handleChooseFile('keyPath')">📂</n-button>
+              <n-button secondary @click="handleChooseFile('keyPath')">
+                <n-icon size="16"><Folder16Regular /></n-icon>
+              </n-button>
             </n-input-group>
           </n-form-item>
           <n-space style="display: flex; justify-content: flex-end">
-            <n-button round type="primary" @click="handleValidateButtonClick"> Unlock </n-button>
-            <n-button round @click="handleSettings"> Settings </n-button>
+            <n-button strong type="primary" @click="handleValidateButtonClick" style="color: white">
+              Unlock
+            </n-button>
+            <n-button tertiary @click="handleSettings"> Settings </n-button>
           </n-space>
         </n-form>
       </n-card>

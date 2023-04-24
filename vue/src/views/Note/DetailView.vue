@@ -189,7 +189,7 @@ export default defineComponent({
                   placement="bottom-start"
                   trigger="hover"
                 >
-                  <n-button @click="isShowIconEdit = true">
+                  <n-button secondary @click="isShowIconEdit = true">
                     <IconDisplay
                       :icon="entryDetail.icon"
                       :bg-color="entryDetail.bgColor"
@@ -199,7 +199,9 @@ export default defineComponent({
                 </n-dropdown>
                 <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
 
-                <n-button v-if="isComplexEditor" @click="showEditorSettings"> ⚙️ </n-button>
+                <n-button secondary v-if="isComplexEditor" @click="showEditorSettings">
+                  ⚙️
+                </n-button>
               </n-input-group>
 
               <n-space justify="space-between">

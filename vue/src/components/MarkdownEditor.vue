@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div style="overflow: auto; height: calc(100vh - 200px); border-radius: 8px">
+  <div style="overflow: auto; height: calc(100vh - 200px); border-radius: 4px">
     <textarea ref="textareaRef"></textarea>
 
     <n-modal v-model:show="isShowEditorSettings" preset="dialog" title="HyperMD Editor Settings">

@@ -3,9 +3,13 @@ import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getLocalStorageObject, LsKeys} from '@/enum'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
+import {Delete16Filled, History24Regular} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'HistoryDialog',
+  components: {
+    Delete16Filled,
+  },
   props: {
     visible: {
       type: Boolean,
@@ -32,13 +36,16 @@ export default defineComponent({
       isSaveHistory,
       historyList,
       removeHistoryItem,
+      dialogIconRender() {
+        return h(History24Regular)
+      },
     }
   },
 })
 </script>
 
 <template>
-  <n-modal v-model:show="mVisible" preset="dialog" title="History">
+  <n-modal v-model:show="mVisible" preset="dialog" title="History" :icon="dialogIconRender">
     <n-list>
       <n-list-item>
         <n-thing title="Enable History" description="" />
@@ -47,15 +54,24 @@ export default defineComponent({
         </template>
       </n-list-item>
       <n-list-item v-if="isSaveHistory">
-        <n-list hoverable clickable>
+        <n-list v-if="historyList && historyList.length" bordered hoverable clickable>
           <n-list-item
             v-for="(item, index) in historyList"
             :key="item.dbPath"
             @click="$emit('historyItemClick', item)"
           >
-            <n-thing :title="item.dbPath" />
+            <n-thing :description="item.dbPath" />
             <template #suffix>
-              <n-button @click.stop="removeHistoryItem(index)" round>⨉</n-button>
+              <n-button
+                title="Delete history"
+                @click.stop="removeHistoryItem(index)"
+                type="error"
+                quaternary
+              >
+                <n-icon size="20">
+                  <Delete16Filled />
+                </n-icon>
+              </n-button>
             </template>
           </n-list-item>
         </n-list>

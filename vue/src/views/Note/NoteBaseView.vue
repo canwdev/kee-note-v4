@@ -17,6 +17,7 @@ import CalendarView from '@/components/NoteViews/CalendarView.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogIconChooser from '@/components/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main-store'
+import {Settings20Filled} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -25,6 +26,7 @@ export default defineComponent({
     ListView,
     CalendarView,
     DialogIconChooser,
+    Settings20Filled,
   },
   setup() {
     const router = useRouter()
@@ -441,7 +443,9 @@ export default defineComponent({
             placement="bottom-start"
             trigger="click"
           >
-            <n-button size="small">⚙️ Menu</n-button>
+            <n-button secondary size="small">
+              <n-icon size="16"> <Settings20Filled /> </n-icon> Menu
+            </n-button>
           </n-dropdown>
         </n-space>
       </n-layout-header>
