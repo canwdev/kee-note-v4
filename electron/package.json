@@ -1,7 +1,7 @@
 {
   "name": "kee-note",
   "appName": "KeeNote",
-  "version": "4.0.3",
+  "version": "4.0.5",
   "description": "A encrypted note editor, powered by KeePass.",
   "license": "GPLV3",
   "author": "canwdev",
@@ -15,21 +15,21 @@
     "build": "npm run build-src && electron-builder --dir"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.9",
+    "@babel/eslint-parser": "^7.21.3",
     "@types/fs-extra": "^9.0.13",
-    "@types/node": "^16.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "electron": "^20.1.3",
-    "electron-builder": "^23.3.3",
+    "@types/node": "^18.16.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "electron": "^24.1.2",
+    "electron-builder": "^23.6.0",
     "eslint": "8.22.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.3.2",
-    "typescript": "^4.8.3"
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
+    "@electron/remote": "^2.0.9",
     "cross-env": "^7.0.3",
     "electron-store": "^8.1.0",
     "fs-extra": "^10.1.0",
