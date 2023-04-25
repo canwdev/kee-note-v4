@@ -62,16 +62,16 @@ export default defineComponent({
           >
             <n-thing :description="item.dbPath" />
             <template #suffix>
-              <n-button
-                title="Delete history"
-                @click.stop="removeHistoryItem(index)"
-                type="error"
-                quaternary
-              >
-                <n-icon size="20">
-                  <Delete16Filled />
-                </n-icon>
-              </n-button>
+              <n-popconfirm @positive-click="removeHistoryItem(index)">
+                <template #trigger>
+                  <n-button @click.stop title="Delete history" type="error" quaternary>
+                    <n-icon size="20">
+                      <Delete16Filled />
+                    </n-icon>
+                  </n-button>
+                </template>
+                Confirm remove this history?
+              </n-popconfirm>
             </template>
           </n-list-item>
         </n-list>

@@ -127,6 +127,13 @@ export default defineComponent({
       ].filter(Boolean)
     })
 
+    const titleInputRef = ref()
+    watch(entryDetail, () => {
+      nextTick(() => {
+        titleInputRef.value.focus()
+      })
+    })
+
     return {
       handleBack() {
         if (isChanged.value) {
@@ -157,6 +164,7 @@ export default defineComponent({
       isShowIconEdit,
       menuOptions,
       isShowPreviewModal,
+      titleInputRef,
     }
   },
 })
@@ -175,9 +183,22 @@ export default defineComponent({
             <n-icon size="18"> <ArrowLeft16Regular /> </n-icon>&nbsp;Back</n-button
           >
 
-          <div class="entry-title">
-            <span v-if="isChanged">* </span>
-            {{ entryDetail && entryDetail.title }}
+          <div class="entry-title" v-if="entryDetail">
+            <n-dropdown
+              :options="menuOptions"
+              key-field="label"
+              placement="bottom-start"
+              trigger="hover"
+            >
+              <n-button size="small" quaternary @click="isShowIconEdit = true">
+                <IconDisplay
+                  :icon="entryDetail.icon"
+                  :bg-color="entryDetail.bgColor"
+                  :fg-color="entryDetail.fgColor"
+                />
+                <span v-if="isChanged">* </span>
+              </n-button>
+            </n-dropdown>
           </div>
 
           <n-button quaternary :disabled="!isChanged" @click="handleSave">
@@ -188,48 +209,39 @@ export default defineComponent({
 
       <div v-if="entryDetail" class="detail-card">
         <n-space vertical>
-          <n-input-group>
-            <n-dropdown
-              :options="menuOptions"
-              key-field="label"
-              placement="bottom-start"
-              trigger="hover"
-            >
-              <n-button
-                style="padding-left: 10px; padding-right: 10px"
-                secondary
-                @click="isShowIconEdit = true"
-              >
-                <IconDisplay
-                  :icon="entryDetail.icon"
-                  :bg-color="entryDetail.bgColor"
-                  :fg-color="entryDetail.fgColor"
-                />
-              </n-button>
-            </n-dropdown>
-            <n-input v-model:value="entryDetail.title" type="text" placeholder="Title" />
-
-            <n-button secondary v-if="isComplexEditor" @click="showEditorSettings">
-              <n-icon size="18">
-                <TextBoxSettings24Regular />
-              </n-icon>
-            </n-button>
-          </n-input-group>
-
           <n-space justify="space-between">
             <n-space align="center">
-              Create Time
+              <span style="font-size: 12px">Create</span>
               <n-date-picker
+                size="small"
                 v-model:value="times[0]"
                 type="datetime"
                 @update:value="isChanged = true"
-              />
+              >
+              </n-date-picker>
+              <span style="font-size: 12px">Update</span>
+              <n-date-picker size="small" v-model:value="times[1]" type="datetime" disabled />
             </n-space>
+
             <n-space align="center">
-              Update Time
-              <n-date-picker v-model:value="times[1]" type="datetime" disabled />
+              <n-button size="small" quaternary v-if="isComplexEditor" @click="showEditorSettings">
+                <n-icon size="18">
+                  <TextBoxSettings24Regular />
+                </n-icon>
+              </n-button>
             </n-space>
           </n-space>
+
+          <n-input-group>
+            <n-input
+              ref="titleInputRef"
+              autofocus
+              v-model:value="entryDetail.title"
+              type="text"
+              placeholder="Title"
+            >
+            </n-input>
+          </n-input-group>
 
           <MarkdownEditor
             ref="complexEditorRef"
