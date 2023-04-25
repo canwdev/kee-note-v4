@@ -195,10 +195,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    style="overflow: auto; height: calc(100vh - 200px); border-radius: 4px"
-    class="scrollbar-mini"
-  >
+  <div style="overflow: auto; height: calc(100vh - 170px); min-height: 50px; border-radius: 4px">
     <textarea ref="textareaRef"></textarea>
 
     <n-modal

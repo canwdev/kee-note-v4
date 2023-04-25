@@ -77,7 +77,7 @@ export default defineComponent({
           },
         },
         {
-          title: 'Create Time',
+          title: 'Created',
           key: 'creationTime',
           render(row, index) {
             return h('span', {}, formatDate(new Date(row.creationTime)))
@@ -88,7 +88,7 @@ export default defineComponent({
           },
         },
         {
-          title: 'Update Time',
+          title: 'Updated',
           key: 'lastModTime',
           render(row, index) {
             return h('span', {}, formatDate(new Date(row.lastModTime)))
@@ -202,6 +202,7 @@ export default defineComponent({
     <n-scrollbar trigger="none" x-scrollable>
       <div class="content-padding">
         <n-data-table
+          size="small"
           ref="tableRef"
           class="note-list-table"
           :columns="columns"

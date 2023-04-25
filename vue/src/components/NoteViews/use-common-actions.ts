@@ -31,7 +31,7 @@ export const useCommonActions = (options) => {
 
     return [
       {
-        label: '👁️ Preview',
+        label: '🔰 Preview',
         props: {
           onClick: () => {
             nodeAction(item, () => {

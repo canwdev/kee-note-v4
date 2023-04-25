@@ -11,7 +11,13 @@ import {LsKeys} from '@/enum'
 import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/IconDisplay.vue'
 import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
-import {TextBoxSettings24Regular, ArrowLeft16Regular, Save20Regular} from '@vicons/fluent'
+import {
+  TextBoxSettings24Regular,
+  ArrowLeft16Regular,
+  Save20Regular,
+  CalendarAdd20Regular,
+  CalendarEdit16Regular,
+} from '@vicons/fluent'
 
 export default defineComponent({
   name: 'DetailView',
@@ -23,6 +29,8 @@ export default defineComponent({
     TextBoxSettings24Regular,
     ArrowLeft16Regular,
     Save20Regular,
+    CalendarAdd20Regular,
+    CalendarEdit16Regular,
   },
   setup() {
     const router = useRouter()
@@ -109,7 +117,7 @@ export default defineComponent({
     const menuOptions = computed(() => {
       return [
         {
-          label: '👁️ Preview (Ctrl+/)',
+          label: '🔰 Preview (Ctrl+/)',
           props: {
             onClick: async () => {
               isShowPreviewModal.value = true
@@ -174,11 +182,7 @@ export default defineComponent({
   <div class="detail-view">
     <n-layout class="layout-inner-root">
       <n-layout-header bordered>
-        <n-space
-          align="center"
-          justify="space-between"
-          style="width: 100%; height: 100%; padding: 6px 24px; box-sizing: border-box"
-        >
+        <n-space align="center" justify="space-between" class="header-space">
           <n-button quaternary @click="handleBack">
             <n-icon size="18"> <ArrowLeft16Regular /> </n-icon>&nbsp;Back</n-button
           >
@@ -211,20 +215,38 @@ export default defineComponent({
         <n-space vertical>
           <n-space justify="space-between">
             <n-space align="center">
-              <span style="font-size: 12px">Create</span>
               <n-date-picker
-                size="small"
+                size="tiny"
                 v-model:value="times[0]"
                 type="datetime"
                 @update:value="isChanged = true"
+                title="Create Time"
               >
+                <template #date-icon>
+                  <n-icon size="18"> <CalendarAdd20Regular /> </n-icon>
+                </template>
               </n-date-picker>
-              <span style="font-size: 12px">Update</span>
-              <n-date-picker size="small" v-model:value="times[1]" type="datetime" disabled />
+              <n-date-picker
+                size="tiny"
+                v-model:value="times[1]"
+                type="datetime"
+                disabled
+                title="Update Time"
+              >
+                <template #date-icon>
+                  <n-icon size="18"> <CalendarEdit16Regular /> </n-icon>
+                </template>
+              </n-date-picker>
             </n-space>
 
             <n-space align="center">
-              <n-button size="small" quaternary v-if="isComplexEditor" @click="showEditorSettings">
+              <n-button
+                size="small"
+                quaternary
+                v-if="isComplexEditor"
+                @click="showEditorSettings"
+                title="Editor Settings"
+              >
                 <n-icon size="18">
                   <TextBoxSettings24Regular />
                 </n-icon>
@@ -234,6 +256,7 @@ export default defineComponent({
 
           <n-input-group>
             <n-input
+              size="small"
               ref="titleInputRef"
               autofocus
               v-model:value="entryDetail.title"
@@ -272,6 +295,17 @@ export default defineComponent({
 <style lang="scss" scoped>
 .detail-view {
   height: 100%;
+  $min_width: 800px;
+
+  .header-space {
+    width: 100%;
+    height: 100%;
+    padding: 6px 24px;
+    box-sizing: border-box;
+    @media screen and (max-width: $min_width) {
+      padding: 2px;
+    }
+  }
 
   .entry-title {
     max-width: 50vw;
@@ -290,9 +324,14 @@ export default defineComponent({
     }
 
     .detail-card {
-      width: 800px;
-      @media screen and (max-width: 800px) {
+      width: $min_width;
+      flex: 1;
+      overflow: auto;
+
+      @media screen and (max-width: $min_width) {
         width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
       }
 
       margin: 24px auto;

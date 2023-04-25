@@ -435,12 +435,10 @@ export default defineComponent({
             box-sizing: border-box;
             user-select: none;
           "
+          justify="space-between"
         >
           <n-space align="center" size="small">
-            <n-icon size="16">
-              <LockOpen16Filled />
-            </n-icon>
-            KeeNote
+            <n-icon size="16"> <LockOpen16Filled /> </n-icon>KeeNote
           </n-space>
           <n-dropdown
             :options="menuOptions"
@@ -448,7 +446,7 @@ export default defineComponent({
             placement="bottom-start"
             trigger="click"
           >
-            <n-button secondary size="small">
+            <n-button quaternary size="small">
               <n-icon size="16"> <Settings20Filled /> </n-icon>&nbsp;Menu
             </n-button>
           </n-dropdown>
