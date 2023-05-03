@@ -152,9 +152,9 @@ export default defineComponent({
           }
           editorFontSize.value = fz
           setFontSize()
-          window.$message.info(`font size: ${fz}px`, {
-            duration: 1000,
-          })
+          // window.$message.info(`font size: ${fz}px`, {
+          //   duration: 1000,
+          // })
         }
       }
     }
@@ -195,7 +195,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div style="overflow: auto; height: calc(100vh - 170px); min-height: 50px; border-radius: 4px">
+  <div style="overflow: auto; height: calc(100vh - 160px); min-height: 50px; border-radius: 4px">
     <textarea ref="textareaRef"></textarea>
 
     <n-modal
