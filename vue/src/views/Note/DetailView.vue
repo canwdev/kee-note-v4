@@ -40,7 +40,7 @@ export default defineComponent({
     const isComplexEditor = useLocalStorageBoolean(LsKeys.LS_KEY_NO_COMPLEX_EDITOR, true)
 
     onMounted(() => {
-      getEntryDetail()
+      getEntryDetail(true)
       window.addEventListener('keydown', handleKeyDown)
     })
     onBeforeUnmount(() => {
@@ -63,14 +63,20 @@ export default defineComponent({
             return
         }
       } else if (event.code === 'Escape') {
+        if (isShowPreviewModal.value || isShowIconEdit.value) {
+          return
+        }
         handleBack()
       }
     }
 
-    const getEntryDetail = async () => {
+    const getEntryDetail = async (isFocus = false) => {
       entryDetail.value = await kService.getEntryDetail({uuid: route.query.uuid})
       nextTick(() => {
         isChanged.value = false
+        if (isFocus) {
+          titleInputRef.value.focus()
+        }
       })
     }
 
@@ -138,11 +144,6 @@ export default defineComponent({
     })
 
     const titleInputRef = ref()
-    watch(entryDetail, () => {
-      nextTick(() => {
-        titleInputRef.value.focus()
-      })
-    })
 
     const handleBack = () => {
       if (isChanged.value) {

@@ -21,12 +21,12 @@ export default defineComponent({
     const router = useRouter()
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
-    const modelRef = ref<ModelType>({
+    const formModel = ref<ModelType>({
       username: import.meta.env.VITE_USER_NAME || '',
       password: import.meta.env.VITE_USER_PASSWORD || '',
     })
 
-    const rules: FormRules = {
+    const formRules: FormRules = {
       username: [
         {
           required: true,
@@ -45,8 +45,8 @@ export default defineComponent({
 
     const handleLogin = async () => {
       const {access_token} = await userLogin({
-        username: modelRef.value.username,
-        password: modelRef.value.password,
+        username: formModel.value.username,
+        password: formModel.value.password,
       })
       if (!access_token) {
         message.error('Invalid token! Check HTTP Crypt key in settings?')
@@ -81,8 +81,8 @@ export default defineComponent({
 
     return {
       formRef,
-      model: modelRef,
-      rules,
+      formModel,
+      formRules,
       handleValidateButtonClick(e: MouseEvent) {
         e.preventDefault()
         formRef.value?.validate((errors: Array<FormValidationError> | undefined) => {
@@ -106,13 +106,16 @@ export default defineComponent({
   <n-layout class="login-view">
     <n-layout-content>
       <n-card class="card-wrap" title="Login to KeeNote Server">
-        <n-form ref="formRef" :model="model" :rules="rules">
+        <n-form ref="formRef" :model="formModel" :rules="formRules">
           <n-form-item path="username" label="Username">
             <n-input-group>
               <n-input-group-label>
                 <n-icon size="16"><Person16Regular /></n-icon>
               </n-input-group-label>
-              <n-input v-model:value="model.username" @keyup.enter="handleValidateButtonClick" />
+              <n-input
+                v-model:value="formModel.username"
+                @keyup.enter="handleValidateButtonClick"
+              />
             </n-input-group>
           </n-form-item>
 
@@ -122,7 +125,7 @@ export default defineComponent({
                 <n-icon size="16"><Key16Regular /></n-icon>
               </n-input-group-label>
               <n-input
-                v-model:value="model.password"
+                v-model:value="formModel.password"
                 type="password"
                 show-password-on="click"
                 @keyup.enter="handleValidateButtonClick"
