@@ -438,13 +438,14 @@ export default defineComponent({
           justify="space-between"
         >
           <n-space align="center" size="small">
-            <n-icon size="16"> <LockOpen16Filled /> </n-icon>KeeNote
+            <n-icon style="transform: translateY(2px)" size="16"> <LockOpen16Filled /> </n-icon
+            >KeeNote
           </n-space>
           <n-dropdown
             :options="menuOptions"
             key-field="label"
             placement="bottom-start"
-            trigger="click"
+            trigger="hover"
           >
             <n-button quaternary size="small">
               <n-icon size="16"> <Settings20Filled /> </n-icon>&nbsp;Menu

@@ -62,6 +62,8 @@ export default defineComponent({
           default:
             return
         }
+      } else if (event.code === 'Escape') {
+        handleBack()
       }
     }
 
@@ -142,24 +144,26 @@ export default defineComponent({
       })
     })
 
+    const handleBack = () => {
+      if (isChanged.value) {
+        window.$dialog.warning({
+          title: 'Confirm',
+          content: 'Discard Changes?',
+          positiveText: 'OK',
+          negativeText: 'Cancel',
+          onPositiveClick: () => {
+            router.back()
+          },
+          onNegativeClick: () => {},
+        })
+        return
+      }
+      router.back()
+    }
+
     return {
-      handleBack() {
-        if (isChanged.value) {
-          window.$dialog.warning({
-            title: 'Confirm',
-            content: 'Discard Changes?',
-            positiveText: 'OK',
-            negativeText: 'Cancel',
-            onPositiveClick: () => {
-              router.back()
-            },
-            onNegativeClick: () => {},
-          })
-          return
-        }
-        router.back()
-      },
       entryDetail,
+      handleBack,
       times,
       isChanged,
       handleSave,
@@ -211,78 +215,80 @@ export default defineComponent({
         </n-space>
       </n-layout-header>
 
-      <div v-if="entryDetail" class="detail-card">
-        <n-space vertical>
-          <n-space justify="space-between">
-            <n-space align="center">
-              <n-date-picker
-                size="tiny"
-                v-model:value="times[0]"
-                type="datetime"
-                @update:value="isChanged = true"
-                title="Create Time"
-              >
-                <template #date-icon>
-                  <n-icon size="18"> <CalendarAdd20Regular /> </n-icon>
-                </template>
-              </n-date-picker>
-              <n-date-picker
-                size="tiny"
-                v-model:value="times[1]"
-                type="datetime"
-                disabled
-                title="Update Time"
-              >
-                <template #date-icon>
-                  <n-icon size="18"> <CalendarEdit16Regular /> </n-icon>
-                </template>
-              </n-date-picker>
+      <div v-if="entryDetail" class="detail-card-wrap">
+        <div class="detail-card">
+          <n-space vertical>
+            <n-space justify="space-between">
+              <n-space align="center">
+                <n-date-picker
+                  size="small"
+                  v-model:value="times[0]"
+                  type="datetime"
+                  @update:value="isChanged = true"
+                  title="Create Time"
+                >
+                  <template #date-icon>
+                    <n-icon size="18"> <CalendarAdd20Regular /> </n-icon>
+                  </template>
+                </n-date-picker>
+                <n-date-picker
+                  size="small"
+                  v-model:value="times[1]"
+                  type="datetime"
+                  disabled
+                  title="Update Time"
+                >
+                  <template #date-icon>
+                    <n-icon size="18"> <CalendarEdit16Regular /> </n-icon>
+                  </template>
+                </n-date-picker>
+              </n-space>
+
+              <n-space align="center">
+                <n-button
+                  size="small"
+                  quaternary
+                  v-if="isComplexEditor"
+                  @click="showEditorSettings"
+                  title="Editor Settings"
+                >
+                  <n-icon size="18">
+                    <TextBoxSettings24Regular />
+                  </n-icon>
+                </n-button>
+              </n-space>
             </n-space>
 
-            <n-space align="center">
-              <n-button
+            <n-input-group>
+              <n-input
                 size="small"
-                quaternary
-                v-if="isComplexEditor"
-                @click="showEditorSettings"
-                title="Editor Settings"
+                ref="titleInputRef"
+                autofocus
+                v-model:value="entryDetail.title"
+                type="text"
+                placeholder="Title"
               >
-                <n-icon size="18">
-                  <TextBoxSettings24Regular />
-                </n-icon>
-              </n-button>
-            </n-space>
-          </n-space>
+              </n-input>
+            </n-input-group>
 
-          <n-input-group>
+            <MarkdownEditor
+              ref="complexEditorRef"
+              v-if="isComplexEditor"
+              v-model="entryDetail.notes"
+              @turnOff="isComplexEditor = false"
+            />
             <n-input
-              size="small"
-              ref="titleInputRef"
-              autofocus
-              v-model:value="entryDetail.title"
-              type="text"
-              placeholder="Title"
-            >
-            </n-input>
-          </n-input-group>
-
-          <MarkdownEditor
-            ref="complexEditorRef"
-            v-if="isComplexEditor"
-            v-model="entryDetail.notes"
-            @turnOff="isComplexEditor = false"
-          />
-          <n-input
-            v-else
-            v-model:value="entryDetail.notes"
-            type="textarea"
-            placeholder="Input your Note here."
-            :autosize="{
-              minRows: 20,
-            }"
-            style="background-color: inherit !important"
-          />
-        </n-space>
+              v-else
+              v-model:value="entryDetail.notes"
+              type="textarea"
+              placeholder="Input your Note here."
+              :autosize="{
+                minRows: 20,
+              }"
+              style="background-color: inherit !important"
+            />
+          </n-space>
+        </div>
       </div>
 
       <DialogEntryIconColor v-model:visible="isShowIconEdit" :entry-detail="entryDetail" />
@@ -323,18 +329,23 @@ export default defineComponent({
       flex-direction: column;
     }
 
-    .detail-card {
-      width: $min_width;
+    .detail-card-wrap {
       flex: 1;
       overflow: auto;
+      padding-top: 10px;
+      padding-bottom: 5px;
+    }
+
+    .detail-card {
+      margin-left: auto;
+      margin-right: auto;
+      width: $min_width;
 
       @media screen and (max-width: $min_width) {
         width: 100%;
         padding: 0 10px;
         box-sizing: border-box;
       }
-
-      margin: 24px auto;
 
       @media screen and (max-width: 1200px) {
         margin-top: 10px;
