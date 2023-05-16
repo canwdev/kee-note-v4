@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import {EntryItem} from '@/enum/kdbx'
-import {getAttachment, removeAttachment} from '@/api/keepass'
+import {getAttachment, removeAttachment, uploadAttachment} from '@/api/keepass'
 import {aLinkDownload} from '@/utils'
 
 export default defineComponent({
@@ -40,7 +40,14 @@ export default defineComponent({
     }
 
     const handleAddAttachment = async () => {
-      console.log('filename')
+      // @ts-ignore
+      const [handle] = await window.showOpenFilePicker({
+        multiple: true,
+      })
+      const file = await handle.getFile()
+      console.log(file)
+
+      await uploadAttachment([file])
     }
 
     return {

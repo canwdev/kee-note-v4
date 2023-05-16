@@ -62,6 +62,17 @@ export const getAttachment = (params: any) => {
 export const removeAttachment = (params: any) => {
   return service.post('remove-attachment', params)
 }
+export const uploadAttachment = (files: File[]) => {
+  const formData = new FormData()
+  files.forEach((file) => {
+    formData.append('files', file)
+  })
+  return service.post('upload-attachment', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
 
 // electron common api
 export const openFileDialog = (params: any) => {

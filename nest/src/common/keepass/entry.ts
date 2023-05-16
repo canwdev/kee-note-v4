@@ -38,7 +38,7 @@ export interface EntryItem {
 
 export class EntryItem {
   constructor(entry, isDetailed = false) {
-    console.log('[entry]', entry)
+    // console.log('[entry]', entry)
 
     this.uuid = entry.uuid.id
     this.icon = entry.icon

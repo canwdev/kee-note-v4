@@ -5,15 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Post,
-  Query,
   Res,
-  StreamableFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common'
 import {KeepassService} from './keepass.service'
 import {SkipAuth} from '../auth/skip-auth'
 import {ErrorInterceptor} from './error.interceptor'
 import * as FileType from 'file-type'
+import {AnyFilesInterceptor} from '@nestjs/platform-express'
 
 @UseInterceptors(ErrorInterceptor)
 @Controller('keepass')
@@ -146,5 +146,14 @@ export class KeepassController {
   @Post('remove-attachment')
   removeAttachment(@Body() params) {
     return this.kdbxHelper.removeAttachment(params)
+  }
+
+  @Post('upload-attachment')
+  @UseInterceptors(AnyFilesInterceptor())
+  uploadAttachment(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files)
+    // files.forEach(file => {
+    //   const {originalname, mimetype, buffer} = file
+    // })
   }
 }
