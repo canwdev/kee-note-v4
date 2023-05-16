@@ -6,11 +6,14 @@ import {
   HttpStatus,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UseInterceptors,
 } from '@nestjs/common'
 import {KeepassService} from './keepass.service'
 import {SkipAuth} from '../auth/skip-auth'
 import {ErrorInterceptor} from './error.interceptor'
+import * as FileType from 'file-type'
 
 @UseInterceptors(ErrorInterceptor)
 @Controller('keepass')
@@ -119,5 +122,29 @@ export class KeepassController {
   @Post('move-entry')
   moveEntry(@Body() params) {
     return this.kdbxHelper.moveEntry(params)
+  }
+
+  @Post('get-attachment')
+  async getAttachment(@Body() params, @Res() res) {
+    const {filename} = params || {}
+    const arrayBufferData = this.kdbxHelper.getAttachment(params).value
+    const buffer = Buffer.from(arrayBufferData)
+    console.log('[arrayBufferData]', arrayBufferData)
+    console.log('[buffer]', buffer)
+
+    const type = await FileType.fromBuffer(buffer)
+
+    console.log('[type]', type)
+
+    res.writeHead(200, {
+      'Content-Type': type?.mime || 'application/octet-stream',
+      'Content-Disposition': `attachment; filename=${encodeURIComponent(filename)}`,
+    })
+    res.end(buffer)
+  }
+
+  @Post('remove-attachment')
+  removeAttachment(@Body() params) {
+    return this.kdbxHelper.removeAttachment(params)
   }
 }

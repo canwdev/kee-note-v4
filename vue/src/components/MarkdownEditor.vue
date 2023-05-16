@@ -170,6 +170,7 @@ export default defineComponent({
     const isShowEditorSettings = ref(false)
 
     return {
+      mainStore,
       textareaRef,
       isShowEditorSettings,
       editorFontSize,
@@ -195,7 +196,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div style="overflow: auto; height: calc(100vh - 160px); min-height: 50px; border-radius: 4px">
+  <div class="markdown-editor" :class="{_dark: mainStore.isAppDarkMode}">
     <textarea ref="textareaRef"></textarea>
 
     <n-modal
@@ -258,3 +259,16 @@ export default defineComponent({
     </n-modal>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.markdown-editor {
+  overflow: auto;
+  height: calc(100vh - 160px);
+  min-height: 50px;
+  border-radius: 4px;
+  border: 1px solid rgb(224, 224, 230);
+  &._dark {
+    border-color: transparent;
+  }
+}
+</style>

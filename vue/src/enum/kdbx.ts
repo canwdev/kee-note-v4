@@ -13,6 +13,7 @@ export interface EntryItem {
   fgColor: string
   creationTime: Date
   lastModTime: Date
-  notes?: string
+  fieldsV2?: string
+  attachmentNames?: string
   _origin?: any
 }

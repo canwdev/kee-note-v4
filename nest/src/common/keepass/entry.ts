@@ -1,3 +1,5 @@
+import * as kdbxweb from 'kdbxweb'
+
 function getMapValue(obj, val) {
   if (obj instanceof Map) {
     return obj.get(val)
@@ -29,12 +31,15 @@ export interface EntryItem {
   fgColor: string
   creationTime: Date
   lastModTime: Date
-  notes?: string
+  attachmentNames?: string[]
+  fieldsV2?: any
   _origin?: any
 }
 
 export class EntryItem {
   constructor(entry, isDetailed = false) {
+    console.log('[entry]', entry)
+
     this.uuid = entry.uuid.id
     this.icon = entry.icon
     this.title = getMapValue(entry.fields, 'Title')
@@ -43,8 +48,34 @@ export class EntryItem {
     this.creationTime = entry.times.creationTime
     this.lastModTime = entry.times.lastModTime
     if (isDetailed) {
-      this.notes = getMapValue(entry.fields, 'Notes')
+      this.attachmentNames = Array.from(entry.binaries.keys())
+
+      this.fieldsV2 = {}
+
+      for (const key of entry.fields.keys()) {
+        this.fieldsV2[key] = this._getFieldString(entry, key)
+      }
+
       // this._origin = entry
     }
+  }
+
+  _getPassword(entry) {
+    const password = entry.fields.get('Password') || kdbxweb.ProtectedValue.fromString('')
+    if (!password.isProtected) {
+      return kdbxweb.ProtectedValue.fromString(password)
+    }
+    return password.getText()
+  }
+
+  _getFieldString(entry, field) {
+    const val = entry.fields.get(field)
+    if (!val) {
+      return ''
+    }
+    if (val instanceof kdbxweb.ProtectedValue) {
+      return val.getText()
+    }
+    return val.toString()
   }
 }

@@ -54,6 +54,14 @@ export const moveGroup = (params: any) => {
 export const moveEntry = (params: any) => {
   return service.post('move-entry', params)
 }
+export const getAttachment = (params: any) => {
+  return service.post('get-attachment', params, {
+    responseType: 'blob',
+  })
+}
+export const removeAttachment = (params: any) => {
+  return service.post('remove-attachment', params)
+}
 
 // electron common api
 export const openFileDialog = (params: any) => {

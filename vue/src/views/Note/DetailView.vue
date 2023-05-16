@@ -18,6 +18,7 @@ import {
   CalendarAdd20Regular,
   CalendarEdit16Regular,
 } from '@vicons/fluent'
+import AttachmentBox from '@/components/NoteViews/AttachmentBox.vue'
 
 export default defineComponent({
   name: 'DetailView',
@@ -31,6 +32,7 @@ export default defineComponent({
     Save20Regular,
     CalendarAdd20Regular,
     CalendarEdit16Regular,
+    AttachmentBox,
   },
   setup() {
     const router = useRouter()
@@ -103,17 +105,27 @@ export default defineComponent({
       if (!entryDetail.value) {
         return
       }
+
+      // generate update params
+      const fieldsUpdates = []
+      for (const key in entryDetail.value.fieldsV2) {
+        fieldsUpdates.push({path: `fields.${key}`, value: entryDetail.value.fieldsV2[key]})
+      }
+
       await kService.updateEntry({
         uuid: entryDetail.value.uuid,
         updates: [
-          {path: 'fields.Title', value: entryDetail.value.title},
-          {path: 'fields.Notes', value: entryDetail.value.notes},
+          ...fieldsUpdates,
           {path: 'fgColor', value: entryDetail.value.fgColor},
           {path: 'bgColor', value: entryDetail.value.bgColor},
           {path: 'icon', value: entryDetail.value.icon},
           {path: 'times.creationTime', value: times[0]},
         ],
       })
+      await syncAndSave()
+    }
+
+    const syncAndSave = async () => {
       await getEntryDetail()
       await saveDatabaseAsync()
     }
@@ -162,6 +174,8 @@ export default defineComponent({
       router.back()
     }
 
+    const isShowMore = ref(true)
+
     return {
       entryDetail,
       handleBack,
@@ -178,6 +192,8 @@ export default defineComponent({
       menuOptions,
       isShowPreviewModal,
       titleInputRef,
+      isShowMore,
+      syncAndSave,
     }
   },
 })
@@ -246,6 +262,8 @@ export default defineComponent({
               </n-space>
 
               <n-space align="center">
+                <n-switch size="small" v-model:value="isShowMore"></n-switch>
+
                 <n-button
                   size="small"
                   quaternary
@@ -265,22 +283,49 @@ export default defineComponent({
                 size="small"
                 ref="titleInputRef"
                 autofocus
-                v-model:value="entryDetail.title"
+                v-model:value="entryDetail.fieldsV2.Title"
                 type="text"
                 placeholder="Title"
               >
               </n-input>
             </n-input-group>
 
+            <n-collapse-transition :show="entryDetail && isShowMore">
+              <n-form
+                ref="formRef"
+                label-placement="left"
+                label-width="auto"
+                size="small"
+                inline
+                style="margin-bottom: 10px"
+              >
+                <n-form-item :show-feedback="false" label="Username" path="">
+                  <n-input v-model:value="entryDetail.fieldsV2.UserName" placeholder="" />
+                </n-form-item>
+                <n-form-item :show-feedback="false" label="Password" path="">
+                  <n-input
+                    size="small"
+                    v-model:value="entryDetail.fieldsV2.Password"
+                    type="password"
+                    show-password-on="click"
+                    class="font-code"
+                  />
+                </n-form-item>
+                <n-form-item :show-feedback="false" label="URL" path="">
+                  <n-input v-model:value="entryDetail.fieldsV2.URL" placeholder="" />
+                </n-form-item>
+              </n-form>
+              <AttachmentBox :entry-detail="entryDetail" @dataUpdated="syncAndSave" />
+            </n-collapse-transition>
             <MarkdownEditor
               ref="complexEditorRef"
               v-if="isComplexEditor"
-              v-model="entryDetail.notes"
+              v-model="entryDetail.fieldsV2.Notes"
               @turnOff="isComplexEditor = false"
             />
             <n-input
               v-else
-              v-model:value="entryDetail.notes"
+              v-model:value="entryDetail.fieldsV2.Notes"
               type="textarea"
               placeholder="Input your Note here."
               :autosize="{

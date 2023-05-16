@@ -51,7 +51,7 @@ export default defineComponent({
       if (!detailData.value) {
         return ''
       }
-      return marked.parse(detailData.value.notes)
+      return marked.parse(detailData.value.fieldsV2.Notes)
     })
 
     return {

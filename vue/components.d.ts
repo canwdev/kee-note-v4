@@ -9,6 +9,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AttachmentBox: typeof import('./src/components/NoteViews/AttachmentBox.vue')['default']
+    AttachmentManager: typeof import('./src/components/NoteViews/AttachmentManager.vue')['default']
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
     DialogEntryIconColor: typeof import('./src/components/DialogEntryIconColor.vue')['default']
@@ -22,7 +24,9 @@ declare module '@vue/runtime-core' {
     ListView: typeof import('./src/components/NoteViews/ListView.vue')['default']
     LunarDay: typeof import('./src/components/NoteViews/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/MarkdownEditor.vue')['default']
+    NAnchorLink: typeof import('naive-ui')['NAnchorLink']
     NButton: typeof import('naive-ui')['NButton']
+    NButtonGroup: typeof import('naive-ui')['NButtonGroup']
     NCard: typeof import('naive-ui')['NCard']
     NCollapseTransition: typeof import('naive-ui')['NCollapseTransition']
     NColorPicker: typeof import('naive-ui')['NColorPicker']

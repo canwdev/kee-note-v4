@@ -392,4 +392,25 @@ export class KdbxHelper {
       },
     }
   }
+
+  // 获取附件
+  getAttachment(params) {
+    const {uuid, filename} = params || {}
+    const entry = this.getEntry(uuid)
+    const file = entry.binaries.get(filename)
+    if (!file) {
+      throw new Error('file not found')
+    }
+    return file
+  }
+
+  removeAttachment(params) {
+    const {uuid, filename} = params || {}
+    const entry = this.getEntry(uuid)
+    const file = entry.binaries.get(filename)
+    if (!file) {
+      throw new Error('file not found')
+    }
+    entry.binaries.delete(filename)
+  }
 }
