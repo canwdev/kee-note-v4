@@ -31,8 +31,6 @@ export default defineComponent({
     }
 
     const handleRemoveItem = async (filename) => {
-      console.log(filename)
-
       await removeAttachment({
         uuid: entryDetail.value.uuid,
         filename,
@@ -85,7 +83,6 @@ export default defineComponent({
 
     const isShowRenameDialog = ref(false)
     const handleRename = async (name) => {
-      console.log(name)
       await renameAttachment({
         uuid: entryDetail.value.uuid,
         filename: editingFilename.value,

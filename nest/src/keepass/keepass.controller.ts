@@ -130,12 +130,12 @@ export class KeepassController {
     const {filename} = params || {}
     const arrayBufferData = this.kdbxHelper.getAttachment(params).value
     const buffer = Buffer.from(arrayBufferData)
-    console.log('[arrayBufferData]', arrayBufferData)
-    console.log('[buffer]', buffer)
+    // console.log('[arrayBufferData]', arrayBufferData)
+    // console.log('[buffer]', buffer)
 
     const type = await FileType.fromBuffer(buffer)
 
-    console.log('[type]', type)
+    // console.log('[type]', type)
 
     res.writeHead(200, {
       'Content-Type': type?.mime || 'application/octet-stream',

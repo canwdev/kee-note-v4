@@ -189,7 +189,6 @@ export default defineComponent({
       handleSelectGroup,
       checkedRowKeys,
       handleCheck(rowKeys: DataTableRowKey[]) {
-        console.log(tableRef)
         checkedRowKeys.value = rowKeys
       },
       getMenuOptions,
