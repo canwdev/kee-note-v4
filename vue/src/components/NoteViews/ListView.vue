@@ -107,6 +107,7 @@ export default defineComponent({
               {
                 options: getMenuOptions(row),
                 showArrow: true,
+                keyField: 'label',
               },
               {
                 default: () =>
@@ -217,7 +218,7 @@ export default defineComponent({
         />
       </div>
       <n-collapse-transition :show="Boolean(checkedRowKeys.length)">
-        <n-dropdown :options="getMenuOptions(null)">
+        <n-dropdown :options="getMenuOptions(null)" key-field="label">
           <n-button
             secondary
             type="tertiary"

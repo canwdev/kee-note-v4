@@ -76,6 +76,9 @@ export const uploadAttachment = (uuid: string, files: File[]) => {
     },
   })
 }
+export const renameAttachment = (params: any) => {
+  return service.post('rename-attachment', params)
+}
 
 // electron common api
 export const openFileDialog = (params: any) => {

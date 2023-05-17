@@ -427,4 +427,16 @@ export class KdbxHelper {
 
     entry.binaries.set(filename, binaryRef)
   }
+
+  async renameAttachment(params) {
+    const {uuid, filename, newFilename} = params || {}
+    const entry = this.getEntry(uuid)
+
+    const file = entry.binaries.get(filename)
+    if (!file) {
+      throw new Error('file not found')
+    }
+    entry.binaries.set(newFilename, file)
+    entry.binaries.delete(filename)
+  }
 }

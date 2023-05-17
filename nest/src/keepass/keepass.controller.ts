@@ -161,4 +161,9 @@ export class KeepassController {
       })
     })
   }
+
+  @Post('rename-attachment')
+  renameAttachment(@Body() params) {
+    return this.kdbxHelper.renameAttachment(params)
+  }
 }
