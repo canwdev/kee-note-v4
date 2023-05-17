@@ -29,6 +29,30 @@ const apiList = [
   {key: 'remove-entry', handler: (params) => kdbxHelper.removeEntry(params)},
   {key: 'move-group', handler: (params) => kdbxHelper.moveGroup(params)},
   {key: 'move-entry', handler: (params) => kdbxHelper.moveEntry(params)},
+  {
+    key: 'get-attachment',
+    handler: (params) => {
+      return kdbxHelper.getAttachment(params).value
+    },
+  },
+  {key: 'remove-attachment', handler: (params) => kdbxHelper.removeAttachment(params)},
+  {
+    key: 'upload-attachment',
+    handler: async (params) => {
+      const {uuid, files} = params
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        const {originalname, buffer} = file
+        await kdbxHelper.setAttachment({
+          uuid: uuid,
+          filename: decodeURIComponent(originalname),
+          buffer,
+        })
+      }
+    },
+  },
+  {key: 'rename-attachment', handler: (params) => kdbxHelper.renameAttachment(params)},
 ]
 
 apiList.forEach(({key, handler}) => {

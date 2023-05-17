@@ -151,15 +151,16 @@ export class KeepassController {
 
   @Post('upload-attachment')
   @UseInterceptors(AnyFilesInterceptor())
-  uploadAttachment(@Query() query, @UploadedFiles() files: Array<Express.Multer.File>) {
-    files.forEach((file) => {
+  async uploadAttachment(@Query() query, @UploadedFiles() files: Array<Express.Multer.File>) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
       const {originalname, mimetype, buffer} = file
-      return this.kdbxHelper.setAttachment({
+      await this.kdbxHelper.setAttachment({
         uuid: query.uuid,
         filename: decodeURIComponent(originalname),
         buffer,
       })
-    })
+    }
   }
 
   @Post('rename-attachment')
