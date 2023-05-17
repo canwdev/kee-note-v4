@@ -174,7 +174,7 @@ export default defineComponent({
       router.back()
     }
 
-    const isShowMore = ref(true)
+    const isShowMore = useLocalStorageBoolean(LsKeys.LS_KEY_DETAIL_SHOW_MORE, false)
 
     return {
       entryDetail,
@@ -262,7 +262,7 @@ export default defineComponent({
               </n-space>
 
               <n-space align="center">
-                <n-switch size="small" v-model:value="isShowMore"></n-switch>
+                <n-switch size="small" v-model:value="isShowMore" title="Toggle more details" />
 
                 <n-button
                   size="small"
@@ -291,18 +291,17 @@ export default defineComponent({
             </n-input-group>
 
             <n-collapse-transition :show="entryDetail && isShowMore">
-              <n-form
-                ref="formRef"
-                label-placement="left"
-                label-width="auto"
-                size="small"
-                inline
-                style="margin-bottom: 10px"
-              >
-                <n-form-item :show-feedback="false" label="Username" path="">
-                  <n-input v-model:value="entryDetail.fieldsV2.UserName" placeholder="" />
-                </n-form-item>
-                <n-form-item :show-feedback="false" label="Password" path="">
+              <div class="extra-info">
+                <div class="extra-item">
+                  <label>Username</label>
+                  <n-input
+                    size="small"
+                    v-model:value="entryDetail.fieldsV2.UserName"
+                    placeholder=""
+                  />
+                </div>
+                <div class="extra-item">
+                  <label>Password</label>
                   <n-input
                     size="small"
                     v-model:value="entryDetail.fieldsV2.Password"
@@ -310,11 +309,17 @@ export default defineComponent({
                     show-password-on="click"
                     class="font-code"
                   />
-                </n-form-item>
-                <n-form-item :show-feedback="false" label="URL" path="">
-                  <n-input v-model:value="entryDetail.fieldsV2.URL" placeholder="" />
-                </n-form-item>
-              </n-form>
+                </div>
+                <div class="extra-item">
+                  <label>URL</label>
+                  <n-input
+                    size="small"
+                    v-model:value="entryDetail.fieldsV2.UserName"
+                    placeholder=""
+                  />
+                </div>
+              </div>
+
               <AttachmentBox :entry-detail="entryDetail" @dataUpdated="syncAndSave" />
             </n-collapse-transition>
             <MarkdownEditor
@@ -395,6 +400,26 @@ export default defineComponent({
 
       @media screen and (max-width: 1200px) {
         margin-top: 10px;
+      }
+    }
+  }
+
+  .extra-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 10px;
+    margin-bottom: 10px;
+    @media screen and (max-width: $min_width) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    .extra-item {
+      display: flex;
+      align-items: center;
+      label {
+        margin-right: 5px;
+        min-width: 70px;
+        text-align: right;
       }
     }
   }

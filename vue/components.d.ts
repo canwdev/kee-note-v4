@@ -10,7 +10,6 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AttachmentBox: typeof import('./src/components/NoteViews/AttachmentBox.vue')['default']
-    AttachmentManager: typeof import('./src/components/NoteViews/AttachmentManager.vue')['default']
     AttachmentPreview: typeof import('./src/components/NoteViews/AttachmentPreview.vue')['default']
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
@@ -25,7 +24,6 @@ declare module '@vue/runtime-core' {
     ListView: typeof import('./src/components/NoteViews/ListView.vue')['default']
     LunarDay: typeof import('./src/components/NoteViews/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/MarkdownEditor.vue')['default']
-    NAnchorLink: typeof import('naive-ui')['NAnchorLink']
     NButton: typeof import('naive-ui')['NButton']
     NButtonGroup: typeof import('naive-ui')['NButtonGroup']
     NCard: typeof import('naive-ui')['NCard']
@@ -40,7 +38,6 @@ declare module '@vue/runtime-core' {
     NGrid: typeof import('naive-ui')['NGrid']
     NGridItem: typeof import('naive-ui')['NGridItem']
     NIcon: typeof import('naive-ui')['NIcon']
-    NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
     NInputGroup: typeof import('naive-ui')['NInputGroup']
     NInputGroupLabel: typeof import('naive-ui')['NInputGroupLabel']

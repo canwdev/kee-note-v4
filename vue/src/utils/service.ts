@@ -51,14 +51,17 @@ function Service(config: any) {
 
       if (myCrypt) {
         // 加密请求
-        // console.log('config1',config)
-        if (/post/gi.test(<string>config.method) && config.data) {
+        // console.log('config1', config)
+        if (
+          /post/gi.test(<string>config.method) &&
+          config.data &&
+          !(config.data instanceof FormData)
+        ) {
           config.data = {
             ie: true,
             main: myCrypt.encrypt(JSON.stringify(config.data)),
           }
-        }
-        if (/get/gi.test(<string>config.method) && config.params) {
+        } else if (/get/gi.test(<string>config.method) && config.params) {
           // console.log(config.params)
           config.params = {
             ie: true,

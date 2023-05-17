@@ -16,6 +16,7 @@ export const LsKeys = {
   LS_KEY_EDITOR_FONT_FAMILY: 'ck_keenote_editor_font_family',
   LS_KEY_EDITOR_NO_WYSIWYG: 'ck_keenote_editor_no_wysiwyg',
   LS_KEY_EDITOR_THEME: 'ck_keenote_editor_theme',
+  LS_KEY_DETAIL_SHOW_MORE: 'ck_keenote_detail_show_more',
 }
 
 export const getLocalStorageObject = (key, fallback?) => {
