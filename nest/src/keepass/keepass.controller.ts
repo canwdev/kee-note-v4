@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Query,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -150,10 +151,14 @@ export class KeepassController {
 
   @Post('upload-attachment')
   @UseInterceptors(AnyFilesInterceptor())
-  uploadAttachment(@UploadedFiles() files: Array<Express.Multer.File>) {
-    console.log(files)
-    // files.forEach(file => {
-    //   const {originalname, mimetype, buffer} = file
-    // })
+  uploadAttachment(@Query() query, @UploadedFiles() files: Array<Express.Multer.File>) {
+    files.forEach((file) => {
+      const {originalname, mimetype, buffer} = file
+      return this.kdbxHelper.setAttachment({
+        uuid: query.uuid,
+        filename: decodeURIComponent(originalname),
+        buffer,
+      })
+    })
   }
 }

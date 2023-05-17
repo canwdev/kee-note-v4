@@ -3,9 +3,13 @@ import {defineComponent, PropType} from 'vue'
 import {EntryItem} from '@/enum/kdbx'
 import {getAttachment, removeAttachment, uploadAttachment} from '@/api/keepass'
 import {aLinkDownload} from '@/utils'
+import AttachmentPreview from '@/components/NoteViews/AttachmentPreview.vue'
 
 export default defineComponent({
   name: 'AttachmentBox',
+  components: {
+    AttachmentPreview,
+  },
   props: {
     entryDetail: {
       type: Object as PropType<EntryItem>,
@@ -14,18 +18,12 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const {entryDetail} = toRefs(props)
-    const handlePreviewItem = async (filename) => {
-      console.log(filename)
+    const isShowPreview = ref(false)
 
-      const result = await getAttachment({
-        uuid: entryDetail.value.uuid,
-        filename,
-      })
-
-      console.log(result)
-
-      let imageUrl = URL.createObjectURL(result)
-      aLinkDownload(imageUrl, filename)
+    const previewIndex = ref(0)
+    const handlePreviewItem = async (filename, index) => {
+      previewIndex.value = index
+      isShowPreview.value = true
     }
 
     const handleRemoveItem = async (filename) => {
@@ -41,16 +39,24 @@ export default defineComponent({
 
     const handleAddAttachment = async () => {
       // @ts-ignore
-      const [handle] = await window.showOpenFilePicker({
+      const handles = await window.showOpenFilePicker({
         multiple: true,
       })
-      const file = await handle.getFile()
-      console.log(file)
 
-      await uploadAttachment([file])
+      const files = []
+      for (let i = 0; i < handles.length; i++) {
+        const handle = handles[i]
+        const file = await handle.getFile()
+        files.push(file)
+      }
+
+      await uploadAttachment(entryDetail.value.uuid, files)
+      emit('dataUpdated')
     }
 
     return {
+      isShowPreview,
+      previewIndex,
       handlePreviewItem,
       handleRemoveItem,
       handleAddAttachment,
@@ -63,8 +69,8 @@ export default defineComponent({
   <div class="attachment-box">
     <n-space align="center">
       Attachments
-      <n-button-group size="tiny" v-for="item in entryDetail.attachmentNames" :key="item">
-        <n-button @click="handlePreviewItem(item)">{{ item }}</n-button>
+      <n-button-group size="tiny" v-for="(item, index) in entryDetail.attachmentNames" :key="item">
+        <n-button @click="handlePreviewItem(item, index)">{{ item }}</n-button>
         <n-popconfirm @positive-click="handleRemoveItem(item)">
           <template #trigger>
             <n-button>X</n-button>
@@ -75,6 +81,13 @@ export default defineComponent({
 
       <n-button size="tiny" @click="handleAddAttachment">+</n-button>
     </n-space>
+
+    <AttachmentPreview
+      v-model:visible="isShowPreview"
+      :uuid="entryDetail.uuid"
+      :attachment-names="entryDetail.attachmentNames"
+      :index="previewIndex"
+    />
   </div>
 </template>
 

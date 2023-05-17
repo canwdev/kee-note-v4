@@ -62,12 +62,15 @@ export const getAttachment = (params: any) => {
 export const removeAttachment = (params: any) => {
   return service.post('remove-attachment', params)
 }
-export const uploadAttachment = (files: File[]) => {
+export const uploadAttachment = (uuid: string, files: File[]) => {
   const formData = new FormData()
   files.forEach((file) => {
-    formData.append('files', file)
+    formData.append('files', file, encodeURIComponent(file.name))
   })
   return service.post('upload-attachment', formData, {
+    params: {
+      uuid,
+    },
     headers: {
       'Content-Type': 'multipart/form-data',
     },

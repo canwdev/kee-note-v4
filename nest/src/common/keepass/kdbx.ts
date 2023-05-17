@@ -393,7 +393,12 @@ export class KdbxHelper {
     }
   }
 
-  // 获取附件
+  /**
+   * 获取附件
+   * @param params
+   *    uuid: entry uuid
+   *    filename: 文件名
+   */
   getAttachment(params) {
     const {uuid, filename} = params || {}
     const entry = this.getEntry(uuid)
@@ -412,5 +417,14 @@ export class KdbxHelper {
       throw new Error('file not found')
     }
     entry.binaries.delete(filename)
+  }
+
+  async setAttachment(params) {
+    const {uuid, filename, buffer} = params || {}
+    const entry = this.getEntry(uuid)
+
+    const binaryRef = await this.db.createBinary(buffer)
+
+    entry.binaries.set(filename, binaryRef)
   }
 }

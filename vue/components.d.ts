@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AttachmentBox: typeof import('./src/components/NoteViews/AttachmentBox.vue')['default']
     AttachmentManager: typeof import('./src/components/NoteViews/AttachmentManager.vue')['default']
+    AttachmentPreview: typeof import('./src/components/NoteViews/AttachmentPreview.vue')['default']
     AutoRouterView: typeof import('./src/components/AutoRouterView.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/CalendarView.vue')['default']
     DialogEntryIconColor: typeof import('./src/components/DialogEntryIconColor.vue')['default']
@@ -39,6 +40,7 @@ declare module '@vue/runtime-core' {
     NGrid: typeof import('naive-ui')['NGrid']
     NGridItem: typeof import('naive-ui')['NGridItem']
     NIcon: typeof import('naive-ui')['NIcon']
+    NImage: typeof import('naive-ui')['NImage']
     NInput: typeof import('naive-ui')['NInput']
     NInputGroup: typeof import('naive-ui')['NInputGroup']
     NInputGroupLabel: typeof import('naive-ui')['NInputGroupLabel']
