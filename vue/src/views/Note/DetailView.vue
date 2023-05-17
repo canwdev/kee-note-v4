@@ -312,11 +312,7 @@ export default defineComponent({
                 </div>
                 <div class="extra-item">
                   <label>URL</label>
-                  <n-input
-                    size="small"
-                    v-model:value="entryDetail.fieldsV2.UserName"
-                    placeholder=""
-                  />
+                  <n-input size="small" v-model:value="entryDetail.fieldsV2.URL" placeholder="" />
                 </div>
               </div>
 
