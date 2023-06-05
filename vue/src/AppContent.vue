@@ -34,7 +34,7 @@ export default defineComponent({
       const {resolve, reject} = options
       try {
         await kService.saveDatabase()
-        window.$message.success('Saved!')
+        console.info('Database saved!')
         resolve()
       } catch (e) {
         reject(e)

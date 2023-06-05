@@ -3,6 +3,7 @@ import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {kService} from '@/api'
 import {useRouter} from 'vue-router'
 import {EntryItem} from '@/enum/kdbx'
+import {useKeeStore} from '@/store/kee-store'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -26,11 +27,11 @@ export const useCommonActions = (options) => {
     globalEventBus.emit(GlobalEvents.REFRESH_GROUP_TREE)
   }
 
-  const getMenuOptions = (item: EntryItem, event?: MouseEvent) => {
-    const isShiftPressed = event?.shiftKey
+  const getMenuOptions = (item: EntryItem) => {
+    const isMultiple = Boolean(checkedRowKeys.value.length)
 
     return [
-      {
+      !isMultiple && {
         label: '🔰 Preview',
         props: {
           onClick: () => {
@@ -40,7 +41,7 @@ export const useCommonActions = (options) => {
           },
         },
       },
-      {
+      !isMultiple && {
         label: '✒️ Edit',
         props: {
           onClick: () => {
@@ -51,8 +52,16 @@ export const useCommonActions = (options) => {
           },
         },
       },
+      isMultiple && {
+        label: 'Export JSON (Unencrypted)',
+        props: {
+          onClick: () => {
+            console.log('checkedRowKeys.value', checkedRowKeys.value)
+          },
+        },
+      },
       {
-        label: '📁 Move to group',
+        label: '📁 Move to group...',
         props: {
           onClick: () => {
             nodeAction(item, () => {
@@ -62,14 +71,22 @@ export const useCommonActions = (options) => {
         },
       },
       {
-        label: isShiftPressed ? '❌ Permanent Delete' : '🚮 Remove to Trash',
+        label: '🚮 Move to Recycle Bin',
         props: {
           onClick: () => {
-            confirmRemoveEntry(item, isShiftPressed)
+            confirmRemoveEntry(item, false)
           },
         },
       },
-    ]
+      {
+        label: '❌ Permanent Delete',
+        props: {
+          onClick: () => {
+            confirmRemoveEntry(item, true)
+          },
+        },
+      },
+    ].filter(Boolean)
   }
 
   const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
@@ -78,15 +95,15 @@ export const useCommonActions = (options) => {
   const confirmRemoveEntry = (item, isDelete = false) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
     const itemText = isMultiple ? 'selected items' : 'item'
-    window.$dialog.warning({
-      title: 'Confirm',
+    window.$dialog[isDelete ? 'warning' : 'info']({
+      title: isDelete ? 'Warning!!' : 'Confirm',
       content: isDelete
-        ? `Permanent delete ${itemText}?`
+        ? `Permanent delete ${itemText}? (This can not be undo)`
         : `Delete ${itemText}? (If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.)`,
       positiveText: 'OK',
       negativeText: 'Cancel',
       onPositiveClick: () => {
-        handleDeleteEntry(isMultiple ? checkedRowKeys.value : item.uuid, isDelete)
+        handleDeleteEntry(isMultiple ? [...checkedRowKeys.value] : item.uuid, isDelete)
       },
       onNegativeClick: () => {},
     })
@@ -100,7 +117,7 @@ export const useCommonActions = (options) => {
     }
     await kService.moveEntry({
       groupUuid: groupUuid,
-      uuid: checkedRowKeys.value.length ? checkedRowKeys.value : editingNode.value.uuid,
+      uuid: checkedRowKeys.value.length ? [...checkedRowKeys.value] : editingNode.value.uuid,
     })
 
     await saveDatabaseAsync()

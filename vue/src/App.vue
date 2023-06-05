@@ -36,30 +36,40 @@ export default defineComponent({
       },
       {
         default: () =>
-          h(NLoadingBarProvider, null, {
-            default: () =>
-              h(NDialogProvider, null, {
-                default: () =>
-                  h(
-                    NNotificationProvider,
-                    {
-                      placement: 'bottom-left',
-                    },
-                    {
-                      default: () =>
-                        h(
-                          NMessageProvider,
-                          {
-                            placement: 'top',
-                          },
-                          {
-                            default: () => h(AppContent),
-                          }
-                        ),
-                    }
-                  ),
-              }),
-          }),
+          h(
+            NLoadingBarProvider,
+            {
+              loadingBarStyle: {
+                loading: {
+                  opacity: 0.4,
+                },
+              },
+            },
+            {
+              default: () =>
+                h(NDialogProvider, null, {
+                  default: () =>
+                    h(
+                      NNotificationProvider,
+                      {
+                        placement: 'bottom-left',
+                      },
+                      {
+                        default: () =>
+                          h(
+                            NMessageProvider,
+                            {
+                              placement: 'top',
+                            },
+                            {
+                              default: () => h(AppContent),
+                            }
+                          ),
+                      }
+                    ),
+                }),
+            }
+          ),
       }
     )
     if (this.isEnableThemeEdit) {

@@ -219,8 +219,7 @@ export default defineComponent({
       <n-collapse-transition :show="Boolean(checkedRowKeys.length)">
         <n-dropdown :options="getMenuOptions(null)" key-field="label">
           <n-button
-            secondary
-            type="tertiary"
+            type="info"
             size="small"
             style="position: absolute; top: 0; left: 50px; z-index: 10"
           >

@@ -71,7 +71,7 @@ export default defineComponent({
         <template #suffix>
           <n-color-picker
             v-model:value="entryDetail.bgColor"
-            style="width: 200px"
+            style="width: 150px; border-radius: 0"
             :swatches="swatches"
           />
         </template>
@@ -81,7 +81,7 @@ export default defineComponent({
         <template #suffix>
           <n-color-picker
             v-model:value="entryDetail.fgColor"
-            style="width: 200px"
+            style="width: 150px; border-radius: 0"
             :swatches="swatches"
           />
         </template>

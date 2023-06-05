@@ -85,12 +85,13 @@ export default defineComponent({
         return
       }
 
-      window.$notification.success({
-        content: '🎉 Database unlocked！',
-        meta: '',
-        duration: 3000,
-        keepAliveOnHover: true,
-      })
+      // window.$notification.success({
+      //   content: '🎉 Database unlocked!',
+      //   meta: '',
+      //   duration: 3000,
+      //   keepAliveOnHover: true,
+      // })
+      console.info('🎉 Database unlocked!')
 
       await router.replace({
         name: 'NoteView',

@@ -87,6 +87,15 @@ export default defineComponent({
     })
 
     const getGroupTree = async () => {
+      const {
+        meta: {recycleBinEnabled, recycleBinUuid},
+      } = await kService.getMeta()
+      if (recycleBinEnabled && recycleBinUuid && recycleBinUuid.id) {
+        keeStore.recycleBinUuid = recycleBinUuid.id
+      } else {
+        keeStore.recycleBinUuid = null
+      }
+
       groupTree.value = await kService.getGroupTree()
 
       if (!selectedKeys.value.length && groupTree.value.length) {
@@ -117,10 +126,13 @@ export default defineComponent({
     }
 
     const confirmRemoveGroup = (isDelete = false) => {
+      const isEmptyRecycleBin = keeStore.recycleBinUuid === editingUuid.value
       window.$dialog.warning({
-        title: 'Confirm',
-        content: isDelete
-          ? 'Permanent delete selected group?'
+        title: isDelete || isEmptyRecycleBin ? 'Warning!!' : 'Confirm',
+        content: isEmptyRecycleBin
+          ? 'Empty Recycle Bin? (This can not be undo)'
+          : isDelete
+          ? 'Permanent delete selected group? (This can not be undo)'
           : 'Delete selected group? Permanently emptied if group is RecycleBin.',
         positiveText: 'OK',
         negativeText: 'Cancel',
@@ -234,6 +246,13 @@ export default defineComponent({
 
       const isShiftPressed = event?.shiftKey
 
+      let isEmptyRecycleBin = false
+      if (option) {
+        isEmptyRecycleBin = keeStore.recycleBinUuid === option.uuid
+      } else {
+        isEmptyRecycleBin = keeStore.recycleBinUuid === editingUuid.value
+      }
+
       return [
         {
           label: '🗒️ Create Entry',
@@ -266,7 +285,7 @@ export default defineComponent({
           },
         },
         option && {
-          label: '🌠 Change Icon',
+          label: '🌟 Change Icon',
           props: {
             onClick: () => {
               nodeAction(option, () => {
@@ -276,7 +295,11 @@ export default defineComponent({
           },
         },
         !isRootSelected && {
-          label: isShiftPressed ? '❌ Permanent Delete' : '🚮 Remove to Trash',
+          label: isEmptyRecycleBin
+            ? '❌ Empty Recycle Bin'
+            : isShiftPressed
+            ? '❌ Permanent Delete'
+            : '🚮 Move to Recycle Bin',
           props: {
             onClick: () => {
               nodeAction(option, () => {
