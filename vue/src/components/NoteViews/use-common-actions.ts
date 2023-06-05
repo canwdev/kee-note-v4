@@ -1,15 +1,21 @@
 import {useContextMenu} from '@/hooks/use-context-menu'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {kService} from '@/api'
-import {useRouter} from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import {EntryItem} from '@/enum/kdbx'
 import {useKeeStore} from '@/store/kee-store'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
+  const route = useRoute()
+  const keeStore = useKeeStore()
   const {getEntryList, checkedRowKeys = ref([])} = options || {}
   const isShowGroupSelectModal = ref(false)
   const isShowPreviewModal = ref(false)
+
+  const groupUuid = computed(() => {
+    return route.query.groupUuid
+  })
 
   const handleDeleteEntry = async (uuid: string, isDelete = false) => {
     if (isDelete) {
@@ -29,6 +35,7 @@ export const useCommonActions = (options) => {
 
   const getMenuOptions = (item: EntryItem) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
+    const isInRecycleBin = keeStore.recycleBinUuid === groupUuid.value
 
     return [
       !isMultiple && {
@@ -70,22 +77,23 @@ export const useCommonActions = (options) => {
           },
         },
       },
-      {
-        label: '🚮 Move to Recycle Bin',
-        props: {
-          onClick: () => {
-            confirmRemoveEntry(item, false)
+      isInRecycleBin
+        ? {
+            label: '❌ Permanent Delete',
+            props: {
+              onClick: () => {
+                confirmRemoveEntry(item, true)
+              },
+            },
+          }
+        : {
+            label: '🚮 Move to Recycle Bin',
+            props: {
+              onClick: () => {
+                confirmRemoveEntry(item, false)
+              },
+            },
           },
-        },
-      },
-      {
-        label: '❌ Permanent Delete',
-        props: {
-          onClick: () => {
-            confirmRemoveEntry(item, true)
-          },
-        },
-      },
     ].filter(Boolean)
   }
 
@@ -94,12 +102,11 @@ export const useCommonActions = (options) => {
 
   const confirmRemoveEntry = (item, isDelete = false) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
-    const itemText = isMultiple ? 'selected items' : 'item'
     window.$dialog[isDelete ? 'warning' : 'info']({
       title: isDelete ? 'Warning!!' : 'Confirm',
       content: isDelete
-        ? `Permanent delete ${itemText}? (This can not be undo)`
-        : `Delete ${itemText}? (If the item is in the recycle bin, it won't be deleted unless you clean the recycle bin.)`,
+        ? `Permanent delete item(s)? (This can not be undo)`
+        : `Move item(s) to recycle bin?`,
       positiveText: 'OK',
       negativeText: 'Cancel',
       onPositiveClick: () => {
