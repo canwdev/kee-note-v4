@@ -4,6 +4,7 @@ import {kService} from '@/api'
 import {useRoute, useRouter} from 'vue-router'
 import {EntryItem} from '@/enum/kdbx'
 import {useKeeStore} from '@/store/kee-store'
+import {aLinkDownload} from '@/utils'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -33,6 +34,21 @@ export const useCommonActions = (options) => {
     globalEventBus.emit(GlobalEvents.REFRESH_GROUP_TREE)
   }
 
+  const handleExportJson = async () => {
+    const details: EntryItem[] = []
+    for (let i = 0; i < checkedRowKeys.value.length; i++) {
+      const uuid = checkedRowKeys.value[i]
+      details.push(await kService.getEntryDetail({uuid}))
+    }
+    const contentStr = JSON.stringify(details, null, 2)
+
+    const blob = new Blob([contentStr], {
+      type: 'text/plain;charset=utf-8',
+    })
+    const url = URL.createObjectURL(blob)
+    aLinkDownload(url, `KeeNote_Export_${Date.now()}.json`)
+  }
+
   const getMenuOptions = (item: EntryItem) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
     const isInRecycleBin = keeStore.recycleBinUuid === groupUuid.value
@@ -60,10 +76,10 @@ export const useCommonActions = (options) => {
         },
       },
       isMultiple && {
-        label: 'Export JSON (Unencrypted)',
+        label: '📃 Export JSON (Unencrypted)',
         props: {
           onClick: () => {
-            console.log('checkedRowKeys.value', checkedRowKeys.value)
+            handleExportJson()
           },
         },
       },

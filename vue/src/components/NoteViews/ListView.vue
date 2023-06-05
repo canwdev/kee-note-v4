@@ -41,7 +41,7 @@ export default defineComponent({
           type: 'selection',
         },
         {
-          title: '★', // 🌟
+          title: '★',
           key: 'icon',
           width: 80,
           render(row, index) {
@@ -223,7 +223,7 @@ export default defineComponent({
             size="small"
             style="position: absolute; top: 0; left: 50px; z-index: 10"
           >
-            You selected {{ checkedRowKeys.length }} items
+            Batch Actions ({{ checkedRowKeys.length }})
           </n-button>
         </n-dropdown>
       </n-collapse-transition>

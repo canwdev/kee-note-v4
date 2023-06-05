@@ -348,8 +348,9 @@ export class KdbxHelper {
    */
   removeEntry(params) {
     const {uuid} = params || {}
-    const entry = this.getEntry(uuid)
-    this.removeItems(entry)
+    this.removeItems(
+      Array.isArray(uuid) ? uuid.map((id) => this.getEntry(id)) : this.getEntry(uuid)
+    )
   }
 
   /**
@@ -369,11 +370,10 @@ export class KdbxHelper {
    */
   moveEntry(params) {
     const {uuid, groupUuid} = params || {}
-    const entry = this.getEntry(uuid)
 
-    return this.moveItems({
+    this.moveItems({
       groupUuid,
-      items: entry,
+      items: Array.isArray(uuid) ? uuid.map((id) => this.getEntry(id)) : this.getEntry(uuid),
     })
   }
 

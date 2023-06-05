@@ -1,12 +1,12 @@
 <script lang="ts">
 import {kService} from '@/api'
-import {GroupItem} from '@/enum/kdbx'
+import {EntryItem, GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {formatDate} from '@/utils'
+import {formatDate, handleReadSelectedFile} from '@/utils'
 import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
 import {useContextMenu} from '@/hooks/use-context-menu'
@@ -294,6 +294,14 @@ export default defineComponent({
             },
           },
         },
+        {
+          label: '📥 Import JSON',
+          props: {
+            onClick: () => {
+              handleImportJson()
+            },
+          },
+        },
         !isRootSelected && {
           label: isEmptyRecycleBin
             ? '❌ Empty Recycle Bin'
@@ -316,6 +324,14 @@ export default defineComponent({
 
     const menuOptionsBase = [
       {
+        label: '⚙️ Settings',
+        props: {
+          onClick: () => {
+            globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
+          },
+        },
+      },
+      {
         type: 'divider',
         label: 'd0',
       },
@@ -337,30 +353,19 @@ export default defineComponent({
               },
             },
           },
-      {
-        label: '⚙️ Settings',
-        props: {
-          onClick: () => {
-            globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
-          },
-        },
-      },
-      // {
-      //   label: 'About',
-      //   props: {
-      //     onClick: () => {
-      //       window.$message.success('Good!')
-      //     },
-      //   },
-      // },
-      // {
-      //   label: 'Others',
-      //   children: [],
-      // },
     ].filter(Boolean)
 
     const menuOptions = computed(() => {
       const options = [
+        {
+          label: isCalendarView.value ? '📃 List View' : '📅 Calendar View',
+          props: {
+            onClick: () => {
+              isCalendarView.value = !isCalendarView.value
+            },
+          },
+        },
+        ...menuOptionsBase,
         keeStore.isDbOpened
           ? {
               label: '🔐 Lock Database',
@@ -378,16 +383,6 @@ export default defineComponent({
                 },
               },
             },
-
-        {
-          label: isCalendarView.value ? '📃 List View' : '📅 Calendar View',
-          props: {
-            onClick: () => {
-              isCalendarView.value = !isCalendarView.value
-            },
-          },
-        },
-        ...menuOptionsBase,
       ]
       if (groupUuid.value) {
         return [
@@ -408,6 +403,26 @@ export default defineComponent({
     const editingUuid = computed(() => {
       return editingNode.value ? editingNode.value.uuid : groupUuid.value
     })
+
+    const handleImportJson = async () => {
+      // @ts-ignore
+      const [handle] = await window.showOpenFilePicker({
+        types: [
+          {
+            description: 'JSON',
+            accept: {
+              'application/JSON': ['.json'],
+            },
+          },
+        ],
+      })
+      const file = await handle.getFile()
+
+      const entryItems: EntryItem[] = await handleReadSelectedFile(file, true)
+
+      // TODO: implement
+      console.log('[entryItems]', entryItems)
+    }
 
     return {
       groupTree,

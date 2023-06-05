@@ -46,3 +46,23 @@ export const aLinkDownload = (src: string, name?) => {
     window.open(src)
   }
 }
+
+export const handleReadSelectedFile = (file, parseJson = false) => {
+  // console.log(file)
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        let val = reader.result
+        if (parseJson && typeof val === 'string') {
+          val = JSON.parse(val)
+        }
+        resolve(val)
+      } catch (error: any) {
+        reject(error)
+        window.$message.error('Import Failed! ' + error.message)
+      }
+    }
+    reader.readAsText(file)
+  })
+}
