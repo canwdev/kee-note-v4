@@ -102,6 +102,8 @@ export const importEntryListJson = async (groupUuid) => {
 
   const entryItems: EntryItem[] = (await handleReadSelectedFile(file, true)) as EntryItem[]
 
+  entryItems.reverse()
+
   console.log('[entryItems]', entryItems)
   for (let i = 0; i < entryItems.length; i++) {
     const entryDetail = entryItems[i]

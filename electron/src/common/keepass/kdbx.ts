@@ -211,16 +211,23 @@ export class KdbxHelper {
     }
     console.log(`[db] updateEntry ${uuid}`)
     const entry = this.getEntry(uuid)
+    let isAutoUpdateTime = true
     updates.forEach((obj) => {
       // eslint-disable-next-line prefer-const
       let {path, value} = obj
-      if (path.indexOf('creationTime') > 0) {
+      if (path === 'times.creationTime') {
         // need convert time format to Date!
         value = new Date(value)
       }
+      if (path === 'times.lastModTime') {
+        value = new Date(value)
+        isAutoUpdateTime = false
+      }
       setValDot(entry, path, value)
     })
-    entry.times.update()
+    if (isAutoUpdateTime) {
+      entry.times.update()
+    }
     this.isChanged = true
     return new EntryItem(entry, true)
   }

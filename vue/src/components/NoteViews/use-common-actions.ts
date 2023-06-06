@@ -66,7 +66,7 @@ export const useCommonActions = (options) => {
         },
       },
       isMultiple && {
-        label: '📃 Export JSON (Unencrypted)',
+        label: '📃 Export JSON (no attachments)',
         props: {
           onClick: () => {
             handleExportJson()

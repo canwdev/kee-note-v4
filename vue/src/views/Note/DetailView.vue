@@ -110,7 +110,7 @@ export default defineComponent({
       const params = getEntryItemUpdateParams({
         uuid: entryDetail.value.uuid,
         entryDetail: entryDetail.value,
-        isSetModTime: true,
+        isSetModTime: false,
       })
 
       await kService.updateEntry(params)
