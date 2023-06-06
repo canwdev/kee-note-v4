@@ -3,7 +3,6 @@ import {defineComponent} from 'vue'
 import {getAttachment, renameAttachment} from '@/api/keepass'
 import {Icons20Regular} from '@vicons/fluent'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import {aLinkDownload} from '@/utils'
 import mime from 'mime'
 import {
   ArrowDownload16Regular,
@@ -12,6 +11,7 @@ import {
   Rename16Regular,
 } from '@vicons/fluent'
 import DialogInput from '@/components/DialogInput.vue'
+import {aLinkDownload} from '@/utils/export-import'
 
 export default defineComponent({
   name: 'AttachmentPreview',

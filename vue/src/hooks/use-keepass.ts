@@ -2,6 +2,7 @@ import {useRoute, useRouter} from 'vue-router'
 import {useKeeStore} from '@/store/kee-store'
 import {EntryItem} from '@/enum/kdbx'
 import {kService} from '@/api'
+import globalEventBus, {GlobalEvents} from '@/utils/bus'
 
 interface CalendarData {
   // year
@@ -21,6 +22,13 @@ export const useKeepassEntryList = (options?) => {
 
   const groupUuid = computed(() => {
     return route.query.groupUuid
+  })
+
+  onMounted(async () => {
+    globalEventBus.on(GlobalEvents.REFRESH_ENTRY_LIST, getEntryList)
+  })
+  onBeforeUnmount(() => {
+    globalEventBus.off(GlobalEvents.REFRESH_ENTRY_LIST, getEntryList)
   })
 
   watch(

@@ -10,6 +10,7 @@ export const GlobalEvents = {
   SAVE_DATABASE: 'SAVE_DATABASE',
   UPDATE_KN_HTTP_CRYPT_KEY: 'UPDATE_KN_HTTP_CRYPT_KEY',
   REFRESH_GROUP_TREE: 'REFRESH_GROUP',
+  REFRESH_ENTRY_LIST: 'REFRESH_ENTRY_LIST',
 }
 
 export const saveDatabaseAsync = () => {

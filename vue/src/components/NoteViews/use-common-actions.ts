@@ -4,7 +4,8 @@ import {kService} from '@/api'
 import {useRoute, useRouter} from 'vue-router'
 import {EntryItem} from '@/enum/kdbx'
 import {useKeeStore} from '@/store/kee-store'
-import {aLinkDownload} from '@/utils'
+
+import {aLinkDownload, exportEntryListJson} from '@/utils/export-import'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -35,18 +36,7 @@ export const useCommonActions = (options) => {
   }
 
   const handleExportJson = async () => {
-    const details: EntryItem[] = []
-    for (let i = 0; i < checkedRowKeys.value.length; i++) {
-      const uuid = checkedRowKeys.value[i]
-      details.push(await kService.getEntryDetail({uuid}))
-    }
-    const contentStr = JSON.stringify(details, null, 2)
-
-    const blob = new Blob([contentStr], {
-      type: 'text/plain;charset=utf-8',
-    })
-    const url = URL.createObjectURL(blob)
-    aLinkDownload(url, `KeeNote_Export_${Date.now()}.json`)
+    await exportEntryListJson(checkedRowKeys.value)
   }
 
   const getMenuOptions = (item: EntryItem) => {

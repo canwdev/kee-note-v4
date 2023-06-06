@@ -141,7 +141,7 @@ export default defineComponent({
       page: 1,
       pageSize: 10,
       showSizePicker: true,
-      pageSizes: [5, 10, 20, 50, 100, 200],
+      pageSizes: [5, 10, 20, 50, 100, 200, 500, 1000],
       onChange: (page: number) => {
         paginationReactive.page = page
       },

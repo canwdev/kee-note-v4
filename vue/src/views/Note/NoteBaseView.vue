@@ -6,7 +6,7 @@ import {useKeeStore} from '@/store/kee-store'
 import DialogInput from '@/components/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {formatDate, handleReadSelectedFile} from '@/utils'
+import {formatDate} from '@/utils'
 import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
 import {useContextMenu} from '@/hooks/use-context-menu'
@@ -18,6 +18,11 @@ import IconDisplay from '@/components/IconDisplay.vue'
 import DialogIconChooser from '@/components/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main-store'
 import {Settings20Filled, LockOpen16Filled} from '@vicons/fluent'
+import {
+  getEntryItemUpdateParams,
+  handleReadSelectedFile,
+  importEntryListJson,
+} from '@/utils/export-import'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -405,23 +410,7 @@ export default defineComponent({
     })
 
     const handleImportJson = async () => {
-      // @ts-ignore
-      const [handle] = await window.showOpenFilePicker({
-        types: [
-          {
-            description: 'JSON',
-            accept: {
-              'application/JSON': ['.json'],
-            },
-          },
-        ],
-      })
-      const file = await handle.getFile()
-
-      const entryItems: EntryItem[] = await handleReadSelectedFile(file, true)
-
-      // TODO: implement
-      console.log('[entryItems]', entryItems)
+      await importEntryListJson(editingUuid.value)
     }
 
     return {

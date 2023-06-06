@@ -19,6 +19,7 @@ import {
   CalendarEdit16Regular,
 } from '@vicons/fluent'
 import AttachmentBox from '@/components/NoteViews/AttachmentBox.vue'
+import {getEntryItemUpdateParams} from '@/utils/export-import'
 
 export default defineComponent({
   name: 'DetailView',
@@ -106,22 +107,13 @@ export default defineComponent({
         return
       }
 
-      // generate update params
-      const fieldsUpdates = []
-      for (const key in entryDetail.value.fieldsV2) {
-        fieldsUpdates.push({path: `fields.${key}`, value: entryDetail.value.fieldsV2[key]})
-      }
-
-      await kService.updateEntry({
+      const params = getEntryItemUpdateParams({
         uuid: entryDetail.value.uuid,
-        updates: [
-          ...fieldsUpdates,
-          {path: 'fgColor', value: entryDetail.value.fgColor},
-          {path: 'bgColor', value: entryDetail.value.bgColor},
-          {path: 'icon', value: entryDetail.value.icon},
-          {path: 'times.creationTime', value: times[0]},
-        ],
+        entryDetail: entryDetail.value,
+        isSetModTime: true,
       })
+
+      await kService.updateEntry(params)
       await syncAndSave()
     }
 
