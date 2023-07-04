@@ -1,15 +1,15 @@
 # KeeNote V4
 
-A safe note editor server & web client, powered by KeePass (kdbxweb) + Nest.js / Electron + Vue 3 (NaiveUI)
+A secure note-editing web & desktop client, powered by KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
 
 ![screenshot](./nest/test/screenshot1.jpg)
 ![screenshot](./nest/test/screenshot2.jpg)
 
 ## Directory Structure
 
-- `electron` App based backend, communicate frontend with IPC 
-- `nest` Web based backend, communicate frontend with HTTP (Support encryption)
-- `vue` Frontend folder, adapt backend(Election or Nest) automatically
+- `electron` App based backend, front end communicates with IPC
+- `nest` Web-based backend, front-end communicates via HTTP (supports encryption)
+- `vue` Frontend folder, automatically adapt backend (Election or Nest)
 
 ## Quick Start Development
 
