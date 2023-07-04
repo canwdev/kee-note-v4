@@ -39,7 +39,7 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
-    const times = reactive([0, 0])
+    const entryDetailTimes = reactive([0, 0])
     const isComplexEditor = useLocalStorageBoolean(LsKeys.LS_KEY_NO_COMPLEX_EDITOR, true)
 
     onMounted(() => {
@@ -90,8 +90,8 @@ export default defineComponent({
         return
       }
       const {creationTime, lastModTime} = val
-      times[0] = new Date(creationTime).getTime()
-      times[1] = new Date(lastModTime).getTime()
+      entryDetailTimes[0] = new Date(creationTime).getTime()
+      entryDetailTimes[1] = new Date(lastModTime).getTime()
     })
 
     watch(
@@ -106,6 +106,8 @@ export default defineComponent({
       if (!entryDetail.value) {
         return
       }
+
+      entryDetail.value.creationTime = new Date(entryDetailTimes[0])
 
       const params = getEntryItemUpdateParams({
         uuid: entryDetail.value.uuid,
@@ -171,7 +173,7 @@ export default defineComponent({
     return {
       entryDetail,
       handleBack,
-      times,
+      entryDetailTimes,
       isChanged,
       handleSave,
       keepassIcons,
@@ -231,7 +233,7 @@ export default defineComponent({
               <n-space align="center">
                 <n-date-picker
                   size="small"
-                  v-model:value="times[0]"
+                  v-model:value="entryDetailTimes[0]"
                   type="datetime"
                   @update:value="isChanged = true"
                   title="Create Time"
@@ -242,7 +244,7 @@ export default defineComponent({
                 </n-date-picker>
                 <n-date-picker
                   size="small"
-                  v-model:value="times[1]"
+                  v-model:value="entryDetailTimes[1]"
                   type="datetime"
                   disabled
                   title="Update Time"
