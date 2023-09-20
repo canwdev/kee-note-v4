@@ -495,7 +495,7 @@ export default defineComponent({
         <n-layout-sider
           collapse-mode="width"
           :collapsed-width="50"
-          :width="248"
+          :width="240"
           show-trigger="arrow-circle"
           bordered
         >

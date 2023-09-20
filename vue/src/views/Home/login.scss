@@ -1,0 +1,17 @@
+
+.login-view {
+  height: 100%;
+
+  :deep(.n-layout-scroll-container) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media screen and (max-height: 500px) {
+      align-items: flex-start;
+    }
+  }
+  .card-wrap {
+    max-width: 500px;
+    margin: 20px;
+  }
+}

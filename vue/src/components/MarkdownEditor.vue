@@ -267,6 +267,9 @@ export default defineComponent({
   min-height: 50px;
   border-radius: 4px;
   border: 1px solid rgb(224, 224, 230);
+  @media screen and (max-height: 500px) {
+    height: calc(100vh - 30px);
+  }
   &._dark {
     border-color: transparent;
   }

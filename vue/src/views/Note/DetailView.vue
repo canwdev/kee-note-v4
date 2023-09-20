@@ -196,7 +196,7 @@ export default defineComponent({
 <template>
   <div class="detail-view">
     <n-layout class="layout-inner-root">
-      <n-layout-header bordered>
+      <n-layout-header class="detail-header" bordered>
         <n-space align="center" justify="space-between" class="header-space">
           <n-button quaternary @click="handleBack">
             <n-icon size="18"> <ArrowLeft16Regular /> </n-icon>&nbsp;Back</n-button
@@ -228,7 +228,7 @@ export default defineComponent({
 
       <div v-if="entryDetail" class="detail-card-wrap">
         <div class="detail-card">
-          <n-space vertical>
+          <n-space vertical class="detail-infos">
             <n-space justify="space-between">
               <n-space align="center">
                 <n-date-picker
@@ -312,23 +312,24 @@ export default defineComponent({
 
               <AttachmentBox :entry-detail="entryDetail" @dataUpdated="syncAndSave" />
             </n-collapse-transition>
-            <MarkdownEditor
-              ref="complexEditorRef"
-              v-if="isComplexEditor"
-              v-model="entryDetail.fieldsV2.Notes"
-              @turnOff="isComplexEditor = false"
-            />
-            <n-input
-              v-else
-              v-model:value="entryDetail.fieldsV2.Notes"
-              type="textarea"
-              placeholder="Input your Note here."
-              :autosize="{
-                minRows: 20,
-              }"
-              style="background-color: inherit !important"
-            />
           </n-space>
+
+          <MarkdownEditor
+            ref="complexEditorRef"
+            v-if="isComplexEditor"
+            v-model="entryDetail.fieldsV2.Notes"
+            @turnOff="isComplexEditor = false"
+          />
+          <n-input
+            v-else
+            v-model:value="entryDetail.fieldsV2.Notes"
+            type="textarea"
+            placeholder="Input your Note here."
+            :autosize="{
+              minRows: 20,
+            }"
+            style="background-color: inherit !important"
+          />
         </div>
       </div>
 
@@ -344,13 +345,26 @@ export default defineComponent({
   height: 100%;
   $min_width: 800px;
 
-  .header-space {
-    width: 100%;
-    height: 100%;
-    padding: 6px 24px;
-    box-sizing: border-box;
-    @media screen and (max-width: $min_width) {
-      padding: 2px;
+  .detail-header {
+    .header-space {
+      width: 100%;
+      height: 100%;
+      padding: 6px 24px;
+      box-sizing: border-box;
+      @media screen and (max-width: $min_width) {
+        padding: 2px;
+      }
+      @media screen and (max-height: 500px) {
+        height: 10px;
+        overflow: hidden;
+        transition: all 0.3s;
+        opacity: 0;
+        &:hover {
+          opacity: 1;
+          height: 100%;
+          border: 1px dashed;
+        }
+      }
     }
   }
 
@@ -375,6 +389,9 @@ export default defineComponent({
       overflow: auto;
       padding-top: 10px;
       padding-bottom: 5px;
+      @media screen and (max-height: 500px) {
+        padding-top: 0;
+      }
     }
 
     .detail-card {
@@ -391,25 +408,43 @@ export default defineComponent({
       @media screen and (max-width: 1200px) {
         margin-top: 10px;
       }
-    }
-  }
-
-  .extra-info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto;
-    gap: 10px;
-    margin-bottom: 10px;
-    @media screen and (max-width: $min_width) {
-      grid-template-columns: repeat(1, 1fr);
-    }
-    .extra-item {
-      display: flex;
-      align-items: center;
-      label {
-        margin-right: 5px;
-        min-width: 70px;
-        text-align: right;
+      @media screen and (max-height: 500px) {
+        margin-top: 1px;
+      }
+      .detail-infos {
+        @media screen and (max-height: 500px) {
+          height: 10px;
+          overflow: hidden;
+          transition: all 0.3s;
+          opacity: 0;
+          &:hover {
+            margin-left: -5px;
+            margin-right: -5px;
+            padding: 5px 5px 0;
+            opacity: 1;
+            outline: 1px dashed;
+            height: 100%;
+          }
+        }
+        .extra-info {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: auto;
+          gap: 10px;
+          margin-bottom: 10px;
+          @media screen and (max-width: $min_width) {
+            grid-template-columns: repeat(1, 1fr);
+          }
+          .extra-item {
+            display: flex;
+            align-items: center;
+            label {
+              margin-right: 5px;
+              min-width: 70px;
+              text-align: right;
+            }
+          }
+        }
       }
     }
   }

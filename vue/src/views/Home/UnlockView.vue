@@ -235,17 +235,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-.login-view {
-  height: 100%;
-
-  :deep(.n-layout-scroll-container) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .card-wrap {
-    max-width: 500px;
-    margin: 20px;
-  }
-}
+@import './login';
 </style>
