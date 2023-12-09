@@ -5,18 +5,8 @@ export const getMyCryptKey = () => localStorage.getItem(LsKeys.LS_KEY_KN_HTTP_CR
 
 export const LsKeys = {
   LS_KEY_AUTHORIZATION: 'ck_keenote_authorization',
-  LS_KEY_THEME: 'ck_keenote_theme',
-  LS_KEY_ENABLE_THEME_EDITOR: 'ck_keenote_enable_theme_editor',
   LS_KEY_KN_HTTP_CRYPT_KEY: 'ck_keenote_KN_HTTP_CRYPT_KEY',
-  LS_KEY_IS_CALENDAR_VIEW: 'ck_keenote_is_calendar_view',
-  LS_KEY_DONT_SAVE_HISTORY: 'ck_keenote_dont_save_history',
-  LS_KEY_HISTORY_LIST: 'ck_keenote_history_list',
-  LS_KEY_NO_COMPLEX_EDITOR: 'ck_keenote_no_complex_editor',
-  LS_KEY_EDITOR_FONT_SIZE: 'ck_keenote_editor_font_size',
-  LS_KEY_EDITOR_FONT_FAMILY: 'ck_keenote_editor_font_family',
-  LS_KEY_EDITOR_NO_WYSIWYG: 'ck_keenote_editor_no_wysiwyg',
-  LS_KEY_EDITOR_THEME: 'ck_keenote_editor_theme',
-  LS_KEY_DETAIL_SHOW_MORE: 'ck_keenote_detail_show_more',
+  GLOBAL_STYLE: 'ck_keenote_global_style',
 }
 
 export const getLocalStorageObject = (key, fallback?) => {

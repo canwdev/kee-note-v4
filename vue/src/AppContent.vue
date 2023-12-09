@@ -1,6 +1,6 @@
 <script lang="ts">
-import AutoRouterView from '@/components/AutoRouterView.vue'
-import GlobalSettings from '@/components/GlobalSettings.vue'
+import AutoRouterView from '@/components/CommonUI/AutoRouterView.vue'
+import GlobalSettings from '@/components/Settings/GlobalSettings.vue'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {kService} from '@/api'
 

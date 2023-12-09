@@ -6,20 +6,23 @@ import keepassIcons from '@/assets/icons'
 import {saveDatabaseAsync} from '@/utils/bus'
 import {useUnSavedChanges} from '@/hooks/use-changed'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
-import MarkdownEditor from '@/components/MarkdownEditor.vue'
+import MarkdownEditor from '@/components/NoteViews/Detail/MarkdownEditor.vue'
 import {LsKeys} from '@/enum'
-import DialogEntryIconColor from '@/components/DialogEntryIconColor.vue'
-import IconDisplay from '@/components/IconDisplay.vue'
-import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
+import DialogEntryIconColor from '@/components/NoteViews/Dialogs/DialogEntryIconColor.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
+import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
 import {
   TextBoxSettings24Regular,
   ArrowLeft16Regular,
   Save20Regular,
   CalendarAdd20Regular,
   CalendarEdit16Regular,
+  MoreCircle20Regular,
+  MoreCircle20Filled,
 } from '@vicons/fluent'
-import AttachmentBox from '@/components/NoteViews/AttachmentBox.vue'
+import AttachmentBox from '@/components/NoteViews/Detail/AttachmentBox.vue'
 import {getEntryItemUpdateParams} from '@/utils/export-import'
+import {useEditorSettingsStore} from '@/store/editor'
 
 export default defineComponent({
   name: 'DetailView',
@@ -34,13 +37,16 @@ export default defineComponent({
     CalendarAdd20Regular,
     CalendarEdit16Regular,
     AttachmentBox,
+    MoreCircle20Regular,
+    MoreCircle20Filled,
   },
   setup() {
     const router = useRouter()
     const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
     const entryDetailTimes = reactive([0, 0])
-    const isComplexEditor = useLocalStorageBoolean(LsKeys.LS_KEY_NO_COMPLEX_EDITOR, true)
+
+    const editorSettingsStore = useEditorSettingsStore()
 
     onMounted(() => {
       getEntryDetail(true)
@@ -138,11 +144,11 @@ export default defineComponent({
             },
           },
         },
-        !isComplexEditor.value && {
+        !editorSettingsStore.isAdvancedEditor && {
           label: '💫 Enable HyperMD Editor',
           props: {
             onClick: async () => {
-              isComplexEditor.value = true
+              editorSettingsStore.isAdvancedEditor = true
             },
           },
         },
@@ -168,16 +174,14 @@ export default defineComponent({
       router.back()
     }
 
-    const isShowMore = useLocalStorageBoolean(LsKeys.LS_KEY_DETAIL_SHOW_MORE, false)
-
     return {
+      editorSettingsStore,
       entryDetail,
       handleBack,
       entryDetailTimes,
       isChanged,
       handleSave,
       keepassIcons,
-      isComplexEditor,
       complexEditorRef,
       showEditorSettings() {
         complexEditorRef.value.showSettings()
@@ -186,7 +190,6 @@ export default defineComponent({
       menuOptions,
       isShowPreviewModal,
       titleInputRef,
-      isShowMore,
       syncAndSave,
     }
   },
@@ -255,13 +258,23 @@ export default defineComponent({
                 </n-date-picker>
               </n-space>
 
-              <n-space align="center">
-                <n-switch size="small" v-model:value="isShowMore" title="Toggle more details" />
+              <n-space size="small" align="center">
+                <n-button
+                  size="small"
+                  quaternary
+                  @click="editorSettingsStore.isShowMore = !editorSettingsStore.isShowMore"
+                  title="Toggle more details"
+                >
+                  <n-icon size="18">
+                    <MoreCircle20Filled v-if="editorSettingsStore.isShowMore" />
+                    <MoreCircle20Regular v-else />
+                  </n-icon>
+                </n-button>
 
                 <n-button
                   size="small"
                   quaternary
-                  v-if="isComplexEditor"
+                  v-if="editorSettingsStore.isAdvancedEditor"
                   @click="showEditorSettings"
                   title="Editor Settings"
                 >
@@ -284,7 +297,7 @@ export default defineComponent({
               </n-input>
             </n-input-group>
 
-            <n-collapse-transition :show="entryDetail && isShowMore">
+            <n-collapse-transition :show="entryDetail && editorSettingsStore.isShowMore">
               <div class="extra-info">
                 <div class="extra-item">
                   <label>Username</label>
@@ -316,9 +329,9 @@ export default defineComponent({
 
           <MarkdownEditor
             ref="complexEditorRef"
-            v-if="isComplexEditor"
+            v-if="editorSettingsStore.isAdvancedEditor"
             v-model="entryDetail.fieldsV2.Notes"
-            @turnOff="isComplexEditor = false"
+            @turnOff="editorSettingsStore.isAdvancedEditor = false"
           />
           <n-input
             v-else
@@ -431,7 +444,6 @@ export default defineComponent({
           grid-template-columns: repeat(3, 1fr);
           grid-template-rows: auto;
           gap: 10px;
-          margin-bottom: 10px;
           @media screen and (max-width: $min_width) {
             grid-template-columns: repeat(1, 1fr);
           }

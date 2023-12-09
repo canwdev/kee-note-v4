@@ -3,11 +3,11 @@ import {DataTableColumns, DataTableRowKey, NButton, NIcon, NDataTable, NDropdown
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
-import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
+import DialogGroupSelect from '@/components/NoteViews/Dialogs/DialogGroupSelect.vue'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
-import IconDisplay from '@/components/IconDisplay.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
-import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
+import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
 import {MoreHorizontal20Filled} from '@vicons/fluent'
 
 export default defineComponent({

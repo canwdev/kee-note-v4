@@ -1,9 +1,9 @@
-type MainStore = {
+type Main = {
   isAppDarkMode: boolean
 }
 
 export const useMainStore = defineStore('mainStore', {
-  state: (): MainStore => {
+  state: (): Main => {
     return {
       isAppDarkMode: true,
     }

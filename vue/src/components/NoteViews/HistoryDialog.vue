@@ -4,6 +4,7 @@ import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {getLocalStorageObject, LsKeys} from '@/enum'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {Delete16Filled, History24Regular} from '@vicons/fluent'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'HistoryDialog',
@@ -18,23 +19,21 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const mVisible = useModelWrapper(props, emit, 'visible')
-    const isSaveHistory = useLocalStorageBoolean(LsKeys.LS_KEY_DONT_SAVE_HISTORY, true)
-    const historyList = ref(getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, []))
+    const settingsStore = useSettingsStore()
 
     const handleClearHistory = () => {
-      localStorage.removeItem(LsKeys.LS_KEY_HISTORY_LIST)
-      historyList.value = []
+      settingsStore.historyList = []
     }
 
     const removeHistoryItem = (index: number) => {
-      historyList.value.splice(index, 1)
-      localStorage.setItem(LsKeys.LS_KEY_HISTORY_LIST, JSON.stringify(historyList.value))
+      const list = [...settingsStore.historyList]
+      list.splice(index, 1)
+      settingsStore.historyList = list
     }
 
     return {
       mVisible,
-      isSaveHistory,
-      historyList,
+      settingsStore,
       removeHistoryItem,
       dialogIconRender() {
         return h(History24Regular)
@@ -50,13 +49,18 @@ export default defineComponent({
       <n-list-item>
         <n-thing title="Enable History" description="" />
         <template #suffix>
-          <n-switch v-model:value="isSaveHistory" />
+          <n-switch v-model:value="settingsStore.isSaveHistory" />
         </template>
       </n-list-item>
-      <n-list-item v-if="isSaveHistory">
-        <n-list v-if="historyList && historyList.length" bordered hoverable clickable>
+      <n-list-item v-if="settingsStore.isSaveHistory">
+        <n-list
+          v-if="settingsStore.historyList && settingsStore.historyList.length"
+          bordered
+          hoverable
+          clickable
+        >
           <n-list-item
-            v-for="(item, index) in historyList"
+            v-for="(item, index) in settingsStore.historyList"
             :key="item.dbPath"
             @click="$emit('historyItemClick', item)"
           >

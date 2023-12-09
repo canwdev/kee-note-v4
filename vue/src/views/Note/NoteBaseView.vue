@@ -3,7 +3,7 @@ import {kService} from '@/api'
 import {EntryItem, GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
-import DialogInput from '@/components/DialogInput.vue'
+import DialogInput from '@/components/NoteViews/Dialogs/DialogInput.vue'
 import {useRoute, useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {formatDate} from '@/utils'
@@ -13,16 +13,17 @@ import {useContextMenu} from '@/hooks/use-context-menu'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import ListView from '@/components/NoteViews/ListView.vue'
-import CalendarView from '@/components/NoteViews/CalendarView.vue'
-import IconDisplay from '@/components/IconDisplay.vue'
-import DialogIconChooser from '@/components/DialogIconChooser.vue'
-import {useMainStore} from '@/store/main-store'
+import CalendarView from '@/components/NoteViews/Calendar/CalendarView.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
+import DialogIconChooser from '@/components/NoteViews/Dialogs/DialogIconChooser.vue'
+import {useMainStore} from '@/store/main'
 import {Settings20Filled, LockOpen16Filled} from '@vicons/fluent'
 import {
   getEntryItemUpdateParams,
   handleReadSelectedFile,
   importEntryListJson,
 } from '@/utils/export-import'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -42,7 +43,7 @@ export default defineComponent({
     const keeStore = useKeeStore()
     const mainStore = useMainStore()
 
-    const isCalendarView = useLocalStorageBoolean(LsKeys.LS_KEY_IS_CALENDAR_VIEW)
+    const settingsStore = useSettingsStore()
 
     onMounted(async () => {
       globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
@@ -52,7 +53,6 @@ export default defineComponent({
     })
 
     onActivated(async () => {
-      isCalendarView.value = Boolean(localStorage.getItem(LsKeys.LS_KEY_IS_CALENDAR_VIEW))
       keeStore.isDbOpened = await kService.checkIsOpen()
       if (keeStore.isDbOpened) {
         await getGroupTree()
@@ -363,10 +363,10 @@ export default defineComponent({
     const menuOptions = computed(() => {
       const options = [
         {
-          label: isCalendarView.value ? '📃 List View' : '📅 Calendar View',
+          label: settingsStore.isCalendarView ? '📃 List View' : '📅 Calendar View',
           props: {
             onClick: () => {
-              isCalendarView.value = !isCalendarView.value
+              settingsStore.isCalendarView = !settingsStore.isCalendarView
             },
           },
         },
@@ -443,7 +443,7 @@ export default defineComponent({
           },
         }
       },
-      isCalendarView,
+      settingsStore,
     }
   },
 })
@@ -498,6 +498,8 @@ export default defineComponent({
           :width="240"
           show-trigger="arrow-circle"
           bordered
+          :collapsed="settingsStore.isSidebarCollapsed"
+          @updateCollapsed="(val) => (settingsStore.isSidebarCollapsed = val)"
         >
           <n-scrollbar x-scrollable>
             <n-tree
@@ -545,7 +547,7 @@ export default defineComponent({
         />
 
         <n-layout-content>
-          <CalendarView v-if="isCalendarView" />
+          <CalendarView v-if="settingsStore.isCalendarView" />
           <ListView v-else />
         </n-layout-content>
       </n-layout>

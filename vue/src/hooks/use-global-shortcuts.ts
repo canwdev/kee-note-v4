@@ -1,4 +1,4 @@
-import {useMainStore} from '@/store/main-store'
+import {useMainStore} from '@/store/main'
 import {isElectron} from '@/utils/backend'
 import {copyToClipboard} from '@/utils'
 

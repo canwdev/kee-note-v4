@@ -1,62 +1,37 @@
+import {useSettingsStore} from '@/store/settings'
+import {LdThemeType} from '@/enum/settings'
+
+import {useMainStore} from '@/store/main'
 import {LsKeys} from '@/enum'
-import {useMainStore} from '@/store/main-store'
-
-export enum ThemeType {
-  SYSTEM = 0,
-  LIGHT = 1,
-  DARK = 2,
-}
-
-export const themeOptions = [
-  {
-    label: 'Follow System',
-    value: ThemeType.SYSTEM,
-  },
-  {
-    label: 'Light Theme',
-    value: ThemeType.LIGHT,
-  },
-  {
-    label: 'Dark Theme',
-    value: ThemeType.DARK,
-  },
-]
-
-export const getUserTheme = () =>
-  Number(localStorage.getItem(LsKeys.LS_KEY_THEME)) || ThemeType.SYSTEM
+import {createOrFindStyleNode} from '@/utils/dom'
 
 const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
 
-export const useHandleThemeChange = () => {
-  const mainStore = useMainStore()
-
-  const handleThemeChange = (val: ThemeType) => {
-    if (val === ThemeType.SYSTEM) {
-      mainStore.isAppDarkMode = getSystemIsDarkMode()
-    } else if (val === ThemeType.LIGHT) {
-      mainStore.isAppDarkMode = false
-    } else if (val === ThemeType.DARK) {
-      mainStore.isAppDarkMode = true
-    }
-    localStorage.setItem(LsKeys.LS_KEY_THEME, String(val))
-  }
-
-  return {
-    handleThemeChange,
-  }
-}
-
 export const useGlobalTheme = () => {
   const mainStore = useMainStore()
-  const {handleThemeChange} = useHandleThemeChange()
-  handleThemeChange(getUserTheme())
+  const settingsStore = useSettingsStore()
+
+  const handleThemeChange = (val: LdThemeType) => {
+    if (val === LdThemeType.SYSTEM) {
+      mainStore.isAppDarkMode = getSystemIsDarkMode()
+    } else if (val === LdThemeType.LIGHT) {
+      mainStore.isAppDarkMode = false
+    } else if (val === LdThemeType.DARK) {
+      mainStore.isAppDarkMode = true
+    }
+    settingsStore.ldTheme = val
+  }
+
+  handleThemeChange(settingsStore.ldTheme)
 
   const handleSystemThemeChange = (event: any) => {
-    if (getUserTheme() === ThemeType.SYSTEM) {
+    if (settingsStore.ldTheme === LdThemeType.SYSTEM) {
       mainStore.isAppDarkMode = Boolean(event.matches)
     }
   }
+
+  watch(() => settingsStore.ldTheme, handleThemeChange)
 
   onMounted(() => {
     window
@@ -74,5 +49,45 @@ export const useGlobalTheme = () => {
 
   return {
     isAppDarkMode,
+  }
+}
+
+/**
+ * 使用全局样式
+ */
+export const useGlobalStyle = () => {
+  const styleEl = ref<HTMLElement | null>(null)
+  const globalStyleText = ref('')
+  const settingsStore = useSettingsStore()
+
+  const applyGlobalStyle = () => {
+    if (styleEl.value) {
+      if (settingsStore.enableGlobalCss) {
+        styleEl.value.innerHTML = globalStyleText.value
+        localStorage.setItem(LsKeys.GLOBAL_STYLE, globalStyleText.value)
+      } else {
+        styleEl.value.innerHTML = ''
+      }
+    }
+  }
+
+  watch(
+    () => settingsStore.enableGlobalCss,
+    (val) => {
+      applyGlobalStyle()
+    }
+  )
+
+  onMounted(() => {
+    styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
+    globalStyleText.value =
+      localStorage.getItem(LsKeys.GLOBAL_STYLE) || 'body {font-family: "LXGW WenKai", "楷体";}'
+
+    applyGlobalStyle()
+  })
+
+  return {
+    globalStyleText,
+    applyGlobalStyle,
   }
 }

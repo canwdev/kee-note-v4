@@ -3,8 +3,8 @@ import {defineComponent, PropType} from 'vue'
 import {EntryItem} from '@/enum/kdbx'
 import {getAttachment, removeAttachment, renameAttachment, uploadAttachment} from '@/api/keepass'
 import {Attach12Regular, MoreVertical16Regular} from '@vicons/fluent'
-import AttachmentPreview from '@/components/NoteViews/AttachmentPreview.vue'
-import DialogInput from '@/components/DialogInput.vue'
+import AttachmentPreview from '@/components/NoteViews/Detail/AttachmentPreview.vue'
+import DialogInput from '@/components/NoteViews/Dialogs/DialogInput.vue'
 
 export default defineComponent({
   name: 'AttachmentBox',
@@ -149,5 +149,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .attachment-box {
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 </style>

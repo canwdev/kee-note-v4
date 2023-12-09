@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
-import IconDisplay from '@/components/IconDisplay.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import keepassIcons from '@/assets/icons'
 import {Icons20Regular} from '@vicons/fluent'
 

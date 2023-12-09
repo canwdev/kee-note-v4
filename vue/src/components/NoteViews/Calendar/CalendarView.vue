@@ -2,15 +2,15 @@
 import {defineComponent} from 'vue'
 import {Calendar} from 'v-calendar'
 import 'v-calendar/dist/style.css'
-import {useMainStore} from '@/store/main-store'
+import {useMainStore} from '@/store/main'
 import LunarDay from '@/components/NoteViews/Calendar/LunarDay.vue'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
 import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
-import IconDisplay from '@/components/IconDisplay.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
-import DialogGroupSelect from '@/components/DialogGroupSelect.vue'
-import DialogEntryPreview from '@/components/DialogEntryPreview.vue'
+import DialogGroupSelect from '@/components/NoteViews/Dialogs/DialogGroupSelect.vue'
+import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
 
 export default defineComponent({
   name: 'CalendarView',
@@ -27,19 +27,6 @@ export default defineComponent({
 
     const calendarRef = ref()
     const currentDateRef = ref(new Date())
-    const isInitialized = ref(false)
-
-    // trigger refresh when init
-    const initCalendar = () => {
-      const calendar = calendarRef.value
-
-      const date = currentDateRef.value
-      const year = date.getFullYear()
-      const month = date.getMonth()
-
-      calendar.move({month: month + 1, year: year})
-      isInitialized.value = true
-    }
 
     const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
       isCalendar: true,
@@ -60,7 +47,6 @@ export default defineComponent({
       if (keeStore.isDbOpened) {
         await getEntryList()
       }
-      initCalendar()
     })
 
     const calendarAttributes = computed(() => {
@@ -96,11 +82,11 @@ export default defineComponent({
       handleContextmenu(event, attr.customData)
     }
 
-    const handlePageChange = ({year, month}) => {
-      if (!isInitialized.value) return
-      // console.log('handlePageChange', year, month)
-      currentDateRef.value = new Date(year, month - 1, 1)
-      getEntryList()
+    const handlePageChange = ([data]) => {
+      const {year, month} = data
+      console.log('handlePageChange', data)
+      // currentDateRef.value = new Date(year, month, 1)
+      // getEntryList()
     }
 
     const {
@@ -130,12 +116,14 @@ export default defineComponent({
       getMenuOptions,
       ...contextMenuEtc,
       groupUuid,
+      currentDateRef,
     }
   },
 })
 </script>
 <template>
   <div class="calendar-view">
+    TODO: FIX: {{ currentDateRef }}
     <n-scrollbar trigger="none" x-scrollable>
       <div class="content-padding">
         <Calendar
@@ -146,7 +134,7 @@ export default defineComponent({
           :attributes="calendarAttributes"
           title-position="left"
           trim-weeks
-          @update:from-page="handlePageChange"
+          @update:pages="handlePageChange"
         >
           <template v-slot:day-content="{day, attributes}">
             <div class="day-content">
@@ -281,15 +269,16 @@ export default defineComponent({
       text-align: left;
       height: var(--day-height);
       min-width: var(--day-width);
+      z-index: 0;
 
       &.weekday-1,
       &.weekday-7 {
         .lunar-label {
-          color: $color_theme_red;
+          color: $color_theme_alt;
         }
 
         .day-label {
-          color: $color_theme_red;
+          color: $color_theme_alt;
         }
       }
 
@@ -306,7 +295,7 @@ export default defineComponent({
           font-size: 12px;
           transform: scale(0.8);
           transform-origin: right top;
-          background: $color_theme_red;
+          background: $color_theme_alt;
           border-radius: 50%;
           text-align: center;
         }
@@ -318,7 +307,7 @@ export default defineComponent({
           left: 0;
           right: 0;
           height: 2px;
-          background: $color_theme_red;
+          background: $color_theme_alt;
         }
       }
 

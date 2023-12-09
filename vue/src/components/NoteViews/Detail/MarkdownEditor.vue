@@ -30,8 +30,9 @@ import 'codemirror/theme/base16-light.css'
 import 'codemirror/theme/duotone-light.css'
 import 'codemirror/theme/lucario.css'
 import 'codemirror/theme/zenburn.css'
-import {useMainStore} from '@/store/main-store'
+import {useMainStore} from '@/store/main'
 import {TextBoxSettings24Regular} from '@vicons/fluent'
+import {useEditorSettingsStore} from '@/store/editor'
 
 const cmThemeList = [
   'keenote-light',
@@ -69,32 +70,41 @@ export default defineComponent({
     const mainStore = useMainStore()
     const mValue = useModelWrapper(props, emit)
     const textareaRef = ref()
-    const editorFontSize = useLocalStorageNumber(LsKeys.LS_KEY_EDITOR_FONT_SIZE, 14)
-    const isEditWYSIWYG = useLocalStorageBoolean(LsKeys.LS_KEY_EDITOR_NO_WYSIWYG, true)
-    const editorFontFamily = useLocalStorageString(LsKeys.LS_KEY_EDITOR_FONT_FAMILY, 'inherit')
-    const editorTheme = useLocalStorageString(LsKeys.LS_KEY_EDITOR_THEME, '')
+    const editorSettingsStore = useEditorSettingsStore()
 
-    watch(editorFontSize, () => {
-      setFontSize()
-    })
-    watch(isEditWYSIWYG, (val) => {
-      if (val) {
-        HyperMD.switchToHyperMD(editorInstance)
-      } else {
-        HyperMD.switchToNormal(editorInstance)
+    watch(
+      () => editorSettingsStore.editorFontSize,
+      () => {
+        setFontSize()
       }
-      setEditorTheme(editorTheme.value)
-    })
-    watch(editorFontFamily, () => {
-      setFontFamily()
-    })
-    watch(editorTheme, (val) => {
-      setEditorTheme(val)
-    })
+    )
+    watch(
+      () => editorSettingsStore.isEditWYSIWYG,
+      (val) => {
+        if (val) {
+          HyperMD.switchToHyperMD(editorInstance)
+        } else {
+          HyperMD.switchToNormal(editorInstance)
+        }
+        setEditorTheme(editorSettingsStore.editorTheme)
+      }
+    )
+    watch(
+      () => editorSettingsStore.editorFontFamily,
+      () => {
+        setFontFamily()
+      }
+    )
+    watch(
+      () => editorSettingsStore.editorTheme,
+      (val) => {
+        setEditorTheme(val)
+      }
+    )
     watch(
       () => mainStore.isAppDarkMode,
       () => {
-        setEditorTheme(editorTheme.value)
+        setEditorTheme(editorSettingsStore.editorTheme)
       }
     )
 
@@ -107,13 +117,13 @@ export default defineComponent({
 
     const setFontFamily = (editor = editorInstance) => {
       const el = editorInstance.display.wrapper
-      el.style.fontFamily = editorFontFamily.value || null
+      el.style.fontFamily = editorSettingsStore.editorFontFamily || null
       editor.refresh()
     }
 
     const setFontSize = (editor = editorInstance) => {
       const el = editor.display.wrapper
-      el.style.fontSize = editorFontSize.value + 'px'
+      el.style.fontSize = editorSettingsStore.editorFontSize + 'px'
       editor.refresh()
     }
 
@@ -124,13 +134,13 @@ export default defineComponent({
       })
       editorInstance = editor
 
-      if (!isEditWYSIWYG.value) {
+      if (!editorSettingsStore.isEditWYSIWYG) {
         HyperMD.switchToNormal(editor)
       }
       editor.setSize(null, '100%') // set height
       setFontFamily()
       setFontSize()
-      setEditorTheme(editorTheme.value)
+      setEditorTheme(editorSettingsStore.editorTheme)
       editor.on('change', () => {
         mValue.value = editor.getValue()
       })
@@ -140,7 +150,7 @@ export default defineComponent({
     const handleCtrlScroll = (event) => {
       if (event.ctrlKey) {
         event.preventDefault()
-        let fz = editorFontSize.value
+        let fz = editorSettingsStore.editorFontSize
         if (editorInstance) {
           if (event.deltaY > 0) {
             if (fz <= 0) {
@@ -150,7 +160,7 @@ export default defineComponent({
           } else {
             fz += 1
           }
-          editorFontSize.value = fz
+          editorSettingsStore.editorFontSize = fz
           setFontSize()
           // window.$message.info(`font size: ${fz}px`, {
           //   duration: 1000,
@@ -173,10 +183,7 @@ export default defineComponent({
       mainStore,
       textareaRef,
       isShowEditorSettings,
-      editorFontSize,
-      isEditWYSIWYG,
-      editorFontFamily,
-      editorTheme,
+      editorSettingsStore,
       editorThemeOptions: [
         {label: 'Auto (Follow System)', value: ''},
         ...cmThemeList.map((i) => ({
@@ -211,7 +218,7 @@ export default defineComponent({
           <template #suffix>
             <n-input-group>
               <n-input-number
-                v-model:value="editorFontSize"
+                v-model:value="editorSettingsStore.editorFontSize"
                 style="width: 100px"
                 :update-value-on-input="false"
               />
@@ -222,14 +229,14 @@ export default defineComponent({
         <n-list-item>
           <n-thing title="Enable WYSIWYG" description="" />
           <template #suffix>
-            <n-switch v-model:value="isEditWYSIWYG" />
+            <n-switch v-model:value="editorSettingsStore.isEditWYSIWYG" />
           </template>
         </n-list-item>
         <n-list-item>
           <n-thing title="Font Family" description="" />
           <template #suffix>
             <n-input
-              v-model:value="editorFontFamily"
+              v-model:value="editorSettingsStore.editorFontFamily"
               style="width: 200px"
               placeholder="CSS font-family value"
             />
@@ -239,7 +246,7 @@ export default defineComponent({
           <n-thing title="Editor Theme" description="" />
           <template #suffix>
             <n-select
-              v-model:value="editorTheme"
+              v-model:value="editorSettingsStore.editorTheme"
               :options="editorThemeOptions"
               style="width: 200px"
             />

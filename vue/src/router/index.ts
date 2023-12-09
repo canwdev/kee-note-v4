@@ -3,6 +3,7 @@ import LoginView from '@/views/Home/LoginView.vue'
 import UnlockView from '@/views/Home/UnlockView.vue'
 import {isElectron} from '@/utils/backend'
 import {LsKeys} from '@/enum'
+import pkg from '../../package.json'
 
 const constantRoutes = [
   {
@@ -47,6 +48,10 @@ const constantRoutes = [
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL || ''),
   routes: constantRoutes,
+})
+
+router.afterEach((to, _, failure) => {
+  document.title = (to?.meta?.title as string) || `KeeNote v${pkg.version}`
 })
 
 export default router

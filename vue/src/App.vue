@@ -6,6 +6,7 @@ import {useGlobalTheme} from './hooks/use-global-theme'
 import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import {useGlobalShortcuts} from '@/hooks/use-global-shortcuts'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   setup() {
@@ -19,7 +20,9 @@ export default defineComponent({
         primaryColorSuppl: '#36AD95FF',
       },
     }
-    const isEnableThemeEdit = useLocalStorageBoolean(LsKeys.LS_KEY_ENABLE_THEME_EDITOR)
+    const settingsStore = useSettingsStore()
+
+    const isEnableThemeEdit = computed(() => settingsStore.isEnableThemeEdit)
     useGlobalShortcuts()
     return {
       ...useGlobalTheme(),

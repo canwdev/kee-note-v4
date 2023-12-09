@@ -2,9 +2,9 @@
 import {defineComponent, PropType} from 'vue'
 import {useModelWrapper} from '@/hooks/use-model-wrapper'
 import {EntryItem} from '@/enum/kdbx'
-import IconDisplay from '@/components/IconDisplay.vue'
+import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {Palette} from '@/enum'
-import DialogIconChooser from '@/components/DialogIconChooser.vue'
+import DialogIconChooser from '@/components/NoteViews/Dialogs/DialogIconChooser.vue'
 import {Icons20Regular} from '@vicons/fluent'
 
 export default defineComponent({

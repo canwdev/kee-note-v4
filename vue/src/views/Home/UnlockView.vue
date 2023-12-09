@@ -13,6 +13,7 @@ import {
   KeyMultiple20Regular,
   History16Regular,
 } from '@vicons/fluent'
+import {useSettingsStore} from '@/store/settings'
 
 interface ModelType {
   dbPath: string | null
@@ -48,8 +49,13 @@ export default defineComponent({
       ],
     }
 
+    const settingsStore = useSettingsStore()
+
     const updateHistory = () => {
-      const historyList = getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, [])
+      if (!settingsStore.isSaveHistory) {
+        return
+      }
+      const historyList = [...settingsStore.historyList]
       const index = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
       if (index > -1) {
         historyList.splice(index, 1)
@@ -58,11 +64,11 @@ export default defineComponent({
         dbPath: modelRef.value.dbPath,
         keyPath: modelRef.value.keyPath,
       })
-      setLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, historyList)
+      settingsStore.historyList = historyList
     }
 
     const loadFirstHistory = () => {
-      const historyList = getLocalStorageObject(LsKeys.LS_KEY_HISTORY_LIST, [])
+      const historyList = settingsStore.historyList
       if (historyList.length > 0) {
         modelRef.value.dbPath = historyList[0].dbPath
         modelRef.value.keyPath = historyList[0].keyPath

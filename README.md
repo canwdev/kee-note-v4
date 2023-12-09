@@ -1,9 +1,31 @@
-# KeeNote V4
+# KeeNote
 
-A secure note-editing web & desktop client, powered by KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
+- 安全的本地笔记App (Electron App + Web UI)
+- 技术栈： KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
+
+---
+
+- A secure note-editing app (Electron Desktop App + Web UI)
+- Powered by KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
+
+## Screenshot
+
+Open a kdbx database:
 
 ![screenshot](./nest/test/screenshot1.jpg)
+
+Tree view + list view:
+
 ![screenshot](./nest/test/screenshot2.jpg)
+
+Calendar view:
+
+![screenshot](./nest/test/screenshot4.jpg)
+
+Editing view:
+
+![screenshot](./nest/test/screenshot3.jpg)
+
 
 ## Directory Structure
 
@@ -11,7 +33,7 @@ A secure note-editing web & desktop client, powered by KeePass (kdbxweb) + Nest.
 - `nest` Web-based backend, front-end communicates via HTTP (supports encryption)
 - `vue` Frontend folder, automatically adapt backend (Election or Nest)
 
-## Quick Start Development
+## Development
 
 1. Start frontend development
 

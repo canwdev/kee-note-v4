@@ -1,7 +1,7 @@
 {
  "name": "frontend",
  "private": true,
- "version": "0.0.0",
+ "version": "4.0.7",
  "type": "module",
  "scripts": {
   "dev": "vite",
@@ -24,6 +24,7 @@
   "mitt": "^3.0.0",
   "normalize.css": "^8.0.1",
   "pinia": "^2.1.4",
+  "pinia-plugin-persistedstate": "^3.2.0",
   "solarlunar": "^2.0.7",
   "v-calendar": "^3.0.3",
   "vue": "^3.3.4",

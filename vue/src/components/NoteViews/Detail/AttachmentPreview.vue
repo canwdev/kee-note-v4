@@ -10,7 +10,7 @@ import {
   ArrowNext20Regular,
   Rename16Regular,
 } from '@vicons/fluent'
-import DialogInput from '@/components/DialogInput.vue'
+import DialogInput from '@/components/NoteViews/Dialogs/DialogInput.vue'
 import {aLinkDownload} from '@/utils/export-import'
 
 export default defineComponent({
