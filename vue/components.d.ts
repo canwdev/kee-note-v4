@@ -12,7 +12,6 @@ declare module '@vue/runtime-core' {
     AttachmentBox: typeof import('./src/components/NoteViews/Detail/AttachmentBox.vue')['default']
     AttachmentPreview: typeof import('./src/components/NoteViews/Detail/AttachmentPreview.vue')['default']
     AutoRouterView: typeof import('./src/components/CommonUI/AutoRouterView.vue')['default']
-    Calendar: typeof import('./src/components/CommonUI/Calendar/index.vue')['default']
     CalendarLite: typeof import('./src/components/CommonUI/CalendarLite/index.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/Calendar/CalendarView.vue')['default']
     DialogEntryIconColor: typeof import('./src/components/NoteViews/Dialogs/DialogEntryIconColor.vue')['default']
@@ -22,7 +21,6 @@ declare module '@vue/runtime-core' {
     DialogInput: typeof import('./src/components/NoteViews/Dialogs/DialogInput.vue')['default']
     DialogTextEdit: typeof import('./src/components/CommonUI/DialogTextEdit.vue')['default']
     GlobalSettings: typeof import('./src/components/Settings/GlobalSettings.vue')['default']
-    'GlobalSettings.bak': typeof import('./src/components/GlobalSettings.bak.vue')['default']
     HistoryDialog: typeof import('./src/components/NoteViews/HistoryDialog.vue')['default']
     IconDisplay: typeof import('./src/components/NoteViews/IconDisplay.vue')['default']
     ItemAction: typeof import('./src/components/CommonUI/OptionUI/ItemAction.vue')['default']
@@ -70,7 +68,6 @@ declare module '@vue/runtime-core' {
     RectSwitch: typeof import('./src/components/CommonUI/OptionUI/Tools/RectSwitch.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SettingsApp: typeof import('./src/components/Settings/SettingsApp/index.vue')['default']
     VueRender: typeof import('./src/components/CommonUI/OptionUI/Tools/VueRender.vue')['default']
   }
 }
