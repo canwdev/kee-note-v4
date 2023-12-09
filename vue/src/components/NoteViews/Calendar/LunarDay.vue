@@ -17,6 +17,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    debug: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const {year, month, day} = toRefs(props)
@@ -31,7 +35,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <span :title="JSON.stringify(lunarData, null, 2)">
-    {{ lunarData.dayCn }}
+  <span
+    class="lunar-day"
+    :class="{'is-term': lunarData.term}"
+    :title="debug ? JSON.stringify(lunarData, null, 2) : ''"
+  >
+    <slot name="lunar" :data="lunarData"
+      >{{ lunarData.term ? lunarData.term : lunarData.dayCn }}
+    </slot>
   </span>
 </template>
+
+<style lang="scss">
+.lunar-day {
+  &.is-term {
+    position: relative;
+    &::after {
+      content: ' ';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: rgba($color_theme, 0.2);
+    }
+  }
+}
+</style>

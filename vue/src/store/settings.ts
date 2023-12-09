@@ -9,6 +9,8 @@ interface IStore {
   isSaveHistory: boolean
   historyList: any[]
   isCalendarView: boolean
+  // 是否显示农历
+  isCalendarShowLunar: boolean
   isSidebarCollapsed: boolean
 }
 
@@ -21,6 +23,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       isSaveHistory: true,
       historyList: [],
       isCalendarView: false,
+      isCalendarShowLunar: true,
       isSidebarCollapsed: false,
     }
   },

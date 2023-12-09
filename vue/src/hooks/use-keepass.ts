@@ -8,7 +8,10 @@ interface CalendarData {
   // year
   [key: string]: {
     // month
-    [key: string]: EntryItem[]
+    [key: string]: {
+      // date
+      [key: string]: EntryItem[]
+    }
   }
 }
 

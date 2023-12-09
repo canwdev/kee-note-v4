@@ -363,7 +363,7 @@ export default defineComponent({
     const menuOptions = computed(() => {
       const options = [
         {
-          label: settingsStore.isCalendarView ? '📃 List View' : '📅 Calendar View',
+          label: settingsStore.isCalendarView ? '📃 List View' : '📅 CalendarLite View',
           props: {
             onClick: () => {
               settingsStore.isCalendarView = !settingsStore.isCalendarView

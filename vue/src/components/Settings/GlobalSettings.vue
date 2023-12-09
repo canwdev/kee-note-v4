@@ -89,6 +89,13 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
+            {
+              label: 'Calendar: Show Lunar Day',
+              subtitle: '是否显示农历',
+              key: 'isCalendarShowLunar',
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+            },
           ],
         },
         isElectron
