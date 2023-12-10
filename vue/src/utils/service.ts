@@ -21,13 +21,13 @@ function Service(config: any) {
     myCrypt = new MyCrypt(encryptionKey)
   }
 
-  globalEventBus.on(GlobalEvents.UPDATE_KN_HTTP_CRYPT_KEY, (myCryptKey) => {
-    if (myCrypt) {
-      myCrypt.setKey(String(myCryptKey))
-    } else {
-      myCrypt = new MyCrypt(String(myCryptKey))
-    }
-  })
+  // globalEventBus.on(GlobalEvents.UPDATE_KN_HTTP_CRYPT_KEY, (myCryptKey) => {
+  //   if (myCrypt) {
+  //     myCrypt.setKey(String(myCryptKey))
+  //   } else {
+  //     myCrypt = new MyCrypt(String(myCryptKey))
+  //   }
+  // })
 
   // 创建 axios 实例
   const service = axios.create({

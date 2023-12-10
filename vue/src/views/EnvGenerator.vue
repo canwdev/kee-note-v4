@@ -25,20 +25,22 @@ const EnvConfigMap = {
   JWT_EXPIRES_IN: {
     label: 'JWT Expires In',
     tip: 'Eg: 60, "2 days", "10h", "7d". A numeric value is interpreted as a seconds count. <a href="https://github.com/auth0/node-jsonwebtoken#usage" target="_blank">node-jsonwebtoken#usage</a>',
-    value: '1d',
+    value: '30d',
     required: true,
   },
   AUTH_USERS: {
     label: 'HTTP Auth users',
     tip: '',
-    value: genUserData('test', '__REPLACE_ME__'),
+    value: '', // genUserData('admin', 'admin')
     required: true,
+    placeholder: 'Please generate by right button',
   },
   KN_KDBX_CONFIG_PATH: {
     label: 'Kdbx config path',
-    tip: 'Absolute path for db-config.json, the database will be loaded once the server starts. If not set, it will load test/db-config.json<br>Eg: D:/MyFolder/db-config.json',
+    tip: 'Absolute path for db-config.json, the database will be loaded once the server starts. If not set, it will load test/db-config.json',
     value: '',
     required: true,
+    placeholder: 'Eg: D:/MyFolder/db-config.json',
   },
   KN_HTTP_CRYPT_KEY: {
     label: 'HTTP Crypt key',
@@ -77,32 +79,31 @@ export default defineComponent({
     const outputText = ref('')
 
     const handleGenerate = () => {
-      let txt = ''
-      for (const key in dataForm.value) {
-        const val = dataForm.value[key]
-        const commentFlag = val ? '' : '#'
-        txt += `${commentFlag}${key}=${val}\n`
-      }
-      outputText.value = txt
+      formRef.value?.validate((errors) => {
+        if (errors) {
+          window.$message.error('Invalid form!')
+          return
+        }
+        let txt = ''
+        for (const key in dataForm.value) {
+          const val = dataForm.value[key]
+          const commentFlag = val ? '' : '#'
+          txt += `${commentFlag}${key}=${val}\n`
+        }
+        outputText.value = txt
+      })
     }
-    watch(
-      dataForm,
-      () => {
-        handleGenerate()
-      },
-      {deep: true}
-    )
 
     const setRandomValue = (key, len = 16) => {
       dataForm.value[key] = getRandomHex(len)
     }
 
     const showUserEditPrompt = () => {
-      const username = window.prompt('Input username', '')
+      const username = window.prompt('Input username', 'admin')
       if (!username) {
         return
       }
-      const password = window.prompt('Input password', '')
+      const password = window.prompt('Input password', 'admin')
       if (!password) {
         return
       }
@@ -146,7 +147,7 @@ export default defineComponent({
 <template>
   <n-layout class="env-generator">
     <n-layout-content>
-      <n-card class="card-gen" title="KeeNote Nest Server .env Generator">
+      <n-card class="card-gen" title="① .env Generator">
         <n-form
           size="small"
           ref="formRef"
@@ -162,7 +163,11 @@ export default defineComponent({
             :path="key"
             :label="val.label || key"
           >
-            <n-input v-model:value="dataForm[key]" placeholder="" />
+            <n-input
+              v-model:value="dataForm[key]"
+              :disabled="key === 'AUTH_USERS'"
+              :placeholder="val.placeholder || ''"
+            />
             <n-space style="margin-left: 8px" :wrap="false" size="small">
               <n-button v-if="key === 'AUTH_USERS'" @click="showUserEditPrompt">🖍</n-button>
               <n-button v-if="RandomKeys[key]" @click="setRandomValue(key)">🎲</n-button>
@@ -181,7 +186,7 @@ export default defineComponent({
           </n-space>
         </n-form>
       </n-card>
-      <n-card class="card-result" title="Result">
+      <n-card class="card-result" title="② Result">
         <n-input
           class="input-text font-code"
           type="textarea"
@@ -190,10 +195,20 @@ export default defineComponent({
           rows="15"
         ></n-input>
 
-        <n-space justify="end">
-          <n-button round type="primary" @click="handleSaveAs" v-if="outputText">
-            Save as .env</n-button
-          >
+        <n-space v-if="outputText" justify="space-between">
+          <textarea
+            class="font-code"
+            readonly
+            cols="50"
+            rows="6"
+            style="resize: none; color: #0f0; background-color: black"
+            :value="`[Project Root]
+├─ node_modules
+├─ .env           <-- Place .env file here!
+├─ package.json
+└─ other files...`"
+          ></textarea>
+          <n-button round type="primary" @click="handleSaveAs"> Save as .env</n-button>
         </n-space>
       </n-card>
     </n-layout-content>
@@ -206,6 +221,11 @@ export default defineComponent({
   :deep(.n-layout-scroll-container) {
     display: flex;
     justify-content: center;
+    min-width: 500px;
+
+    @media screen and (max-width: 800px) {
+      flex-direction: column;
+    }
   }
   .card-result {
     .input-text {

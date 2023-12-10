@@ -26,6 +26,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
     // 输入框为input的type
     type: {
       type: String,
@@ -68,6 +72,7 @@ export default defineComponent({
     @negative-click="mVisible = false"
     @close="mVisible = false"
     :show="mVisible"
+    :clearable="clearable"
   >
     <template v-if="mVisible">
       <n-input
@@ -84,6 +89,7 @@ export default defineComponent({
         :rows="isTextarea ? 25 : null"
         :placeholder="placeholder"
         autofocus
+        :clearable="clearable"
       ></n-input>
     </template>
   </n-modal>

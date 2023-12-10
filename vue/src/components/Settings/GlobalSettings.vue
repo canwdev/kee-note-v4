@@ -39,13 +39,9 @@ export default defineComponent({
     const myCryptKey = ref(getMyCryptKey())
     const handleMyCryptKeyChange = (value) => {
       isShowMyCryptKeyDialog.value = false
-      if (getMyCryptKey() === value) {
-        return
-      }
       myCryptKey.value = value
       localStorage.setItem(LsKeys.LS_KEY_KN_HTTP_CRYPT_KEY, String(value))
-      window.$message.success('KN_HTTP_CRYPT_KEY is set!')
-      globalEventBus.emit(GlobalEvents.UPDATE_KN_HTTP_CRYPT_KEY, String(value))
+      location.reload()
     }
 
     const settingsStore = useSettingsStore()
@@ -105,8 +101,8 @@ export default defineComponent({
               key: 'webui',
               children: [
                 {
-                  label: 'HTTP Crypt key',
-                  subtitle: 'KN_HTTP_CRYPT_KEY',
+                  label: 'KN_HTTP_CRYPT_KEY',
+                  subtitle: 'Change this will refresh page',
                   key: 'kn_http_crypt_key',
                   actionRender: h(
                     NButton,
@@ -184,6 +180,7 @@ export default defineComponent({
     title="Edit KN_HTTP_CRYPT_KEY"
     placeholder="keep default"
     class="font-code"
+    clearable
   />
 </template>
 
