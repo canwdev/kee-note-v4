@@ -123,6 +123,21 @@ a:hover {
   }
 }
 
+.disable-animation {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .n-modal-mask {
+    background-color: transparent;
+  }
+  .n-modal {
+    box-shadow: 0 0 1px 1px rgba(147, 147, 147, 0.8);
+  }
+}
+
+// naive ui:
+
 .n-dialog__icon {
   margin-right: 10px !important;
 }

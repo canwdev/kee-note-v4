@@ -92,6 +92,13 @@ export default defineComponent({
               store: settingsStore,
               type: StOptionType.SWITCH,
             },
+            {
+              label: 'Disable Animation',
+              subtitle: 'E-Ink optimization',
+              key: 'disableAnimation',
+              store: settingsStore,
+              type: StOptionType.SWITCH,
+            },
           ],
         },
         isElectron

@@ -50,8 +50,16 @@ const router = createRouter({
   routes: constantRoutes,
 })
 
+const formatTitle = (t: string) => {
+  const title = `KeeNote ${isElectron ? '' : '(WebUI) '}v${pkg.version}`
+  if (!t) {
+    return title
+  }
+  return `${t} - ${title}`
+}
+
 router.afterEach((to, _, failure) => {
-  document.title = (to?.meta?.title as string) || `KeeNote v${pkg.version}`
+  document.title = formatTitle(to?.meta?.title as string)
 })
 
 export default router

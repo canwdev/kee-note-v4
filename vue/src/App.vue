@@ -24,6 +24,21 @@ export default defineComponent({
 
     const isEnableThemeEdit = computed(() => settingsStore.isEnableThemeEdit)
     useGlobalShortcuts()
+
+    watch(
+      () => settingsStore.disableAnimation,
+      (val) => {
+        if (val) {
+          document.documentElement.classList.add('disable-animation')
+        } else {
+          document.documentElement.classList.remove('disable-animation')
+        }
+      },
+      {
+        immediate: true,
+      }
+    )
+
     return {
       ...useGlobalTheme(),
       themeOverrides,
