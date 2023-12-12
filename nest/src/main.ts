@@ -17,7 +17,7 @@ async function bootstrap() {
   if (!process.env.AUTH_USERS) {
     const url = `${SERVER_URL}/#/gen`
     console.error(
-      `Error! Must set AUTH_USERS, please add them in .env file!\nYou can generate .env file at Vue frontend: ${url}`
+      `Error! Must set AUTH_USERS, please add them in .env file!\nYou can generate .env file at WebUI: ${url}`
     )
   }
 }

@@ -17,13 +17,14 @@ import CalendarView from '@/components/NoteViews/Calendar/CalendarView.vue'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import DialogIconChooser from '@/components/NoteViews/Dialogs/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main'
-import {Settings20Filled, LockOpen16Filled} from '@vicons/fluent'
+import {Settings20Filled, LockClosed20Filled} from '@vicons/fluent'
 import {
   getEntryItemUpdateParams,
   handleReadSelectedFile,
   importEntryListJson,
 } from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
+import {formatSiteTitle} from '@/router'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -33,7 +34,7 @@ export default defineComponent({
     CalendarView,
     DialogIconChooser,
     Settings20Filled,
-    LockOpen16Filled,
+    LockClosed20Filled,
   },
   setup() {
     const router = useRouter()
@@ -336,34 +337,12 @@ export default defineComponent({
           },
         },
       },
-      {
-        type: 'divider',
-        label: 'd0',
-      },
-      isElectron
-        ? null
-        : {
-            label: '🏃 Logout',
-            props: {
-              onClick: async () => {
-                try {
-                  await handleCloseDatabase()
-                } catch (e) {
-                  window.$message.warning('Database close failed')
-                }
-                localStorage.removeItem(LsKeys.LS_KEY_AUTHORIZATION)
-                await router.replace({
-                  name: 'HomeView',
-                })
-              },
-            },
-          },
     ].filter(Boolean)
 
     const menuOptions = computed(() => {
       const options = [
         {
-          label: settingsStore.isCalendarView ? '📃 List View' : '📅 CalendarLite View',
+          label: settingsStore.isCalendarView ? '📃 List View' : '📅 Calendar View',
           props: {
             onClick: () => {
               settingsStore.isCalendarView = !settingsStore.isCalendarView
@@ -371,23 +350,6 @@ export default defineComponent({
           },
         },
         ...menuOptionsBase,
-        keeStore.isDbOpened
-          ? {
-              label: '🔐 Lock Database',
-              props: {
-                onClick: async () => {
-                  await handleCloseDatabase()
-                },
-              },
-            }
-          : {
-              label: '🔓 Unlock Database',
-              props: {
-                onClick: async () => {
-                  showOpenDbModal.value = true
-                },
-              },
-            },
       ]
       if (groupUuid.value) {
         return [
@@ -413,7 +375,28 @@ export default defineComponent({
       await importEntryListJson(editingUuid.value)
     }
 
+    const handleLogout = async () => {
+      try {
+        await handleCloseDatabase()
+      } catch (e) {
+        window.$message.warning('Database close failed')
+      }
+      localStorage.removeItem(LsKeys.LS_KEY_AUTHORIZATION)
+      await router.replace({
+        name: 'HomeView',
+      })
+    }
+
+    const handleToggleLock = async () => {
+      if (keeStore.isDbOpened) {
+        await handleCloseDatabase()
+      } else {
+        showOpenDbModal.value = true
+      }
+    }
+
     return {
+      isElectron,
       groupTree,
       keeStore,
       selectedKeys,
@@ -444,6 +427,9 @@ export default defineComponent({
         }
       },
       settingsStore,
+      handleLogout,
+      handleToggleLock,
+      formatSiteTitle,
     }
   },
 })
@@ -453,31 +439,32 @@ export default defineComponent({
   <div class="note-layout">
     <n-layout class="layout-inner-root">
       <n-layout-header bordered>
-        <n-space
-          align="center"
-          style="
-            width: 100%;
-            height: 100%;
-            padding: 10px 24px;
-            box-sizing: border-box;
-            user-select: none;
-          "
-          justify="space-between"
-        >
+        <n-space align="center" class="nav-header-content" justify="space-between">
           <n-space align="center" size="small">
-            <n-icon style="transform: translateY(2px)" size="16"> <LockOpen16Filled /> </n-icon
-            >KeeNote
+            <n-icon style="transform: translateY(2px)" size="20"> <LockClosed20Filled /> </n-icon>
+            {{ formatSiteTitle() }}
           </n-space>
-          <n-dropdown
-            :options="menuOptions"
-            key-field="label"
-            placement="bottom-start"
-            trigger="hover"
-          >
-            <n-button quaternary size="small">
-              <n-icon size="16"> <Settings20Filled /> </n-icon>&nbsp;Menu
+
+          <n-space size="small" align="center">
+            <n-button quaternary size="small" title="Menu" @click="handleToggleLock">
+              {{ keeStore.isDbOpened ? '🔐 Lock DB' : '🔓 Unlock DB' }}
             </n-button>
-          </n-dropdown>
+
+            <n-button v-if="!isElectron" quaternary size="small" title="Menu" @click="handleLogout">
+              🏃 Logout
+            </n-button>
+
+            <n-dropdown
+              :options="menuOptions"
+              key-field="label"
+              placement="bottom-start"
+              trigger="hover"
+            >
+              <n-button quaternary size="small" title="Menu">
+                <n-icon size="20"> <Settings20Filled /> </n-icon>
+              </n-button>
+            </n-dropdown>
+          </n-space>
         </n-space>
       </n-layout-header>
 
@@ -564,6 +551,14 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
     }
+  }
+
+  .nav-header-content {
+    width: 100%;
+    height: 100%;
+    padding: 8px 24px;
+    box-sizing: border-box;
+    user-select: none;
   }
 }
 </style>

@@ -13,6 +13,7 @@ import {join} from 'path'
 
 @Module({
   imports: [
+    //  静态资源（前端）目录
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '../dist-frontend', '/'),
     }),
