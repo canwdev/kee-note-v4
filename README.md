@@ -1,7 +1,7 @@
 # KeeNote
 
 - 安全的本地笔记App (Electron App + Web UI)
-- 技术栈： KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
+- 技术栈： KeePass (kdbxweb) + Electron + Nest.js + Vue 3 (NaiveUI)
 
 ---
 
@@ -64,10 +64,6 @@ cd vue
 yarn
 yarn build
 ```
-
-### Build Nest
-
-See [README](./nest/README.md)
 
 ### Build Electron (Optional)
 

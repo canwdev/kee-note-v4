@@ -45,7 +45,7 @@ const EnvConfigMap = {
   KN_HTTP_CRYPT_KEY: {
     label: 'HTTP Crypt key',
     tip: 'Recommended to enable in production mode to enhance security. it can encrypt/decrypt HTTP request query/body and response body',
-    value: getRandomHex(),
+    value: '',
   },
 }
 

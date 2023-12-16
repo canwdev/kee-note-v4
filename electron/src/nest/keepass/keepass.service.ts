@@ -19,7 +19,7 @@ export class KeepassService {
 
   async loadDbConfig(): Promise<KdbxOpenOptions> {
     const configPath =
-      process.env.KN_KDBX_CONFIG_PATH || Path.join(__dirname, '../../test/db-config.json')
+      process.env.KN_KDBX_CONFIG_PATH || Path.join(__dirname, '../../../test/db-config.json')
     const config: JsonConfig = JSON.parse(await Fs.readFile(configPath, 'utf8'))
 
     const kdbxOpenOptions = config.kdbxOpenOptions

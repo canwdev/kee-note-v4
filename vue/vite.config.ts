@@ -10,22 +10,12 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 export default ({mode}) => {
   // Load app-level env vars to node-level env vars.
   process.env = {...process.env, ...loadEnv(mode, process.cwd())}
-  const isNest = false
-  const buildTargetConfig = isNest
-    ? {
-        base: '/',
-        build: {
-          outDir: '../nest/dist-frontend',
-        },
-      }
-    : {
-        base: './',
-        build: {
-          outDir: '../electron/dist-frontend',
-        },
-      }
 
   return defineConfig({
+    base: './',
+    build: {
+      outDir: '../electron/dist-frontend',
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -59,7 +49,7 @@ export default ({mode}) => {
       }),
     ],
     server: {
-      // host: '0.0.0.0',
+      host: '0.0.0.0',
       port: 3030,
       proxy: {
         '/api_server': {
@@ -74,6 +64,5 @@ export default ({mode}) => {
       jsxInject: 'import {h,Fragment} from "vue"',
       jsxFragment: 'Fragment',
     },
-    ...buildTargetConfig,
   })
 }
