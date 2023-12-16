@@ -1,5 +1,5 @@
 import {dialog, ipcMain, BrowserWindow} from 'electron'
-import {getServerStatus, startServer, stopServer} from '../server-manager'
+import {getServerStatus, startServer, stopServer} from '../utils/server-manager'
 
 // 打开系统的文件选择窗口
 ipcMain.handle('open-file-dialog', async (event, config) => {

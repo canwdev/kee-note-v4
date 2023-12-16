@@ -1,5 +1,5 @@
-import {bootstrapNestjs} from './nest/main'
-import {electronStore} from './utils/store'
+import {bootstrapNestjs} from '../nest/main'
+import {electronStore} from './store'
 
 let app = null
 // 服务器启动日志

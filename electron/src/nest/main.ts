@@ -1,8 +1,6 @@
 import {NestFactory} from '@nestjs/core'
 import {AppModule} from './app.module'
 
-console.log('[KeeNote Server] Starting...')
-
 export async function bootstrapNestjs() {
   const app = await NestFactory.create(AppModule)
   const SERVER_PORT = process.env.PORT || 3000

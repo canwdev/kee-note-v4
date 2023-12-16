@@ -3,7 +3,7 @@ import * as path from 'path'
 import {kdbxHelper} from './api/keepass-api'
 import './api/common-api'
 import {isDev} from './utils'
-import './server-manager'
+import './utils/server-manager'
 import {electronStore} from './utils/store'
 
 function createWindow() {
