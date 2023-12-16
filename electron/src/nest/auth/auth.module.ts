@@ -6,7 +6,7 @@ import {LocalStrategy} from './strategies/local.strategy'
 import {JwtModule} from '@nestjs/jwt'
 import {JwtStrategy} from './strategies/jwt.strategy'
 import {ConfigModule} from '@nestjs/config'
-import {APP_JWT_SECRET_FALLBACK} from '../common/enum'
+import {APP_JWT_SECRET_FALLBACK} from '../enum'
 
 @Module({
   imports: [

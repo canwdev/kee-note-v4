@@ -108,7 +108,12 @@ export const renameAttachment = (params: any) => {
   return service.post('rename-attachment', params)
 }
 
-// electron common api
-export const openFileDialog = (params: any) => {
+/* ----- electron common api ----- */
+
+export const electronOpenFileDialog = (params: any) => {
   return service.post('open-file-dialog', params)
+}
+
+export const electronToggleServer = (params: any) => {
+  return service.post('toggle-server', params)
 }

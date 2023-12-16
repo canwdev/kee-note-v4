@@ -1,14 +1,13 @@
 import {app, BrowserWindow} from 'electron'
 import * as path from 'path'
-import Store from 'electron-store'
 import {kdbxHelper} from './api/keepass-api'
 import './api/common-api'
 import {isDev} from './utils'
-
-const store = new Store()
+import './server-manager'
+import {electronStore} from './utils/store'
 
 function createWindow() {
-  const winBounds: any = store.get('winBounds') || {}
+  const winBounds: any = electronStore.get('winBounds') || {}
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -24,6 +23,11 @@ function createWindow() {
     },
   })
 
+  const maximized = electronStore.get('maximized') || false
+  if (maximized) {
+    mainWindow.maximize()
+  }
+
   mainWindow.setMenuBarVisibility(false)
 
   // and load the index.html of the app.
@@ -37,7 +41,8 @@ function createWindow() {
 
   // 退出前询问
   mainWindow.on('close', (e) => {
-    store.set('winBounds', mainWindow.getBounds())
+    electronStore.set('winBounds', mainWindow.getBounds())
+    electronStore.set('maximized', mainWindow.isMaximized())
     if (kdbxHelper.isChanged) {
       e.preventDefault() // Prevents the window from closing
       mainWindow.webContents.send('IPC_APP_CLOSING')

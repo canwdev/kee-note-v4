@@ -1,7 +1,7 @@
 import {ExtractJwt, Strategy} from 'passport-jwt'
 import {PassportStrategy} from '@nestjs/passport'
 import {Injectable} from '@nestjs/common'
-import {APP_JWT_SECRET_FALLBACK} from '../../common/enum'
+import {APP_JWT_SECRET_FALLBACK} from '../../enum'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

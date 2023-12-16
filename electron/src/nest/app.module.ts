@@ -15,7 +15,7 @@ import {join} from 'path'
   imports: [
     //  静态资源（前端）目录
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../dist-frontend', '/'),
+      rootPath: join(__dirname, '../../dist-frontend', '/'),
     }),
     UsersModule,
     AuthModule,

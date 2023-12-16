@@ -131,8 +131,10 @@ a:hover {
   .n-modal-mask {
     background-color: transparent;
   }
-  .n-modal {
-    box-shadow: 0 0 1px 1px rgba(147, 147, 147, 0.8);
+  .n-modal, .n-card, .n-dropdown-menu, .n-notification, .n-message,
+  .n-date-panel {
+    box-shadow: none;
+    outline: 2px solid $color_theme;
   }
 }
 

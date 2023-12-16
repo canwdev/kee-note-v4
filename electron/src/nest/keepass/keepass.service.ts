@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common'
-import {KdbxHelper, KdbxOpenOptions} from '../common/keepass/kdbx'
+import {KdbxHelper, KdbxOpenOptions} from '../../common/keepass/kdbx'
 import * as Path from 'path'
 import * as Fs from 'fs-extra'
 

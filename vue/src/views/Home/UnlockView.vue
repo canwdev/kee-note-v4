@@ -110,7 +110,7 @@ export default defineComponent({
     })
 
     const handleChooseFile = async (type) => {
-      const {filePaths} = await kService.openFileDialog({
+      const {filePaths} = await kService.electronOpenFileDialog({
         filters: [
           type === 'dbPath'
             ? {

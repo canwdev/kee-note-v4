@@ -12,6 +12,7 @@ import {NButton} from 'naive-ui'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {RouterLink} from 'vue-router'
+import {useServerManager} from '@/components/Settings/use-server-manager'
 
 export default defineComponent({
   name: 'GlobalSettings',
@@ -45,6 +46,7 @@ export default defineComponent({
     }
 
     const settingsStore = useSettingsStore()
+    const {isServerRunning, serverManagerOption} = useServerManager()
 
     const optionList = computed((): StOptionItem[] => {
       return [
@@ -102,7 +104,7 @@ export default defineComponent({
           ],
         },
         isElectron
-          ? null
+          ? serverManagerOption.value
           : {
               label: 'Web UI Config',
               key: 'webui',

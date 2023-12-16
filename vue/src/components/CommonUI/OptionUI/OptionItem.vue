@@ -1,12 +1,12 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import ItemAction from './ItemAction.vue'
-import {ChevronDown20Regular, Dismiss20Regular} from '@vicons/fluent'
+import {ChevronDown20Regular, QuestionCircle20Regular} from '@vicons/fluent'
 import {StOptionItem, StOptionType} from './enum'
 
 export default defineComponent({
   name: 'OptionItem',
-  components: {Dismiss20Regular, ItemAction, ChevronDown20Regular},
+  components: {QuestionCircle20Regular, ItemAction, ChevronDown20Regular},
   props: {
     item: {
       type: Object as PropType<StOptionItem>,
@@ -62,7 +62,17 @@ export default defineComponent({
             <img :src="sItem.icon" alt="icon" />
           </div>
           <div class="item-title-wrap">
-            <div class="item-label">{{ sItem.label }}</div>
+            <div class="item-label-wrap">
+              <span class="item-label">{{ sItem.label }}</span>
+              <n-popover v-if="sItem.tips" trigger="hover">
+                <template #trigger>
+                  <n-icon size="16">
+                    <QuestionCircle20Regular />
+                  </n-icon>
+                </template>
+                <span v-html="sItem.tips"></span>
+              </n-popover>
+            </div>
             <div class="item-subtitle" v-if="sItem.subtitle">{{ sItem.subtitle }}</div>
           </div>
         </div>
@@ -76,12 +86,8 @@ export default defineComponent({
 
 <style lang="scss">
 .c-panel-item {
-  & + .c-panel-item {
-    border-top: 1px solid $color_border;
-  }
-
   .panel-header {
-    min-height: 40px;
+    min-height: 32px;
     padding: 4px 16px;
     display: flex;
     align-items: center;
@@ -95,11 +101,15 @@ export default defineComponent({
       gap: 12px;
     }
 
+    .item-label {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
     .btn-reset,
     .btn-toggle-expand {
       display: inline-flex;
       transition: all 0.3s;
-      padding: 8px;
     }
 
     .btn-toggle-expand {
@@ -138,6 +148,12 @@ export default defineComponent({
 
         .item-title-wrap {
           line-height: 1.3;
+        }
+
+        .item-label-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
         }
 
         .item-subtitle {

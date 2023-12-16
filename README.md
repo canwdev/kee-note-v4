@@ -6,25 +6,25 @@
 ---
 
 - A secure note-editing app (Electron Desktop App + Web UI)
-- Powered by KeePass (kdbxweb) + Nest.js + Vue 3 (NaiveUI)
+- Powered by KeePass (kdbxweb) + Electron + Nest.js + Vue 3 (NaiveUI)
 
 ## Screenshot
 
 Open a kdbx database:
 
-![screenshot](./nest/test/screenshot1.jpg)
+![screenshot](./electron/test/screenshot1.jpg)
 
 Tree view + list view:
 
-![screenshot](./nest/test/screenshot2.jpg)
+![screenshot](./electron/test/screenshot2.jpg)
 
 Calendar view:
 
-![screenshot](./nest/test/screenshot4.jpg)
+![screenshot](./electron/test/screenshot4.jpg)
 
 Editing view:
 
-![screenshot](./nest/test/screenshot3.jpg)
+![screenshot](./electron/test/screenshot3.jpg)
 
 
 ## Directory Structure

@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 /dist-frontend/
 /dist-src/
+
+*.env
+*.local
+
+# .tar.gz 打包
+*.tar
+*.tar.gz
