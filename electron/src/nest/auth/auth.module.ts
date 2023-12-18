@@ -8,12 +8,19 @@ import {JwtStrategy} from './strategies/jwt.strategy'
 import {ConfigModule} from '@nestjs/config'
 import {APP_JWT_SECRET_FALLBACK} from '../enum'
 
+import {isDev} from '../../common/utils'
+const envFilePath = isDev
+  ? ['.env.development', '.env.development.local']
+  : ['.env.production', '.env']
+
+console.log('[envFilePath]', envFilePath)
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       // ignoreEnvFile: true,
       isGlobal: true,
-      envFilePath: process.env.IS_DEV ? ['.env.development', '.env.development.local'] : ['.env'],
+      envFilePath,
     }),
     UsersModule,
     PassportModule,

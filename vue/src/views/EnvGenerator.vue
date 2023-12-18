@@ -3,6 +3,7 @@ import {defineComponent, ref} from 'vue'
 import {FormInst, FormRules} from 'naive-ui'
 import {hashSync} from 'bcryptjs'
 import {getRandomHex} from '@/utils/my-crypt'
+import {isDev} from '@/enum'
 
 const genUserData = (username, password) => {
   return JSON.stringify([
@@ -126,6 +127,7 @@ export default defineComponent({
     }
 
     return {
+      isDev,
       formRef,
       dataForm,
       dataFormRules,
@@ -147,7 +149,7 @@ export default defineComponent({
 <template>
   <n-layout class="env-generator">
     <n-layout-content>
-      <n-card class="card-gen" title="① .env Generator">
+      <n-card class="card-gen" title="① Server `.env` Generator">
         <n-form
           size="small"
           ref="formRef"
@@ -163,21 +165,29 @@ export default defineComponent({
             :path="key"
             :label="val.label || key"
           >
+            <n-space style="margin-right: 8px" :wrap="false" size="small">
+              <n-popover v-if="val.tip" trigger="hover" style="max-width: 300px" placement="bottom">
+                <template #trigger>
+                  <n-button secondary>❓</n-button>
+                </template>
+                <div v-html="val.tip"></div>
+              </n-popover>
+              <n-button
+                secondary
+                type="primary"
+                v-if="key === 'AUTH_USERS'"
+                @click="showUserEditPrompt"
+                >🖍</n-button
+              >
+              <n-button secondary type="primary" v-if="RandomKeys[key]" @click="setRandomValue(key)"
+                >🎲</n-button
+              >
+            </n-space>
             <n-input
               v-model:value="dataForm[key]"
               :disabled="key === 'AUTH_USERS'"
               :placeholder="val.placeholder || ''"
             />
-            <n-space style="margin-left: 8px" :wrap="false" size="small">
-              <n-button v-if="key === 'AUTH_USERS'" @click="showUserEditPrompt">🖍</n-button>
-              <n-button v-if="RandomKeys[key]" @click="setRandomValue(key)">🎲</n-button>
-              <n-popover v-if="val.tip" trigger="hover" style="max-width: 300px">
-                <template #trigger>
-                  <n-button>❓</n-button>
-                </template>
-                <div v-html="val.tip"></div>
-              </n-popover>
-            </n-space>
           </n-form-item>
           <n-space justify="end">
             <n-button round @click="handleGenerate" type="primary" class="font-emoji">
@@ -195,20 +205,32 @@ export default defineComponent({
           rows="15"
         ></n-input>
 
-        <n-space v-if="outputText" justify="space-between">
+        <n-space justify="space-between">
           <textarea
             class="font-code"
             readonly
             cols="50"
-            rows="6"
+            rows="7"
             style="resize: none; color: #0f0; background-color: black"
-            :value="`[Project Root]
+            :value="
+              !isDev
+                ? `[Project Root]/electron
 ├─ node_modules
 ├─ .env           <-- Place .env file here!
 ├─ package.json
-└─ other files...`"
+└─ ...`
+                : `[App Root]
+├─ locales
+├─ resources
+├─ .env           <-- Place .env file here!
+├─ KeeNote.exe
+└─ ...
+`
+            "
           ></textarea>
-          <n-button round type="primary" @click="handleSaveAs"> Save as .env</n-button>
+          <n-button :disabled="!outputText" round type="primary" @click="handleSaveAs">
+            Save as .env</n-button
+          >
         </n-space>
       </n-card>
     </n-layout-content>

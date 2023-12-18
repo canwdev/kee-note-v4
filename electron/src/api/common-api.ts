@@ -1,4 +1,4 @@
-import {dialog, ipcMain, BrowserWindow} from 'electron'
+import {dialog, ipcMain, BrowserWindow, shell} from 'electron'
 import {getServerStatus, startServer, stopServer} from '../utils/server-manager'
 
 // 打开系统的文件选择窗口
@@ -28,4 +28,10 @@ ipcMain.handle('toggle-server', async (event, config) => {
     await stopServer()
   }
   return getServerStatus()
+})
+
+// 使用系统浏览器打开链接
+ipcMain.handle('open-link', async (event, config) => {
+  const {url = ''} = config
+  shell.openExternal(url)
 })

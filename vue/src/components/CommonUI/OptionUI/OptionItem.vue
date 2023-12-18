@@ -73,7 +73,7 @@ export default defineComponent({
                 <span v-html="sItem.tips"></span>
               </n-popover>
             </div>
-            <div class="item-subtitle" v-if="sItem.subtitle">{{ sItem.subtitle }}</div>
+            <div class="item-subtitle" v-if="sItem.subtitle" v-html="sItem.subtitle"></div>
           </div>
         </div>
         <div class="o-right">
@@ -160,6 +160,10 @@ export default defineComponent({
           font-size: 12px;
           font-weight: 400;
           opacity: 0.6;
+
+          p {
+            margin: 0;
+          }
         }
       }
     }

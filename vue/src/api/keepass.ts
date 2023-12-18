@@ -117,3 +117,7 @@ export const electronOpenFileDialog = (params: any) => {
 export const electronToggleServer = (params: any) => {
   return service.post('toggle-server', params)
 }
+
+export const electronOpenLink = (params: any) => {
+  return service.post('open-link', params)
+}

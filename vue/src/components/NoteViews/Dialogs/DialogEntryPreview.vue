@@ -6,9 +6,12 @@ import {EntryItem} from '@/enum/kdbx'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {formatDate} from '@/utils'
 import {marked} from 'marked'
+import markedKatex from 'marked-katex-extension'
 import {useMainStore} from '@/store/main'
 import '@/styles/markdown/github-markdown-dark.css'
 import '@/styles/markdown/github-markdown.css'
+
+marked.use(markedKatex({output: 'mathml'}))
 
 export default defineComponent({
   name: 'DialogEntryPreview',

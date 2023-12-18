@@ -51,3 +51,5 @@ export function setValDot(obj, strPath, val) {
   const path = strPath.split('.')
   return setVal(obj, path, val)
 }
+
+export const isDev = process.env.NODE_ENV === 'development'

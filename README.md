@@ -1,12 +1,12 @@
 # KeeNote
 
 - 安全的本地笔记App (Electron App + Web UI)
-- 技术栈： KeePass (kdbxweb) + Electron + Nest.js + Vue 3 (NaiveUI)
+- 技术栈： KeePass (kdbxweb) + [Electron](./electron) + [Nest.js](./electron/src/nest) + [Vue](./vue) 3 (NaiveUI)
 
 ---
 
 - A secure note-editing app (Electron Desktop App + Web UI)
-- Powered by KeePass (kdbxweb) + Electron + Nest.js + Vue 3 (NaiveUI)
+- Powered by KeePass (kdbxweb) + [Electron](./electron) + [Nest.js](./electron/src/nest) + [Vue](./vue) 3 (NaiveUI)
 
 ## Screenshot
 

@@ -2,9 +2,9 @@ import {app, BrowserWindow} from 'electron'
 import * as path from 'path'
 import {kdbxHelper} from './api/keepass-api'
 import './api/common-api'
-import {isDev} from './utils'
 import './utils/server-manager'
 import {electronStore} from './utils/store'
+import {isDev} from './common/utils'
 
 function createWindow() {
   const winBounds: any = electronStore.get('winBounds') || {}

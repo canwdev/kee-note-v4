@@ -2,6 +2,7 @@ import {NButton} from 'naive-ui'
 import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import {isElectron} from '@/utils/backend'
 import {electronToggleServer} from '@/api/keepass'
+import {marked} from 'marked'
 
 export const useServerManager = () => {
   const isLoading = ref(false)
@@ -45,7 +46,7 @@ export const useServerManager = () => {
       isLoading.value = true
       const res = await electronToggleServer(params)
       isServerRunning.value = res.running
-      serverLogMessage.value = res.logMessage
+      serverLogMessage.value = marked.parse(res.logMessage)
     } catch (e) {
     } finally {
       isLoading.value = false
@@ -55,6 +56,17 @@ export const useServerManager = () => {
   onMounted(async () => {
     if (isElectron) {
       await doToggleServer({getStatusOnly: true})
+      if (isServerRunning.value) {
+        window.$notification.success({
+          content: 'Server auto started!',
+          meta: () =>
+            h('div', {
+              innerHTML: serverLogMessage.value,
+            }),
+          duration: 3000,
+          keepAliveOnHover: true,
+        })
+      }
     }
   })
 
