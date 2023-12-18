@@ -680,7 +680,7 @@
   resolved "https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/katex@^0.16.2":
+"@types/katex@^0.16.2", "@types/katex@^0.16.7":
   version "0.16.7"
   resolved "https://registry.npmmirror.com/@types/katex/-/katex-0.16.7.tgz#03ab680ab4fa4fbc6cb46ecf987ecad5d8019868"
   integrity sha512-HMwFiRujE5PjrgwHQ25+bsLJgowjGjm5Z8FVSf0N6PwgJrwxH0QxzHYDcKsTfV3wva0vzrpqMTJS2jXPr5BMEQ==
@@ -1396,6 +1396,11 @@ commander@7:
   version "7.2.0"
   resolved "https://registry.npmmirror.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==
+
+commander@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.npmmirror.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
+  integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -2836,6 +2841,13 @@ katex@^0.10.0-alpha:
   dependencies:
     commander "^2.19.0"
 
+katex@^0.16.9:
+  version "0.16.9"
+  resolved "https://registry.npmmirror.com/katex/-/katex-0.16.9.tgz#bc62d8f7abfea6e181250f85a56e4ef292dcb1fa"
+  integrity sha512-fsSYjWS0EEOwvy81j3vRA8TEAhQhKiqO+FQaKWp0m39qwOzHVBgAUBIXWj1pB+O2W3fIpNa6Y9KSKCVbfPhyAQ==
+  dependencies:
+    commander "^8.3.0"
+
 khroma@^1.4.1:
   version "1.4.1"
   resolved "https://registry.npmmirror.com/khroma/-/khroma-1.4.1.tgz#ad6a5b6a972befc5112ce5129887a1a83af2c003"
@@ -2928,6 +2940,14 @@ magic-string@^0.30.5:
   integrity sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
+
+marked-katex-extension@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.npmmirror.com/marked-katex-extension/-/marked-katex-extension-4.0.5.tgz#dae14941b1b6d8a3152b22163042391ac4738c3a"
+  integrity sha512-+CVYWfTXDIZUth4blTDnr07TrqU0QDYrnIqEup75wt9eAHvuSmluttmtwscNF7KXz95D9fK6o0e2dfCGXdp4wg==
+  dependencies:
+    "@types/katex" "^0.16.7"
+    katex "^0.16.9"
 
 marked@^0.4.0:
   version "0.4.0"

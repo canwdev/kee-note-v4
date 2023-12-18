@@ -213,7 +213,7 @@ export default defineComponent({
             rows="7"
             style="resize: none; color: #0f0; background-color: black"
             :value="
-              !isDev
+              isDev
                 ? `[Project Root]/electron
 ├─ node_modules
 ├─ .env           <-- Place .env file here!

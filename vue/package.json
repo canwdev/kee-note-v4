@@ -21,6 +21,7 @@
     "hypermd": "^0.3.11",
     "js-cookie": "^3.0.5",
     "marked": "^9.1.6",
+    "marked-katex-extension": "^4.0.5",
     "mime": "^3.0.0",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
