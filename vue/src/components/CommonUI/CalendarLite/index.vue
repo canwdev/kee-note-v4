@@ -244,17 +244,17 @@ export default defineComponent({
         }
 
         &.day-weekend {
-          color: $color_theme_alt;
+          color: $primary_alt;
         }
 
         &:hover {
-          background-color: rgba($color_theme, 0.1);
+          background-color: rgba($primary, 0.1);
           transition: background-color 0s;
         }
       }
 
       .current-day {
-        background-color: rgba($color_theme, 0.1);
+        background-color: rgba($primary, 0.1);
 
         &:after {
           content: ' ';
@@ -263,7 +263,7 @@ export default defineComponent({
           left: 0;
           right: 0;
           height: 3px;
-          background: $color_theme;
+          background: $primary;
         }
       }
 

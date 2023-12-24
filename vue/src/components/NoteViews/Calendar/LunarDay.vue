@@ -57,7 +57,7 @@ export default defineComponent({
       left: 0;
       right: 0;
       height: 5px;
-      background: rgba($color_theme, 0.2);
+      background: rgba($primary, 0.2);
     }
   }
 }

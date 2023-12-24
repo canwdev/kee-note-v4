@@ -55,7 +55,13 @@ export default defineComponent({
           key: 'personalization',
           children: [
             {
-              label: 'Color Mode',
+              label: 'Theme Color',
+              key: 'themeColor',
+              store: settingsStore,
+              type: StOptionType.COLOR_PICKER,
+            },
+            {
+              label: 'Light/Dark Theme',
               key: 'ldTheme',
               store: settingsStore,
               type: StOptionType.MULTIPLE_SWITCH,

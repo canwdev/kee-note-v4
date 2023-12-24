@@ -18,6 +18,7 @@ export interface StOptionItem {
   icon?: string
   // 小标题
   subtitle?: string
+  placeholder?: string
   // 自定义类名
   cls?: string
   // action渲染函数
@@ -31,6 +32,7 @@ export enum StOptionType {
   SLIDER = 'slider',
   SELECT = 'select',
   INPUT = 'input',
+  COLOR_PICKER = 'color_picker',
 }
 
 export type SwitchOption = {

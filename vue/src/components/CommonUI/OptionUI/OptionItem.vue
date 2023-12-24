@@ -87,12 +87,13 @@ export default defineComponent({
 <style lang="scss">
 .c-panel-item {
   .panel-header {
-    min-height: 32px;
+    min-height: 40px;
     padding: 4px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(204, 204, 204, 0.2);
+    font-weight: bold;
+    border-bottom: 1px dashed $color_border;
 
     .p-left,
     .p-right {
@@ -101,15 +102,11 @@ export default defineComponent({
       gap: 12px;
     }
 
-    .item-label {
-      font-weight: 500;
-      font-size: 16px;
-    }
-
     .btn-reset,
     .btn-toggle-expand {
       display: inline-flex;
       transition: all 0.3s;
+      padding: 8px;
     }
 
     .btn-toggle-expand {
@@ -160,10 +157,6 @@ export default defineComponent({
           font-size: 12px;
           font-weight: 400;
           opacity: 0.6;
-
-          p {
-            margin: 0;
-          }
         }
       }
     }

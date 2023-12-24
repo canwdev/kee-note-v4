@@ -4,6 +4,27 @@ import RectSwitch from './Tools/RectSwitch.vue'
 import {StOptionItem, StOptionType} from './enum'
 import VueRender from './Tools/VueRender.vue'
 
+const swatches = [
+  '#258292',
+  '#3A6EA5',
+  '#F0C869',
+  '#E81123',
+  '#e91e63',
+  '#FFFFFF',
+  '#000000',
+  '#007aff',
+  '#a2845e',
+  '#8e8e93',
+  '#28cd41',
+  '#5856d6',
+  '#ff9500',
+  '#ff2d55',
+  '#af52de',
+  '#ff3b30',
+  '#5ac8fa',
+  '#ffcc00',
+]
+
 export default defineComponent({
   name: 'ItemAction',
   components: {VueRender, RectSwitch},
@@ -33,13 +54,14 @@ export default defineComponent({
     return {
       StOptionType,
       dynamicValue,
+      swatches,
     }
   },
 })
 </script>
 
 <template>
-  <n-space size="small" align="center">
+  <n-space class="option-item-action" size="small" align="center">
     <n-switch v-if="item.type === StOptionType.SWITCH" v-model:value="dynamicValue" />
 
     <RectSwitch
@@ -63,30 +85,46 @@ export default defineComponent({
     />
 
     <n-input
-      class="option-input"
+      class="option-select option-input"
       v-else-if="item.type === StOptionType.INPUT"
       v-model:value="dynamicValue"
       size="small"
       type="text"
+      clearable
+      :placeholder="item.placeholder || ''"
+    />
+
+    <n-color-picker
+      class="option-select"
+      v-else-if="item.type === StOptionType.COLOR_PICKER"
+      v-model:value="dynamicValue"
+      size="small"
+      :swatches="swatches"
+      :show-alpha="false"
+      :actions="['clear']"
     />
     <VueRender v-if="item.actionRender" :render-fn="item.actionRender" />
   </n-space>
 </template>
 
 <style lang="scss">
-.option-slider-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  .option-slider {
+.option-item-action {
+  .option-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .option-slider {
+      width: 180px;
+    }
+    .number-input-wrap {
+      width: 74px;
+    }
+  }
+  .option-select {
     width: 180px;
   }
-  .number-input-wrap {
-    width: 74px;
+  .option-input {
+    font-size: 12px;
   }
-}
-.option-select {
-  width: 180px;
-  height: 24px;
 }
 </style>

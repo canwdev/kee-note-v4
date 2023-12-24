@@ -6,7 +6,7 @@ export enum LdThemeType {
 
 export const ldThemeOptions = [
   {
-    label: 'System',
+    label: 'Auto',
     value: LdThemeType.SYSTEM,
   },
   {
@@ -18,3 +18,11 @@ export const ldThemeOptions = [
     value: LdThemeType.DARK,
   },
 ]
+
+// 数据库打开历史记录
+export type HistoryListItem = {
+  dbPath: string
+  keyPath: string
+  // 最后打开的groupUuid，用于下次进入自动选中
+  lastGroupUuid?: string
+}

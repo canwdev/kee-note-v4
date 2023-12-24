@@ -32,12 +32,12 @@ body {
 
 a {
   font-weight: 500;
-  color: $color_theme;
+  color: $primary;
   text-decoration: inherit;
 }
 
 a:hover {
-  color: $color_theme;
+  color: $primary;
 }
 
 
@@ -126,15 +126,18 @@ a:hover {
     transition: none !important;
     animation: none !important;
   }
+
   .n-modal-mask {
     background-color: transparent;
   }
+
   .n-modal, .n-card, .n-dropdown-menu, .n-notification, .n-message,
   .n-date-panel {
     box-shadow: none;
-    outline: 2px solid $color_theme;
+    outline: 1px solid $primary;
   }
 }
+
 
 // naive ui:
 

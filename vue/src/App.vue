@@ -10,38 +10,13 @@ import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   setup() {
-    const themeOverrides: GlobalThemeOverrides = {
-      common: {
-        // borderRadiusSmall: '4px',
-        // borderRadius: '4px',
-        primaryColor: '#189BA0FF',
-        primaryColorHover: '#36ADA9FF',
-        primaryColorPressed: '#0C7A71FF',
-        primaryColorSuppl: '#36AD95FF',
-      },
-    }
     const settingsStore = useSettingsStore()
 
     const isEnableThemeEdit = computed(() => settingsStore.isEnableThemeEdit)
     useGlobalShortcuts()
 
-    watch(
-      () => settingsStore.disableAnimation,
-      (val) => {
-        if (val) {
-          document.documentElement.classList.add('disable-animation')
-        } else {
-          document.documentElement.classList.remove('disable-animation')
-        }
-      },
-      {
-        immediate: true,
-      }
-    )
-
     return {
       ...useGlobalTheme(),
-      themeOverrides,
       isEnableThemeEdit,
     }
   },

@@ -75,8 +75,15 @@ export default defineComponent({
       })
     }
 
+    // 自动聚焦输入框
+    const inputUsernameRef = ref()
+    const autoFocusInput = () => {
+      inputUsernameRef.value?.focus()
+    }
+
     onMounted(async () => {
       await checkProfile()
+      autoFocusInput()
     })
 
     return {
@@ -97,6 +104,7 @@ export default defineComponent({
       handleSettings() {
         globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
       },
+      inputUsernameRef,
     }
   },
 })
@@ -113,6 +121,7 @@ export default defineComponent({
                 <n-icon size="16"><Person16Regular /></n-icon>
               </n-input-group-label>
               <n-input
+                ref="inputUsernameRef"
                 v-model:value="formModel.username"
                 @keyup.enter="handleValidateButtonClick"
               />

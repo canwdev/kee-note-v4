@@ -14,6 +14,8 @@ import {
   History16Regular,
 } from '@vicons/fluent'
 import {useSettingsStore} from '@/store/settings'
+import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
+import {HistoryListItem} from '@/enum/settings'
 
 interface ModelType {
   dbPath: string | null
@@ -23,6 +25,7 @@ interface ModelType {
 
 export default defineComponent({
   components: {
+    HistoryDialog,
     Folder16Regular,
     DatabasePerson20Regular,
     Key16Regular,
@@ -51,20 +54,33 @@ export default defineComponent({
 
     const settingsStore = useSettingsStore()
 
+    // 更新历史记录
     const updateHistory = () => {
       if (!settingsStore.isSaveHistory) {
         return
       }
       const historyList = [...settingsStore.historyList]
-      const index = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
-      if (index > -1) {
-        historyList.splice(index, 1)
+      const idx = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
+      let newItem: HistoryListItem = {
+        dbPath: modelRef.value.dbPath || '',
+        keyPath: modelRef.value.keyPath || '',
       }
-      historyList.unshift({
-        dbPath: modelRef.value.dbPath,
-        keyPath: modelRef.value.keyPath,
-      })
+      // 删除旧的
+      if (idx > -1) {
+        const oldItem = historyList[idx]
+        newItem = {
+          ...newItem,
+          // 保留旧的lastGroupUuid，
+          lastGroupUuid: oldItem.lastGroupUuid,
+        }
+        historyList.splice(idx, 1)
+      }
+      // 放置新的
+      historyList.unshift(newItem)
       settingsStore.historyList = historyList
+      settingsStore.lastOpenedHistoryItem = newItem
+
+      return newItem
     }
 
     const loadFirstHistory = () => {
@@ -82,11 +98,13 @@ export default defineComponent({
         keyPath: modelRef.value.keyPath,
       })
 
-      await checkProfile()
-      updateHistory()
+      const hItem = updateHistory()
+
+      // 传入query参数
+      await checkProfile(hItem ? {groupUuid: hItem.lastGroupUuid} : {})
     }
 
-    const checkProfile = async () => {
+    const checkProfile = async (query = {}) => {
       if (!(await kService.checkIsOpen())) {
         return
       }
@@ -99,14 +117,24 @@ export default defineComponent({
       // })
       console.info('🎉 Database unlocked!')
 
+      console.log('[query]', query)
+
       await router.replace({
         name: 'NoteView',
+        query,
       })
+    }
+
+    // 自动聚焦输入框
+    const inputPwdRef = ref()
+    const autoFocusInput = () => {
+      inputPwdRef.value?.focus()
     }
 
     onMounted(async () => {
       loadFirstHistory()
       await checkProfile()
+      autoFocusInput()
     })
 
     const handleChooseFile = async (type) => {
@@ -157,6 +185,7 @@ export default defineComponent({
       handleChooseFile,
       isShowHistoryDialog,
       handleHistoryItemClick,
+      inputPwdRef,
     }
   },
 })
@@ -199,6 +228,7 @@ export default defineComponent({
                 <n-icon size="16"><Key16Regular /></n-icon>
               </n-input-group-label>
               <n-input
+                ref="inputPwdRef"
                 v-model:value="model.password"
                 type="password"
                 show-password-on="click"

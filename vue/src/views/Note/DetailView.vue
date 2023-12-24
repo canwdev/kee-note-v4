@@ -17,8 +17,8 @@ import {
   Save20Regular,
   CalendarAdd20Regular,
   CalendarEdit16Regular,
-  MoreCircle20Regular,
-  MoreCircle20Filled,
+  TextboxMore20Regular,
+  TextboxMore20Filled,
 } from '@vicons/fluent'
 import AttachmentBox from '@/components/NoteViews/Detail/AttachmentBox.vue'
 import {getEntryItemUpdateParams} from '@/utils/export-import'
@@ -37,8 +37,8 @@ export default defineComponent({
     CalendarAdd20Regular,
     CalendarEdit16Regular,
     AttachmentBox,
-    MoreCircle20Regular,
-    MoreCircle20Filled,
+    TextboxMore20Regular,
+    TextboxMore20Filled,
   },
   setup() {
     const router = useRouter()
@@ -266,8 +266,8 @@ export default defineComponent({
                   title="Toggle more details"
                 >
                   <n-icon size="18">
-                    <MoreCircle20Filled v-if="editorSettingsStore.isShowMore" />
-                    <MoreCircle20Regular v-else />
+                    <TextboxMore20Filled v-if="editorSettingsStore.isShowMore" />
+                    <TextboxMore20Regular v-else />
                   </n-icon>
                 </n-button>
 

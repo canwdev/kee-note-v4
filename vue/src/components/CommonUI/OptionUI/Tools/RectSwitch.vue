@@ -48,18 +48,17 @@ export default defineComponent({
   align-items: center;
   border-radius: 4px;
   padding: 2px;
-  gap: 2px;
   border: 1px solid $color_border;
 
   .r-item {
     border-radius: 4px;
-    padding: 5px 20px;
+    padding: 5px 15px;
     font-size: 12px;
     transition: all 0.3s;
     cursor: pointer;
 
     &.active {
-      background-color: $color_theme;
+      background-color: $primary;
       color: white;
     }
   }

@@ -8,7 +8,7 @@ import {useKeepassEntryList} from '@/hooks/use-keepass'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
-import {MoreHorizontal20Filled} from '@vicons/fluent'
+import {MoreVertical20Regular} from '@vicons/fluent'
 
 export default defineComponent({
   components: {
@@ -106,7 +106,6 @@ export default defineComponent({
               NDropdown,
               {
                 options: getMenuOptions(row),
-                showArrow: true,
                 keyField: 'label',
               },
               {
@@ -120,13 +119,13 @@ export default defineComponent({
                       quaternary: true,
                       size: 'small',
                     },
-                    {default: () => h(NIcon, {size: 20}, () => h(MoreHorizontal20Filled))}
+                    {default: () => h(NIcon, {size: 20}, () => h(MoreVertical20Regular))}
                   ),
               }
             )
           },
-          // fixed: 'right',
-          width: 100,
+          align: 'center',
+          width: 70,
         },
       ]
     }
@@ -219,9 +218,9 @@ export default defineComponent({
       <n-collapse-transition :show="Boolean(checkedRowKeys.length)">
         <n-dropdown :options="getMenuOptions(null)" key-field="label">
           <n-button
-            type="info"
+            type="primary"
             size="small"
-            style="position: absolute; top: 0; left: 50px; z-index: 10"
+            style="position: absolute; top: 5px; left: 34px; z-index: 10"
           >
             Batch Actions ({{ checkedRowKeys.length }})
           </n-button>

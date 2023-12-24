@@ -25,6 +25,7 @@ import {
 } from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
 import {formatSiteTitle} from '@/router'
+import {HistoryListItem} from '@/enum/settings'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -82,12 +83,31 @@ export default defineComponent({
           val = []
         }
 
-        const query = {
-          ...route.query,
-          groupUuid: val[0],
+        const groupUuid = val[0]
+
+        // 如果开启了历史记录，就设置lastGroupUuid
+        if (groupUuid && settingsStore.isSaveHistory && settingsStore.lastOpenedHistoryItem) {
+          const {dbPath} = settingsStore.lastOpenedHistoryItem
+
+          // 查找，更新并替换历史记录
+          const list: HistoryListItem[] = [...settingsStore.historyList]
+          const idx = list.findIndex((item: any) => item.dbPath === dbPath)
+          if (idx > -1) {
+            const item: HistoryListItem = {
+              ...settingsStore.historyList[idx],
+              lastGroupUuid: groupUuid,
+            }
+            list.splice(idx, 1, item)
+            console.log('set groupUuid', groupUuid)
+            settingsStore.historyList = list
+          }
         }
+
         router.replace({
-          query,
+          query: {
+            ...route.query,
+            groupUuid,
+          },
         })
       },
     })
@@ -207,10 +227,13 @@ export default defineComponent({
 
     const handleCloseDatabase = async () => {
       await kService.closeDatabase()
+      settingsStore.lastOpenedHistoryItem = null
       keeStore.isDbOpened = false
       window.$message.success('Database successfully closed')
+
       selectedKeys.value = []
       groupTree.value = []
+
       if (isElectron) {
         await router.replace({
           name: 'HomeView',
@@ -447,7 +470,7 @@ export default defineComponent({
 
           <n-space size="small" align="center">
             <n-button quaternary size="small" title="Menu" @click="handleToggleLock">
-              {{ keeStore.isDbOpened ? '🔐 Lock DB' : '🔓 Unlock DB' }}
+              {{ keeStore.isDbOpened ? '🔐 Lock' : '🔓 Unlock' }}
             </n-button>
 
             <n-button v-if="!isElectron" quaternary size="small" title="Menu" @click="handleLogout">
