@@ -30,7 +30,7 @@ Editing view:
 ## Directory Structure
 
 - `electron` App based backend, front end communicates with IPC
-- `nest` Web-based backend, front-end communicates via HTTP (supports encryption)
+- `electron/src/nest` Web-based backend, front-end communicates via HTTP (supports encryption)
 - `vue` Frontend folder, automatically adapt backend (Election or Nest)
 
 ## Development
@@ -43,10 +43,10 @@ yarn
 yarn dev
 ```
 
-2. Start backend(nest) development
+2. Start backend(electron+nest) development
 
 ```sh
-cd nest
+cd electron
 yarn
 yarn dev
 ```
@@ -65,7 +65,7 @@ yarn
 yarn build
 ```
 
-### Build Electron (Optional)
+### Build Electron
 
 ```sh
 cd electron

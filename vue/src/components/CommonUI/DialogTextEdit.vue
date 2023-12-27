@@ -41,6 +41,7 @@ export default defineComponent({
     const {text} = toRefs(props)
     const mVisible = useModelWrapper(props, emit, 'visible')
 
+    const inputRef = ref()
     const editingText = ref('')
     watch(
       text,
@@ -50,7 +51,16 @@ export default defineComponent({
       {immediate: true}
     )
 
+    watch(mVisible, (val) => {
+      if (val) {
+        setTimeout(() => {
+          inputRef.value?.focus()
+        })
+      }
+    })
+
     return {
+      inputRef,
       mVisible,
       editingText,
       handleSave() {
@@ -76,12 +86,14 @@ export default defineComponent({
   >
     <template v-if="mVisible">
       <n-input
+        ref="inputRef"
         type="textarea"
         v-if="isTextarea"
         v-model:value="editingText"
         style="height: 500px"
       />
       <n-input
+        ref="inputRef"
         v-else
         :type="type"
         v-model:value="editingText"

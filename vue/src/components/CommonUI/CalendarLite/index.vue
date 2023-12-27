@@ -248,7 +248,7 @@ export default defineComponent({
         }
 
         &:hover {
-          background-color: rgba($primary, 0.1);
+          background-color: $primary_opacity;
           transition: background-color 0s;
         }
       }

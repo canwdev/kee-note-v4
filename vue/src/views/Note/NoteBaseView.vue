@@ -419,6 +419,7 @@ export default defineComponent({
     }
 
     return {
+      mainStore,
       isElectron,
       groupTree,
       keeStore,
@@ -465,16 +466,22 @@ export default defineComponent({
         <n-space align="center" class="nav-header-content" justify="space-between">
           <n-space align="center" size="small">
             <n-icon style="transform: translateY(2px)" size="20"> <LockClosed20Filled /> </n-icon>
-            {{ formatSiteTitle() }}
+            <span class="note-title">
+              {{ formatSiteTitle() }}
+            </span>
           </n-space>
 
           <n-space size="small" align="center">
             <n-button quaternary size="small" title="Menu" @click="handleToggleLock">
-              {{ keeStore.isDbOpened ? '🔐 Lock' : '🔓 Unlock' }}
+              {{ keeStore.isDbOpened ? '🔐' : '🔓' }}
+              <span class="note-title">
+                &nbsp;
+                {{ keeStore.isDbOpened ? 'Lock' : 'Unlock' }}
+              </span>
             </n-button>
 
             <n-button v-if="!isElectron" quaternary size="small" title="Menu" @click="handleLogout">
-              🏃 Logout
+              🏃<span class="note-title">&nbsp; Logout </span>
             </n-button>
 
             <n-dropdown
@@ -483,9 +490,11 @@ export default defineComponent({
               placement="bottom-start"
               trigger="hover"
             >
-              <n-button quaternary size="small" title="Menu">
-                <n-icon size="20"> <Settings20Filled /> </n-icon>
-              </n-button>
+              <n-badge :show="mainStore.isServerRunning" dot type="success" :offset="[-4, 5]">
+                <n-button quaternary size="small" title="Menu">
+                  <n-icon size="20"> <Settings20Filled /> </n-icon>
+                </n-button>
+              </n-badge>
             </n-dropdown>
           </n-space>
         </n-space>
@@ -573,6 +582,12 @@ export default defineComponent({
     :deep(.n-layout-scroll-container) {
       display: flex;
       flex-direction: column;
+    }
+  }
+
+  .note-title {
+    @media screen and (max-width: 500px) {
+      display: none;
     }
   }
 

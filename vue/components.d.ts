@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     LunarDay: typeof import('./src/components/NoteViews/Calendar/LunarDay.vue')['default']
     MarkdownEditor: typeof import('./src/components/NoteViews/Detail/MarkdownEditor.vue')['default']
     MiniList: typeof import('./src/components/NoteViews/Calendar/MiniList.vue')['default']
+    NBadge: typeof import('naive-ui')['NBadge']
     NButton: typeof import('naive-ui')['NButton']
     NButtonGroup: typeof import('naive-ui')['NButtonGroup']
     NCard: typeof import('naive-ui')['NCard']

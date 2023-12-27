@@ -41,9 +41,10 @@ export default defineComponent({
           type: 'selection',
         },
         {
-          title: '★',
+          title: '',
           key: 'icon',
-          width: 80,
+          align: 'center',
+          width: 50,
           render(row, index) {
             return h(IconDisplay, {
               onClick: (e: Event) => {
@@ -75,10 +76,15 @@ export default defineComponent({
           ellipsis: {
             tooltip: true,
           },
+          minWidth: 160,
         },
         {
           title: 'Created',
           key: 'creationTime',
+          ellipsis: {
+            tooltip: true,
+          },
+          width: 160,
           render(row, index) {
             return h('span', {}, formatDate(new Date(row.creationTime)))
           },
@@ -90,6 +96,10 @@ export default defineComponent({
         {
           title: 'Updated',
           key: 'lastModTime',
+          ellipsis: {
+            tooltip: true,
+          },
+          width: 160,
           render(row, index) {
             return h('span', {}, formatDate(new Date(row.lastModTime)))
           },
@@ -101,6 +111,7 @@ export default defineComponent({
         {
           title: 'Action',
           key: 'actions',
+          fixed: 'right',
           render(row) {
             return h(
               NDropdown,
@@ -258,7 +269,6 @@ export default defineComponent({
   height: 100%;
   user-select: none;
   .note-list-table {
-    min-width: 700px;
   }
 }
 </style>

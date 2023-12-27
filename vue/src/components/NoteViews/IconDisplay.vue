@@ -53,6 +53,7 @@ export default defineComponent({
   display: inline-block;
   position: relative;
   border-radius: 4px;
+  vertical-align: bottom;
 
   .color-fg {
     position: absolute;

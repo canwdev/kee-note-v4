@@ -13,6 +13,7 @@ import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {RouterLink} from 'vue-router'
 import {useServerManager} from '@/components/Settings/use-server-manager'
+import {useMainStore} from '@/store/main'
 
 export default defineComponent({
   name: 'GlobalSettings',
@@ -46,7 +47,7 @@ export default defineComponent({
     }
 
     const settingsStore = useSettingsStore()
-    const {isServerRunning, serverManagerOption} = useServerManager()
+    const {serverManagerOption} = useServerManager()
 
     const optionList = computed((): StOptionItem[] => {
       return [

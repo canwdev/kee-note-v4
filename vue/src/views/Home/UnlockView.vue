@@ -16,6 +16,7 @@ import {
 import {useSettingsStore} from '@/store/settings'
 import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
 import {HistoryListItem} from '@/enum/settings'
+import {useMainStore} from '@/store/main'
 
 interface ModelType {
   dbPath: string | null
@@ -33,6 +34,7 @@ export default defineComponent({
     History16Regular,
   },
   setup() {
+    const mainStore = useMainStore()
     const router = useRouter()
     const formRef = ref<FormInst | null>(null)
     const message = useMessage()
@@ -164,6 +166,7 @@ export default defineComponent({
     }
 
     return {
+      mainStore,
       isElectron,
       formRef,
       model: modelRef,
@@ -262,7 +265,10 @@ export default defineComponent({
             <n-button strong type="primary" @click="handleValidateButtonClick" style="color: white">
               Unlock
             </n-button>
-            <n-button tertiary @click="handleSettings"> Settings </n-button>
+
+            <n-badge :show="mainStore.isServerRunning" dot type="success" :offset="[-2, 3]">
+              <n-button tertiary @click="handleSettings"> Settings </n-button>
+            </n-badge>
           </n-space>
         </n-form>
       </n-card>

@@ -52,7 +52,7 @@ export default defineComponent({
                           h(
                             NMessageProvider,
                             {
-                              placement: 'top',
+                              placement: 'bottom',
                             },
                             {
                               default: () => h(AppContent),

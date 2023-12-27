@@ -3,10 +3,11 @@ import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
 import {isElectron} from '@/utils/backend'
 import {electronToggleServer} from '@/api/keepass'
 import {marked} from 'marked'
+import {useMainStore} from '@/store/main'
 
 export const useServerManager = () => {
+  const mainStore = useMainStore()
   const isLoading = ref(false)
-  const isServerRunning = ref(false)
   const serverLogMessage = ref('')
   const serverManagerOption = computed((): StOptionItem => {
     return {
@@ -15,7 +16,9 @@ export const useServerManager = () => {
       children: [
         {
           label: 'Nest.js Server',
-          subtitle: isServerRunning.value ? serverLogMessage.value : 'Run KeeNote on a webpage!',
+          subtitle: mainStore.isServerRunning
+            ? serverLogMessage.value
+            : 'Run KeeNote on a webpage!',
           key: 'enable_server',
           actionRender: h(
             NButton,
@@ -23,7 +26,7 @@ export const useServerManager = () => {
               type: 'primary',
               size: 'small',
               onClick: async () => {
-                await doToggleServer({toggle: !isServerRunning.value})
+                await doToggleServer({toggle: !mainStore.isServerRunning})
               },
               disabled: isLoading.value,
             },
@@ -32,7 +35,7 @@ export const useServerManager = () => {
                 if (isLoading.value) {
                   return '...'
                 }
-                return isServerRunning.value ? 'Stop' : 'Start'
+                return mainStore.isServerRunning ? 'Stop' : 'Start'
               },
             }
           ),
@@ -45,7 +48,7 @@ export const useServerManager = () => {
     try {
       isLoading.value = true
       const res = await electronToggleServer(params)
-      isServerRunning.value = res.running
+      mainStore.isServerRunning = res.running
       serverLogMessage.value = marked.parse(res.logMessage)
     } catch (e) {
     } finally {
@@ -56,7 +59,7 @@ export const useServerManager = () => {
   onMounted(async () => {
     if (isElectron) {
       await doToggleServer({getStatusOnly: true})
-      if (isServerRunning.value) {
+      if (mainStore.isServerRunning) {
         window.$notification.success({
           content: 'Server auto started!',
           meta: () =>
@@ -71,7 +74,6 @@ export const useServerManager = () => {
   })
 
   return {
-    isServerRunning,
     serverManagerOption,
   }
 }
