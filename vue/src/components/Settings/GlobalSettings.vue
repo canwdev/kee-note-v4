@@ -50,6 +50,33 @@ export default defineComponent({
     const {serverManagerOption} = useServerManager()
 
     const optionList = computed((): StOptionItem[] => {
+      let calendarSettings: StOptionItem[] = [
+        {
+          label: 'Enable Calendar View',
+          key: 'isCalendarView',
+          store: settingsStore,
+          type: StOptionType.SWITCH,
+        },
+      ]
+      if (settingsStore.isCalendarView) {
+        calendarSettings = [
+          ...calendarSettings,
+          {
+            label: 'Show Lunar Day',
+            subtitle: '是否显示农历',
+            key: 'calendarShowLunar',
+            store: settingsStore,
+            type: StOptionType.SWITCH,
+          },
+          {
+            label: 'Show Note Title',
+            key: 'calendarShowTitle',
+            store: settingsStore,
+            type: StOptionType.SWITCH,
+          },
+        ]
+      }
+
       return [
         {
           label: 'Personalization',
@@ -87,20 +114,13 @@ export default defineComponent({
                 }
               ),
             },
-            {
-              label: 'NaiveUI Theme Editor',
-              subtitle: 'Toggle this will refresh page',
-              key: 'isEnableThemeEdit',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
-            {
-              label: 'Calendar: Show Lunar Day',
-              subtitle: '是否显示农历',
-              key: 'isCalendarShowLunar',
-              store: settingsStore,
-              type: StOptionType.SWITCH,
-            },
+            // {
+            //   label: 'NaiveUI Theme Editor',
+            //   subtitle: 'Toggle this will refresh page',
+            //   key: 'isEnableThemeEdit',
+            //   store: settingsStore,
+            //   type: StOptionType.SWITCH,
+            // },
             {
               label: 'Disable Animation',
               subtitle: 'E-Ink optimization',
@@ -109,6 +129,11 @@ export default defineComponent({
               type: StOptionType.SWITCH,
             },
           ],
+        },
+        {
+          label: 'Calendar',
+          key: 'calendar',
+          children: calendarSettings,
         },
         isElectron
           ? serverManagerOption.value

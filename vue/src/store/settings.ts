@@ -16,7 +16,9 @@ interface IStore {
 
   isCalendarView: boolean
   // 是否显示农历
-  isCalendarShowLunar: boolean
+  calendarShowLunar: boolean
+  calendarShowTitle: boolean
+
   isSidebarCollapsed: boolean
 }
 
@@ -34,7 +36,9 @@ export const useSettingsStore = defineStore('settingsStore', {
       lastOpenedHistoryItem: null,
 
       isCalendarView: false,
-      isCalendarShowLunar: true,
+      calendarShowLunar: true,
+      calendarShowTitle: true,
+
       isSidebarCollapsed: false,
     }
   },
