@@ -23,6 +23,14 @@ export class GroupItem {
   }
 }
 
+export type FieldsV2 = {
+  Title: string
+  UserName: string
+  Password: string
+  URL: string
+  Notes: string
+}
+
 export interface EntryItem {
   uuid: string
   icon: number
@@ -32,7 +40,7 @@ export interface EntryItem {
   creationTime: Date
   lastModTime: Date
   attachmentNames?: string[]
-  fieldsV2?: any
+  fieldsV2?: FieldsV2 | any
   _origin?: any
 }
 

@@ -10,6 +10,7 @@ import markedKatex from 'marked-katex-extension'
 import {useMainStore} from '@/store/main'
 import '@/styles/markdown/github-markdown-dark.css'
 import '@/styles/markdown/github-markdown.css'
+import mime from 'mime'
 
 marked.use(markedKatex({output: 'mathml'}))
 
@@ -41,21 +42,73 @@ export default defineComponent({
     watch(mVisible, async (nv) => {
       if (!nv) {
         entryDetail.value = null
-      } else if (uuid.value) {
-        entryDetail.value = await kService.getEntryDetail({uuid: uuid.value})
+      } else {
+        await loadDetail()
       }
     })
 
-    const detailData = computed(() => {
-      return previewDetail.value || entryDetail.value
-    })
+    const htmlContent = ref('')
+    const imageNameUrlMap = ref({})
 
-    const htmlContent = computed(() => {
-      if (!detailData.value) {
-        return ''
+    /**
+     * 提前准备好图片，供markdown调用
+     * @param detail
+     */
+    const loadImages = async (detail: EntryItem | null) => {
+      if (!detail) {
+        return
       }
-      return marked.parse(detailData.value.fieldsV2.Notes)
-    })
+      imageNameUrlMap.value = {}
+      let imageNames: string[] = []
+      if (detail.attachmentNames) {
+        imageNames = detail.attachmentNames.filter((filename) => {
+          const mimeType = mime.getType(filename)
+          const type0 = mimeType?.split('/')[0]
+          return type0 === 'image'
+        })
+      }
+      const map = {}
+      for (const name of imageNames) {
+        const blob = await kService.getAttachment({
+          uuid: detail.uuid,
+          filename: name,
+        })
+        map[name] = URL.createObjectURL(blob)
+      }
+      imageNameUrlMap.value = map
+    }
+
+    const loadDetail = async () => {
+      htmlContent.value = ''
+      let detail: EntryItem | null = null
+
+      if (previewDetail.value) {
+        detail = previewDetail.value
+      } else {
+        detail = await kService.getEntryDetail({uuid: uuid.value})
+      }
+
+      if (!detail) {
+        return
+      }
+      await loadImages(detail)
+
+      const customRenderer = new marked.Renderer()
+
+      // 加载附件图片
+      customRenderer.image = (href, title, text) => {
+        title = title || text
+        if (href in imageNameUrlMap.value) {
+          return `<img src="${imageNameUrlMap.value[href]}" alt="${text}" title="${title}" />`
+        }
+        return `<img src="${href}" alt="${text}" title="${title}" />`
+      }
+
+      htmlContent.value = marked.parse(detail.fieldsV2.Notes as string, {
+        renderer: customRenderer,
+      })
+      entryDetail.value = detail
+    }
 
     return {
       mainStore,
@@ -63,7 +116,6 @@ export default defineComponent({
       mVisible,
       formatDate,
       htmlContent,
-      detailData,
     }
   },
 })
@@ -74,23 +126,23 @@ export default defineComponent({
     class="dialog-entry-preview"
     v-model:show="mVisible"
     preset="dialog"
-    :title="detailData && detailData.title"
+    :title="entryDetail && entryDetail.title"
   >
     <template #icon>
       <IconDisplay
-        v-if="detailData"
-        :icon="detailData.icon"
-        :bg-color="detailData.bgColor"
-        :fg-color="detailData.fgColor"
+        v-if="entryDetail"
+        :icon="entryDetail.icon"
+        :bg-color="entryDetail.bgColor"
+        :fg-color="entryDetail.fgColor"
       />
     </template>
-    <template v-if="detailData">
+    <template v-if="entryDetail">
       <n-space justify="space-between" style="font-size: 12px">
         <n-space align="center" style="font-weight: 500">
-          Created: {{ formatDate(new Date(detailData.creationTime)) }}
+          Created: {{ formatDate(new Date(entryDetail.creationTime)) }}
         </n-space>
         <n-space align="center">
-          Updated: {{ formatDate(new Date(detailData.lastModTime)) }}
+          Updated: {{ formatDate(new Date(entryDetail.lastModTime)) }}
         </n-space>
       </n-space>
       <n-divider style="margin-top: 10px; margin-bottom: 10px" />
