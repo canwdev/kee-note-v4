@@ -1,4 +1,4 @@
-import {Controller, Get, Post, UseGuards, Request, Req} from '@nestjs/common'
+import {Controller, Get, Post, UseGuards, Request, Req, Body} from '@nestjs/common'
 import {AppService} from './app.service'
 import {LocalAuthGuard} from './auth/guards/local-auth.guard'
 import {AuthService} from './auth/auth.service'
@@ -9,11 +9,17 @@ import {SkipAuth} from './auth/skip-auth'
 export class AppController {
   constructor(private readonly appService: AppService, private authService: AuthService) {}
 
-  // @SkipAuth()
-  // @Get()
-  // getHello(): string {
-  //   return this.appService.getHello()
-  // }
+  @SkipAuth()
+  @Get('hello')
+  getHello() {
+    return this.appService.getHello()
+  }
+
+  @SkipAuth()
+  @Post('set-env')
+  setEnv(@Body() params: any) {
+    return this.appService.setEnv(params)
+  }
 
   // curl -X POST http://localhost:3000/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
   @SkipAuth()

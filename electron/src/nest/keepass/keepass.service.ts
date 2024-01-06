@@ -18,13 +18,36 @@ export class KeepassService {
   }
 
   async loadDbConfig(): Promise<KdbxOpenOptions> {
-    const configPath =
-      process.env.KN_KDBX_CONFIG_PATH || Path.join(__dirname, '../../../test/db-config.json')
-    const config: JsonConfig = JSON.parse(await Fs.readFile(configPath, 'utf8'))
+    let config: JsonConfig
+    let configPath: string
+
+    // 优先读取
+    if (process.env.KN_KDBX_CONFIG_JSON) {
+      config = JSON.parse(process.env.KN_KDBX_CONFIG_JSON)
+    } else if (process.env.KN_KDBX_CONFIG_PATH) {
+      configPath = process.env.KN_KDBX_CONFIG_PATH
+
+      // 读取开发demo配置
+      if (configPath === '__demo__.json') {
+        configPath = Path.join(process.cwd(), './test/db-config.json')
+      }
+      // 读取配置文件内容
+      config = JSON.parse(await Fs.readFile(configPath, 'utf8'))
+    } else {
+      throw new Error('KN_KDBX_CONFIG_JSON or KN_KDBX_CONFIG_PATH is required')
+    }
 
     const kdbxOpenOptions = config.kdbxOpenOptions
     if (config.isRelativeBase) {
-      const basePath = Path.dirname(configPath)
+      let basePath: string
+      if (process.env.KN_KDBX_CONFIG_JSON) {
+        // get process execute path
+        basePath = Path.dirname(process.execPath)
+      } else {
+        basePath = Path.dirname(configPath)
+      }
+
+      console.log('[isRelativeBase basePath]', basePath)
       kdbxOpenOptions.dbPath = Path.join(basePath, kdbxOpenOptions.dbPath)
       if (kdbxOpenOptions.keyPath) {
         kdbxOpenOptions.keyPath = Path.join(basePath, kdbxOpenOptions.keyPath)
