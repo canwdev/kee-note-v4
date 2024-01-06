@@ -62,7 +62,6 @@ declare module '@vue/runtime-core' {
     NSpace: typeof import('naive-ui')['NSpace']
     NSwitch: typeof import('naive-ui')['NSwitch']
     NThing: typeof import('naive-ui')['NThing']
-    NTooltip: typeof import('naive-ui')['NTooltip']
     NTree: typeof import('naive-ui')['NTree']
     OptionItem: typeof import('./src/components/CommonUI/OptionUI/OptionItem.vue')['default']
     OptionUI: typeof import('./src/components/CommonUI/OptionUI/index.vue')['default']
