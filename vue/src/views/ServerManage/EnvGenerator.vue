@@ -46,7 +46,7 @@ export default defineComponent({
 
     const envConfigList = computed((): EnvConfigType[] => {
       return [
-        {key: 'PORT', label: 'Server Port', value: '3030'},
+        {key: 'PORT', label: 'Server Port (Optional)', placeholder: '3000', value: '3000'},
         {key: 'JWT_SECRET', label: 'JWT Secret', value: getRandomHex(), required: true},
         {
           key: 'JWT_EXPIRES_IN',
