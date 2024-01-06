@@ -32,9 +32,6 @@
     "vue": "^3.3.12",
     "vue-router": "^4.2.2"
   },
-  "optionalDependencies": {
-    "electron": "*"
-  },
   "devDependencies": {
     "@types/codemirror": "^5.60.8",
     "@types/js-cookie": "^3.0.3",
