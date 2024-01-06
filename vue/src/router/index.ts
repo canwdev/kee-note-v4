@@ -14,7 +14,7 @@ const constantRoutes = [
   {
     name: 'EnvGenerator',
     path: '/gen',
-    component: () => import('@/views/EnvGenerator.vue'),
+    component: () => import('@/views/ServerManage/EnvGenerator.vue'),
   },
   {
     name: 'NoteRoot',

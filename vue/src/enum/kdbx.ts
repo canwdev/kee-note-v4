@@ -5,6 +5,14 @@ export interface GroupItem {
   children: GroupItem[]
 }
 
+export type FieldsV2 = {
+  Title: string
+  UserName: string
+  Password: string
+  URL: string
+  Notes: string
+}
+
 export interface EntryItem {
   uuid: string
   icon: number
@@ -13,7 +21,7 @@ export interface EntryItem {
   fgColor: string
   creationTime: Date
   lastModTime: Date
-  fieldsV2?: string
-  attachmentNames?: string
+  fieldsV2?: FieldsV2
+  attachmentNames?: string[]
   _origin?: any
 }

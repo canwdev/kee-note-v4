@@ -7,13 +7,16 @@
   "author": "canwdev",
   "main": "dist-src/main.js",
   "scripts": {
-    "build-src": "tsc",
+    "build-src": "cross-env rimraf ./dist-src/* && tsc",
     "watch-src": "tsc -w",
     "dev": "cross-env NODE_ENV=development electron ./dist-src/main.js",
-    "dev-nest": "cross-env NODE_ENV=development nodemon ./dist-src/dev-nest.js",
     "start": "electron ./dist-src/main.js",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "build": "npm run build-src && electron-builder --dir"
+    "build": "npm run build-src && electron-builder --dir",
+    "build-nest-only": "npm run build-src -- -p tsconfig-nest-only.json",
+    "watch-nest-only": "npm run watch-src -- -p tsconfig-nest-only.json",
+    "dev-nest": "cross-env NODE_ENV=development nodemon ./dist-src/nest/index.js",
+    "start-nest": "node ./dist-src/nest/index.js"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
@@ -33,6 +36,9 @@
     "nodemon": "^3.0.2",
     "prettier": "^2.8.8",
     "typescript": "^5.1.6"
+  },
+  "optionalDependencies": {
+    "electron": "*"
   },
   "dependencies": {
     "@electron/remote": "^2.0.10",

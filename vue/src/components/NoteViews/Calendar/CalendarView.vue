@@ -114,7 +114,7 @@ export default defineComponent({
         </div>
         <span class="date-title">
           <LunarDay
-            v-if="settingsStore.isCalendarShowLunar"
+            v-if="settingsStore.calendarShowLunar"
             :year="day.year()"
             :month="day.month() + 1"
             :day="day.date()"
