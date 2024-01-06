@@ -166,7 +166,10 @@ export default defineComponent({
                     RouterLink,
                     {
                       to: '/gen',
-                      target: '_blank',
+                      // target: '_blank',
+                      onClick: () => {
+                        mVisible.value = false
+                      },
                     },
                     {
                       default: () => 'Go',

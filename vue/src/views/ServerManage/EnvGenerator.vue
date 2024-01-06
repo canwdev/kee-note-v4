@@ -4,6 +4,7 @@ import {FormInst, FormRules} from 'naive-ui'
 import {hashSync} from 'bcryptjs'
 import {getRandomHex} from '@/utils/my-crypt'
 import {isDev} from '@/enum'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 
 const genUserData = (username, password) => {
   return JSON.stringify([
@@ -43,6 +44,11 @@ const EnvConfigMap = {
     required: true,
     placeholder: 'Eg: D:/MyFolder/db-config.json',
   },
+  KN_KDBX_CONFIG_JSON: {
+    label: 'Kdbx config json (TODO)',
+    value: '',
+    placeholder: '',
+  },
   KN_HTTP_CRYPT_KEY: {
     label: 'HTTP Crypt key',
     tip: 'Recommended to enable in production mode to enhance security. it can encrypt/decrypt HTTP request query/body and response body',
@@ -78,6 +84,7 @@ export default defineComponent({
     const dataForm = ref<ModelType>(getDefaultFormValue())
     const dataFormRules: FormRules = getFormRules()
     const outputText = ref('')
+    const currentStep = ref(1)
 
     const handleGenerate = () => {
       formRef.value?.validate((errors) => {
@@ -92,6 +99,7 @@ export default defineComponent({
           txt += `${commentFlag}${key}=${val}\n`
         }
         outputText.value = txt
+        currentStep.value = 2
       })
     }
 
@@ -99,18 +107,23 @@ export default defineComponent({
       dataForm.value[key] = getRandomHex(len)
     }
 
-    const showUserEditPrompt = () => {
-      const username = window.prompt('Input username', 'admin')
+    const showUserEditPrompt = async () => {
+      const username = await showInputPrompt({
+        title: 'Input username',
+        value: 'admin',
+      })
       if (!username) {
         return
       }
-      const password = window.prompt('Input password', 'admin')
+      const password = await showInputPrompt({
+        title: 'Input password',
+        value: 'admin',
+      })
       if (!password) {
         return
       }
 
       dataForm.value['AUTH_USERS'] = genUserData(username, password)
-      window.$message.success('OK')
     }
 
     const handleSaveAs = async () => {
@@ -141,15 +154,27 @@ export default defineComponent({
       setRandomValue,
       showUserEditPrompt,
       handleSaveAs,
+      currentStep,
     }
   },
 })
 </script>
 
 <template>
-  <n-layout class="env-generator">
-    <n-layout-content>
-      <n-card class="card-gen" title="① Server `.env` Generator">
+  <div class="env-generator">
+    <n-card size="small" style="position: sticky; top: 0; z-index: 100; margin-bottom: 10px">
+      <n-page-header subtitle="" @back="$router.push({name: 'HomeView'})">
+        <template #title>KeeNote Server `.env` Generator</template>
+        <template #extra> </template>
+      </n-page-header>
+    </n-card>
+
+    <div class="generator-content">
+      <n-steps :vertical="false" v-model:current="currentStep" style="padding: 10px 10px">
+        <n-step title="Edit Config" description="Edit Nest.js server configuration information" />
+        <n-step title="Save Result" description="Save the .env configuration file" />
+      </n-steps>
+      <n-card v-if="currentStep === 1" class="card-gen">
         <n-form
           size="small"
           ref="formRef"
@@ -179,6 +204,13 @@ export default defineComponent({
                 @click="showUserEditPrompt"
                 >🖍</n-button
               >
+              <n-button
+                secondary
+                type="primary"
+                v-if="key === 'KN_KDBX_CONFIG_JSON'"
+                @click="showUserEditPrompt"
+                >🖍</n-button
+              >
               <n-button secondary type="primary" v-if="RandomKeys[key]" @click="setRandomValue(key)"
                 >🎲</n-button
               >
@@ -187,16 +219,17 @@ export default defineComponent({
               v-model:value="dataForm[key]"
               :disabled="key === 'AUTH_USERS'"
               :placeholder="val.placeholder || ''"
+              class="font-code"
             />
           </n-form-item>
           <n-space justify="end">
-            <n-button round @click="handleGenerate" type="primary" class="font-emoji">
+            <n-button @click="handleGenerate" type="primary" class="font-emoji">
               Generate
             </n-button>
           </n-space>
         </n-form>
       </n-card>
-      <n-card class="card-result" title="② Result">
+      <n-card v-if="currentStep === 2" class="card-result">
         <n-input
           class="input-text font-code"
           type="textarea"
@@ -206,48 +239,51 @@ export default defineComponent({
         ></n-input>
 
         <n-space justify="space-between">
-          <textarea
-            class="font-code"
-            readonly
-            cols="50"
-            rows="7"
-            style="resize: none; color: #0f0; background-color: black"
-            :value="
-              isDev
-                ? `[Project Root]/electron
+          <n-space>
+            <textarea
+              class="font-code"
+              readonly
+              cols="39"
+              rows="7"
+              style="resize: none; color: #0f0; background-color: black"
+              :value="
+                isDev
+                  ? `[Project Root]/electron
 ├─ node_modules
-├─ .env           <-- Place .env file here!
+├─ .env     <-- Place .env file here!
 ├─ package.json
 └─ ...`
-                : `[App Root]
+                  : `[App Root]
 ├─ locales
 ├─ resources
-├─ .env           <-- Place .env file here!
+├─ .env     <-- Place .env file here!
 ├─ KeeNote.exe
 └─ ...
 `
-            "
-          ></textarea>
-          <n-button :disabled="!outputText" round type="primary" @click="handleSaveAs">
-            Save as .env</n-button
-          >
+              "
+            ></textarea>
+
+            <n-button :disabled="true" @click="handleSaveAs" type="primary">
+              Save to Server (TODO)
+            </n-button>
+          </n-space>
+          <n-button :disabled="!outputText" type="primary" @click="handleSaveAs">
+            Save as .env
+          </n-button>
         </n-space>
       </n-card>
-    </n-layout-content>
-  </n-layout>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .env-generator {
   height: 100%;
-  :deep(.n-layout-scroll-container) {
-    display: flex;
-    justify-content: center;
-    min-width: 500px;
 
-    @media screen and (max-width: 800px) {
-      flex-direction: column;
-    }
+  .generator-content {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
   }
   .card-result {
     .input-text {
