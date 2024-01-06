@@ -5,6 +5,7 @@ import {hashSync} from 'bcryptjs'
 import {getRandomHex} from '@/utils/my-crypt'
 import {isDev} from '@/enum'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
+import {QuestionCircle20Regular, Edit20Regular, New16Regular} from '@vicons/fluent'
 
 const genUserData = (username, password) => {
   return JSON.stringify([
@@ -16,75 +17,96 @@ const genUserData = (username, password) => {
   ])
 }
 
-const EnvConfigMap = {
-  PORT: {label: 'Server Port', value: '3030'},
-  JWT_SECRET: {
-    label: 'JWT Secret',
-    tip: '',
-    value: getRandomHex(),
-    required: true,
-  },
-  JWT_EXPIRES_IN: {
-    label: 'JWT Expires In',
-    tip: 'Eg: 60, "2 days", "10h", "7d". A numeric value is interpreted as a seconds count. <a href="https://github.com/auth0/node-jsonwebtoken#usage" target="_blank">node-jsonwebtoken#usage</a>',
-    value: '30d',
-    required: true,
-  },
-  AUTH_USERS: {
-    label: 'HTTP Auth users',
-    tip: '',
-    value: '', // genUserData('admin', 'admin')
-    required: true,
-    placeholder: 'Please generate by right button',
-  },
-  KN_KDBX_CONFIG_PATH: {
-    label: 'Kdbx config path',
-    tip: 'Absolute path for db-config.json, the database will be loaded once the server starts. If not set, it will load test/db-config.json',
-    value: '',
-    required: true,
-    placeholder: 'Eg: D:/MyFolder/db-config.json',
-  },
-  KN_KDBX_CONFIG_JSON: {
-    label: 'Kdbx config json (TODO)',
-    value: '',
-    placeholder: '',
-  },
-  KN_HTTP_CRYPT_KEY: {
-    label: 'HTTP Crypt key',
-    tip: 'Recommended to enable in production mode to enhance security. it can encrypt/decrypt HTTP request query/body and response body',
-    value: '',
-  },
-}
-
-const getDefaultFormValue = () => {
-  const obj = {}
-  for (const key in EnvConfigMap) {
-    obj[key] = EnvConfigMap[key].value
-  }
-  return obj
-}
-
-const getFormRules = () => {
-  const obj = {}
-  for (const key in EnvConfigMap) {
-    if (EnvConfigMap[key].required) {
-      obj[key] = {
-        required: true,
-        trigger: ['blur'],
-      }
-    }
-  }
-  return obj
+type EnvConfigType = {
+  key: string
+  label: string
+  tip?: string
+  value: string | boolean | number
+  required?: boolean
+  placeholder?: string
 }
 
 export default defineComponent({
   name: 'EnvGenerator',
+  components: {
+    QuestionCircle20Regular,
+    Edit20Regular,
+    New16Regular,
+  },
   setup() {
     const formRef = ref<FormInst | null>(null)
-    const dataForm = ref<ModelType>(getDefaultFormValue())
-    const dataFormRules: FormRules = getFormRules()
+    const dataForm = ref<Record<string, string>>({})
+
+    const envConfigList = computed((): EnvConfigType[] => {
+      return [
+        {key: 'PORT', label: 'Server Port', value: '3030'},
+        {key: 'JWT_SECRET', label: 'JWT Secret', value: getRandomHex(), required: true},
+        {
+          key: 'JWT_EXPIRES_IN',
+          tip: 'Eg: 60, "2 days", "10h", "7d". A numeric value is interpreted as a seconds count. <a href="https://github.com/auth0/node-jsonwebtoken#usage" target="_blank">node-jsonwebtoken#usage</a>',
+          label: 'JWT Expires In',
+          value: '30d',
+          required: true,
+        },
+        {
+          key: 'AUTH_USERS',
+          label: 'HTTP Auth users',
+          value: '', // genUserData('admin', 'admin')
+          required: true,
+          placeholder: 'Please generate by right button',
+        },
+        {
+          // 开头有2个下划线的，是私有配置项，不会提交到配置文件
+          key: '__KDBX_CONFIG_IS_JSON',
+          label: 'Kdbx Config is JSON Mode',
+          value: false,
+        },
+        dataForm.value['__KDBX_CONFIG_IS_JSON']
+          ? {
+              key: 'KN_KDBX_CONFIG_JSON',
+              label: 'Kdbx config json (TODO)',
+              value: '',
+              required: true,
+            }
+          : {
+              key: 'KN_KDBX_CONFIG_PATH',
+              label: 'Kdbx config path',
+              tip: 'Absolute path for db-config.json, the database will be loaded once the server starts. If not set, it will load test/db-config.json',
+              value: '',
+              required: true,
+              placeholder: 'Eg: D:/MyFolder/db-config.json',
+            },
+        {
+          key: 'KN_HTTP_CRYPT_KEY',
+          label: 'HTTP Crypt key',
+          tip: 'Recommended to enable in production mode to enhance security. it can encrypt/decrypt HTTP request query/body and response body',
+          value: '',
+        },
+      ]
+    })
+
+    const dataFormRules = computed((): FormRules => {
+      const obj = {}
+      envConfigList.value.forEach((item) => {
+        if (item.required) {
+          obj[item.key] = {
+            required: true,
+            trigger: ['blur'],
+          }
+        }
+      })
+      return obj
+    })
     const outputText = ref('')
     const currentStep = ref(1)
+
+    onBeforeMount(() => {
+      const obj = {}
+      envConfigList.value.forEach((item) => {
+        obj[item.key] = item.value
+      })
+      dataForm.value = obj
+    })
 
     const handleGenerate = () => {
       formRef.value?.validate((errors) => {
@@ -95,7 +117,13 @@ export default defineComponent({
         let txt = ''
         for (const key in dataForm.value) {
           const val = dataForm.value[key]
-          const commentFlag = val ? '' : '#'
+
+          // ignore key start with __
+          if (/^__/g.test(key)) {
+            continue
+          }
+
+          const commentFlag = val === '' ? '' : '#'
           txt += `${commentFlag}${key}=${val}\n`
         }
         outputText.value = txt
@@ -146,7 +174,6 @@ export default defineComponent({
       dataFormRules,
       outputText,
       handleGenerate,
-      EnvConfigMap,
       RandomKeys: {
         JWT_SECRET: true,
         KN_HTTP_CRYPT_KEY: true,
@@ -155,6 +182,7 @@ export default defineComponent({
       showUserEditPrompt,
       handleSaveAs,
       currentStep,
+      envConfigList,
     }
   },
 })
@@ -175,50 +203,66 @@ export default defineComponent({
         <n-step title="Save Result" description="Save the .env configuration file" />
       </n-steps>
       <n-card v-if="currentStep === 1" class="card-gen">
-        <n-form
-          size="small"
-          ref="formRef"
-          :model="dataForm"
-          :rules="dataFormRules"
-          label-placement="left"
-          label-width="auto"
-          require-mark-placement="right-hanging"
-        >
+        <n-form size="small" ref="formRef" :model="dataForm" :rules="dataFormRules">
           <n-form-item
-            v-for="(val, key) of EnvConfigMap"
-            :key="key"
-            :path="key"
-            :label="val.label || key"
+            v-for="item in envConfigList"
+            :key="item.key"
+            :path="item.key"
+            :label="item.label || item.key"
           >
             <n-space style="margin-right: 8px" :wrap="false" size="small">
-              <n-popover v-if="val.tip" trigger="hover" style="max-width: 300px" placement="bottom">
+              <n-popover
+                v-if="item.tip"
+                trigger="hover"
+                style="max-width: 300px"
+                placement="bottom"
+              >
                 <template #trigger>
-                  <n-button secondary>❓</n-button>
+                  <n-button quaternary>
+                    <n-icon size="20">
+                      <QuestionCircle20Regular />
+                    </n-icon>
+                  </n-button>
                 </template>
-                <div v-html="val.tip"></div>
+                <div v-html="item.tip"></div>
               </n-popover>
               <n-button
                 secondary
                 type="primary"
-                v-if="key === 'AUTH_USERS'"
+                v-if="item.key === 'AUTH_USERS'"
                 @click="showUserEditPrompt"
-                >🖍</n-button
               >
+                <n-icon size="20">
+                  <Edit20Regular />
+                </n-icon>
+              </n-button>
               <n-button
                 secondary
                 type="primary"
-                v-if="key === 'KN_KDBX_CONFIG_JSON'"
+                v-if="item.key === 'KN_KDBX_CONFIG_JSON'"
                 @click="showUserEditPrompt"
-                >🖍</n-button
               >
-              <n-button secondary type="primary" v-if="RandomKeys[key]" @click="setRandomValue(key)"
-                >🎲</n-button
+                <n-icon size="20">
+                  <Edit20Regular />
+                </n-icon>
+              </n-button>
+              <n-button
+                secondary
+                type="primary"
+                v-if="RandomKeys[item.key]"
+                @click="setRandomValue(item.key)"
               >
+                <n-icon size="20">
+                  <New16Regular />
+                </n-icon>
+              </n-button>
             </n-space>
+            <n-switch v-if="typeof item.value === 'boolean'" v-model:value="dataForm[item.key]" />
             <n-input
-              v-model:value="dataForm[key]"
-              :disabled="key === 'AUTH_USERS'"
-              :placeholder="val.placeholder || ''"
+              v-else
+              v-model:value="dataForm[item.key]"
+              :disabled="item.key === 'AUTH_USERS'"
+              :placeholder="item.placeholder || ''"
               class="font-code"
             />
           </n-form-item>
