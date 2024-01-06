@@ -5,7 +5,9 @@ import {hashSync} from 'bcryptjs'
 import {getRandomHex} from '@/utils/my-crypt'
 import {isDev} from '@/enum'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
-import {QuestionCircle20Regular, Edit20Regular, New16Regular} from '@vicons/fluent'
+import {Edit20Regular, New16Regular, QuestionCircle20Regular} from '@vicons/fluent'
+import KdbxConfigDialog from '@/views/ServerManage/KdbxConfigDialog.vue'
+import StepResult from '@/views/ServerManage/StepResult.vue'
 
 const genUserData = (username, password) => {
   return JSON.stringify([
@@ -23,12 +25,15 @@ type EnvConfigType = {
   tip?: string
   value: string | boolean | number
   required?: boolean
+  disabled?: boolean
   placeholder?: string
 }
 
 export default defineComponent({
   name: 'EnvGenerator',
   components: {
+    StepResult,
+    KdbxConfigDialog,
     QuestionCircle20Regular,
     Edit20Regular,
     New16Regular,
@@ -36,6 +41,8 @@ export default defineComponent({
   setup() {
     const formRef = ref<FormInst | null>(null)
     const dataForm = ref<Record<string, string>>({})
+
+    const isShowKdbxConfig = ref(false)
 
     const envConfigList = computed((): EnvConfigType[] => {
       return [
@@ -53,20 +60,23 @@ export default defineComponent({
           label: 'HTTP Auth users',
           value: '', // genUserData('admin', 'admin')
           required: true,
+          disabled: true,
           placeholder: 'Please generate by right button',
         },
         {
           // 开头有2个下划线的，是私有配置项，不会提交到配置文件
           key: '__KDBX_CONFIG_IS_JSON',
           label: 'Kdbx Config is JSON Mode',
-          value: false,
+          value: true,
         },
         dataForm.value['__KDBX_CONFIG_IS_JSON']
           ? {
               key: 'KN_KDBX_CONFIG_JSON',
-              label: 'Kdbx config json (TODO)',
+              label: 'Kdbx config (json)',
               value: '',
               required: true,
+              disabled: true,
+              placeholder: 'Please generate by right button',
             }
           : {
               key: 'KN_KDBX_CONFIG_PATH',
@@ -91,7 +101,7 @@ export default defineComponent({
         if (item.required) {
           obj[item.key] = {
             required: true,
-            trigger: ['blur'],
+            trigger: ['blur', 'input'],
           }
         }
       })
@@ -123,7 +133,7 @@ export default defineComponent({
             continue
           }
 
-          const commentFlag = val === '' ? '' : '#'
+          const commentFlag = val !== '' ? '' : '#'
           txt += `${commentFlag}${key}=${val}\n`
         }
         outputText.value = txt
@@ -154,17 +164,24 @@ export default defineComponent({
       dataForm.value['AUTH_USERS'] = genUserData(username, password)
     }
 
-    const handleSaveAs = async () => {
-      // @ts-ignore
+    const handleGenerateKdbxJson = async (data) => {
+      if (dataForm.value['__KDBX_CONFIG_IS_JSON']) {
+        dataForm.value['KN_KDBX_CONFIG_JSON'] = JSON.stringify(data)
+        return
+      }
       const handle = await window.showSaveFilePicker({
-        suggestedName: '.env',
+        suggestedName: 'db-config.json',
       })
       const writable = await handle.createWritable()
-
-      await writable.write(outputText.value)
+      const str = JSON.stringify(data, null, 2)
+      await writable.write(str)
       await writable.close()
 
-      window.$message.success('Saved!')
+      window.$dialog.success({
+        title: 'Saved!',
+        content: 'Please copy and paste file absolute path.',
+        positiveText: 'OK',
+      })
     }
 
     return {
@@ -180,9 +197,10 @@ export default defineComponent({
       },
       setRandomValue,
       showUserEditPrompt,
-      handleSaveAs,
       currentStep,
       envConfigList,
+      isShowKdbxConfig,
+      handleGenerateKdbxJson,
     }
   },
 })
@@ -239,8 +257,8 @@ export default defineComponent({
               <n-button
                 secondary
                 type="primary"
-                v-if="item.key === 'KN_KDBX_CONFIG_JSON'"
-                @click="showUserEditPrompt"
+                v-if="item.key === 'KN_KDBX_CONFIG_JSON' || item.key === 'KN_KDBX_CONFIG_PATH'"
+                @click="isShowKdbxConfig = true"
               >
                 <n-icon size="20">
                   <Edit20Regular />
@@ -261,7 +279,7 @@ export default defineComponent({
             <n-input
               v-else
               v-model:value="dataForm[item.key]"
-              :disabled="item.key === 'AUTH_USERS'"
+              :disabled="item.disabled"
               :placeholder="item.placeholder || ''"
               class="font-code"
             />
@@ -272,50 +290,11 @@ export default defineComponent({
             </n-button>
           </n-space>
         </n-form>
-      </n-card>
-      <n-card v-if="currentStep === 2" class="card-result">
-        <n-input
-          class="input-text font-code"
-          type="textarea"
-          v-model:value="outputText"
-          placeholder=".env"
-          rows="15"
-        ></n-input>
 
-        <n-space justify="space-between">
-          <n-space>
-            <textarea
-              class="font-code"
-              readonly
-              cols="39"
-              rows="7"
-              style="resize: none; color: #0f0; background-color: black"
-              :value="
-                isDev
-                  ? `[Project Root]/electron
-├─ node_modules
-├─ .env     <-- Place .env file here!
-├─ package.json
-└─ ...`
-                  : `[App Root]
-├─ locales
-├─ resources
-├─ .env     <-- Place .env file here!
-├─ KeeNote.exe
-└─ ...
-`
-              "
-            ></textarea>
-
-            <n-button :disabled="true" @click="handleSaveAs" type="primary">
-              Save to Server (TODO)
-            </n-button>
-          </n-space>
-          <n-button :disabled="!outputText" type="primary" @click="handleSaveAs">
-            Save as .env
-          </n-button>
-        </n-space>
+        <KdbxConfigDialog v-model:visible="isShowKdbxConfig" @submit="handleGenerateKdbxJson" />
       </n-card>
+
+      <StepResult v-if="currentStep === 2" v-model="outputText" />
     </div>
   </div>
 </template>
@@ -328,14 +307,6 @@ export default defineComponent({
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
-  }
-  .card-result {
-    .input-text {
-      margin-bottom: 10px;
-      :deep(textarea) {
-        word-break: break-all !important;
-      }
-    }
   }
 }
 </style>
