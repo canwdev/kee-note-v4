@@ -71,12 +71,12 @@ export default defineComponent({
       }
       const data = await userProfile()
 
-      window.$notification.success({
-        content: 'Congrats🎉，you have successfully logged in！',
-        meta: JSON.stringify(data),
-        duration: 3000,
-        keepAliveOnHover: true,
-      })
+      // window.$notification.success({
+      //   content: 'Congrats🎉，you have successfully logged in！',
+      //   meta: JSON.stringify(data),
+      //   duration: 3000,
+      //   keepAliveOnHover: true,
+      // })
 
       await router.replace({
         name: 'NoteView',
@@ -151,8 +151,8 @@ export default defineComponent({
             /></n-input-group>
           </n-form-item>
           <n-space justify="end">
-            <n-button round type="primary" @click="handleValidateButtonClick"> Login </n-button>
-            <n-button round @click="handleSettings"> Settings </n-button>
+            <n-button type="primary" @click="handleValidateButtonClick"> Login </n-button>
+            <n-button secondary @click="handleSettings"> Settings </n-button>
           </n-space>
         </n-form>
       </n-card>

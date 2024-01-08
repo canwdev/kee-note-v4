@@ -156,6 +156,7 @@ export default defineComponent({
             v-for="(day, di) in week"
             :key="di"
             class="week-col day-wrap"
+            @contextmenu="$emit('onDayContextMenu', {event: $event, day})"
             :class="getCellClass(day)"
           >
             <slot name="day" :day="day">

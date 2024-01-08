@@ -283,7 +283,7 @@ export default defineComponent({
 
       return [
         {
-          label: '🗒️ Create Entry',
+          label: '🗒️ Create Note',
           props: {
             onClick: () => {
               nodeAction(option, () => {

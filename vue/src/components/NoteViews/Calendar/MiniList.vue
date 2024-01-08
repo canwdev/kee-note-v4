@@ -34,7 +34,7 @@ export default defineComponent({
       :key="item.uuid"
       class="entry-item"
       @click="$emit('onItemClick', item)"
-      @contextmenu="$emit('onItemContextMenu', {event: $event, item})"
+      @contextmenu.stop="$emit('onItemContextMenu', {event: $event, item})"
       :title="item.title"
     >
       <IconDisplay :icon="item.icon" :size="16" :bg-color="item.bgColor" :fg-color="item.fgColor" />

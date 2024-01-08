@@ -79,7 +79,7 @@ export default defineComponent({
             v-model:value="dataForm.kdbxOpenOptions.dbPath"
             @keyup.enter="handleValidateButtonClick"
             clearable
-            placeholder="Input or select file path"
+            placeholder="Input kdbx file path"
           />
         </n-input-group>
       </n-form-item>
@@ -110,8 +110,7 @@ export default defineComponent({
             @keyup.enter="handleValidateButtonClick"
             show-password-on="click"
             clearable
-            type="password"
-            placeholder="Input or select file path"
+            placeholder="Input key file path"
             class="font-code"
           />
         </n-input-group>

@@ -64,8 +64,7 @@ export default defineComponent({
         isShowPreviewModal.value = true
       })
     }
-    const handleItemContextMenu = (event: MouseEvent, item) => {
-      // console.log('handleItemContextMenu', attr)
+    const handleItemContextMenu = (event: MouseEvent, item?) => {
       handleContextmenu(event, item)
     }
 
@@ -103,7 +102,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="calendar-view-v2">
-    <CalendarLite>
+    <CalendarLite @onDayContextMenu="({event, day}) => handleItemContextMenu(event, {day})">
       <template #day="{day}">
         <div class="mini-list-scroll">
           <MiniList

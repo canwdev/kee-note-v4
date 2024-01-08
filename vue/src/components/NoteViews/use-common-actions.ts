@@ -6,6 +6,7 @@ import {EntryItem} from '@/enum/kdbx'
 import {useKeeStore} from '@/store/kee-store'
 
 import {aLinkDownload, exportEntryListJson} from '@/utils/export-import'
+import {formatDate} from '@/utils'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -39,9 +40,39 @@ export const useCommonActions = (options) => {
     await exportEntryListJson(checkedRowKeys.value)
   }
 
-  const getMenuOptions = (item: EntryItem) => {
+  const getMenuOptions = (item: EntryItem | any) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
     const isInRecycleBin = keeStore.recycleBinUuid === groupUuid.value
+
+    const handleCreateEntry = async (date) => {
+      const entry = await kService.createEntry({
+        groupUuid: route.query.groupUuid,
+        config: {
+          title: formatDate(date),
+          creationTime: date.getTime(),
+        },
+      })
+      await saveDatabaseAsync()
+
+      await router.push({
+        name: 'NoteDetailView',
+        query: {uuid: entry.uuid},
+      })
+    }
+
+    // 如果在日期上点击右键，则显示创建按钮，item.day 是moment日期类型
+    if (item.day) {
+      return [
+        {
+          label: '🗒️ Create Note',
+          props: {
+            onClick: async () => {
+              await handleCreateEntry(item.day.toDate())
+            },
+          },
+        },
+      ]
+    }
 
     return [
       !isMultiple && {

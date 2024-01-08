@@ -261,7 +261,7 @@ export class KdbxHelper {
       throw new Error('groupUuid and config is required!')
     }
 
-    const {title = 'New Entry', icon, bgColor, fgColor} = config || {}
+    const {title = 'New Entry', icon, bgColor, fgColor, creationTime, lastModTime} = config || {}
 
     const group = this.db.getGroup(groupUuid)
     const entry = this.db.createEntry(group)
@@ -276,6 +276,12 @@ export class KdbxHelper {
     }
     if (fgColor) {
       entry.fgColor = fgColor
+    }
+    if (creationTime) {
+      entry.times.creationTime = new Date(creationTime)
+    }
+    if (lastModTime) {
+      entry.times.lastModTime = new Date(lastModTime)
     }
 
     this.isChanged = true
