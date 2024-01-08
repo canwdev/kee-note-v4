@@ -28,6 +28,10 @@ export default defineComponent({
     const {initDate} = toRefs(props)
     const iDate = shallowRef(moment())
 
+    watch(iDate, (val) => {
+      emit('dateChange', val)
+    })
+
     const daysOfWeek = ref(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
     const monthWeeks = ref([])
     const generateCalendar = () => {
@@ -215,6 +219,7 @@ export default defineComponent({
         border-left: 1px solid $color_border;
         position: relative;
         transition: background-color 0.5s;
+        overflow: hidden;
 
         .date-title {
           position: absolute;

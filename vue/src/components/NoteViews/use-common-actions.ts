@@ -7,6 +7,7 @@ import {useKeeStore} from '@/store/kee-store'
 
 import {aLinkDownload, exportEntryListJson} from '@/utils/export-import'
 import {formatDate} from '@/utils'
+import moment from 'moment/moment'
 
 export const useCommonActions = (options) => {
   const router = useRouter()
@@ -44,7 +45,7 @@ export const useCommonActions = (options) => {
     const isMultiple = Boolean(checkedRowKeys.value.length)
     const isInRecycleBin = keeStore.recycleBinUuid === groupUuid.value
 
-    const handleCreateEntry = async (date) => {
+    const handleCreateEntry = async (date: Date) => {
       const entry = await kService.createEntry({
         groupUuid: route.query.groupUuid,
         config: {
@@ -67,7 +68,13 @@ export const useCommonActions = (options) => {
           label: '🗒️ Create Note',
           props: {
             onClick: async () => {
-              await handleCreateEntry(item.day.toDate())
+              let d: Date
+              if (item.day.isSame(moment(), 'day')) {
+                d = new Date()
+              } else {
+                d = item.day.toDate()
+              }
+              await handleCreateEntry(d)
             },
           },
         },

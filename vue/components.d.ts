@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     DialogTextEdit: typeof import('./src/components/CommonUI/DialogTextEdit.vue')['default']
     GlobalSettings: typeof import('./src/components/Settings/GlobalSettings.vue')['default']
     HistoryDialog: typeof import('./src/components/NoteViews/HistoryDialog.vue')['default']
+    HolidayDisplay: typeof import('./src/components/NoteViews/Calendar/HolidayDisplay.vue')['default']
     IconDisplay: typeof import('./src/components/NoteViews/IconDisplay.vue')['default']
     ItemAction: typeof import('./src/components/CommonUI/OptionUI/ItemAction.vue')['default']
     ListView: typeof import('./src/components/NoteViews/ListView.vue')['default']

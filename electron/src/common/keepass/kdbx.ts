@@ -268,8 +268,8 @@ export class KdbxHelper {
 
     entry.fields.set('Title', title)
 
-    // 48 is default folder icon, 0 is default entry icon
-    entry.icon = icon === undefined ? (group.icon === 48 ? 0 : group.icon) : icon
+    // 48 is folder icon, 0 is entry icon, 44 is note icon
+    entry.icon = icon === undefined ? (group.icon === 48 ? 44 : group.icon) : icon
 
     if (bgColor) {
       entry.bgColor = bgColor

@@ -10,10 +10,14 @@ import CalendarLite from '@/components/CommonUI/CalendarLite/index.vue'
 import MiniList from '@/components/NoteViews/Calendar/MiniList.vue'
 import LunarDay from '@/components/NoteViews/Calendar/LunarDay.vue'
 import {useSettingsStore} from '@/store/settings'
+import {useCnHoliday} from '@/components/NoteViews/Calendar/use-holiday'
+import {pad2Num} from '@/utils'
+import HolidayDisplay from '@/components/NoteViews/Calendar/HolidayDisplay.vue'
 
 export default defineComponent({
   name: 'CalendarView',
   components: {
+    HolidayDisplay,
     LunarDay,
     MiniList,
     CalendarLite,
@@ -79,6 +83,29 @@ export default defineComponent({
       ...contextMenuEtc
     } = useCommonActions({getEntryList})
 
+    const holidayDate = ref<Date>(new Date())
+    const {currentYearHolidayMap} = useCnHoliday(holidayDate)
+    const handleCalendarDateChange = (date) => {
+      if (date) {
+        holidayDate.value = date.toDate()
+      }
+    }
+    const getHoliday = (mm) => {
+      try {
+        if (!currentYearHolidayMap.value) {
+          return null
+        }
+        const month = pad2Num(mm.month() + 1)
+        const date = pad2Num(mm.date())
+        if (currentYearHolidayMap.value[month]) {
+          return currentYearHolidayMap.value[month][date]
+        }
+        return null
+      } catch (e: any) {
+        return e.message
+      }
+    }
+
     return {
       settingsStore,
       calendarRef,
@@ -96,13 +123,18 @@ export default defineComponent({
       groupUuid,
       currentDateRef,
       calendarData,
+      handleCalendarDateChange,
+      getHoliday,
     }
   },
 })
 </script>
 <template>
   <div class="calendar-view-v2">
-    <CalendarLite @onDayContextMenu="({event, day}) => handleItemContextMenu(event, {day})">
+    <CalendarLite
+      @dateChange="handleCalendarDateChange"
+      @onDayContextMenu="({event, day}) => handleItemContextMenu(event, {day})"
+    >
       <template #day="{day}">
         <div class="mini-list-scroll">
           <MiniList
@@ -111,6 +143,7 @@ export default defineComponent({
             @onItemContextMenu="({event, item}) => handleItemContextMenu(event, item)"
           />
         </div>
+        <HolidayDisplay v-if="settingsStore.calendarShowLunar" :item="getHoliday(day)" />
         <span class="date-title">
           <LunarDay
             v-if="settingsStore.calendarShowLunar"
@@ -156,6 +189,11 @@ export default defineComponent({
   .mini-list-scroll {
     height: calc(100px - 30px);
     overflow-y: auto;
+  }
+  .holiday-display {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
   }
 }
 </style>

@@ -63,7 +63,8 @@ export default defineComponent({
           ...calendarSettings,
           {
             label: 'Show Lunar Day',
-            subtitle: '是否显示农历',
+            subtitle:
+              '是否显示<a href="https://github.com/yize/solarlunar" target="_blank" rel="nofollow noopener">农历</a>和<a href="https://github.com/NateScarlet/holiday-cn" target="_blank" rel="nofollow noopener">中国节假日</a>',
             key: 'calendarShowLunar',
             store: settingsStore,
             type: StOptionType.SWITCH,

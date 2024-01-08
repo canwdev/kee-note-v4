@@ -55,6 +55,7 @@ export default defineComponent({
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    overflow: hidden;
 
     &:hover {
       opacity: 0.8;
@@ -64,11 +65,9 @@ export default defineComponent({
       flex-shrink: 0;
     }
     .entry-title {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      white-space: nowrap;
       text-overflow: ellipsis;
+      overflow: hidden;
       font-size: 12px;
     }
   }
