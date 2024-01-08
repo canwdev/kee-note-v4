@@ -6,6 +6,7 @@ import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {LsKeys} from '@/enum'
 import {Key16Regular, Person16Regular} from '@vicons/fluent'
+import {useHistory} from '@/views/Home/use-history'
 
 interface ModelType {
   username: string | null
@@ -43,6 +44,8 @@ export default defineComponent({
       ],
     }
 
+    const {updateHistory, loadFirstHistory} = useHistory()
+
     const handleLogin = async () => {
       const {access_token} = await userLogin({
         username: formModel.value.username,
@@ -54,10 +57,15 @@ export default defineComponent({
       }
       localStorage.setItem(LsKeys.LS_KEY_AUTHORIZATION, access_token)
 
-      checkProfile()
+      const hItem = updateHistory({
+        dbPath: 'web_ui_kdbx',
+      })
+
+      // 传入query参数
+      await checkProfile(hItem ? {groupUuid: hItem.lastGroupUuid} : {})
     }
 
-    const checkProfile = async () => {
+    const checkProfile = async (query = {}) => {
       if (!localStorage.getItem(LsKeys.LS_KEY_AUTHORIZATION)) {
         return
       }
@@ -72,6 +80,7 @@ export default defineComponent({
 
       await router.replace({
         name: 'NoteView',
+        query,
       })
     }
 

@@ -17,6 +17,7 @@ import {useSettingsStore} from '@/store/settings'
 import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
 import {HistoryListItem} from '@/enum/settings'
 import {useMainStore} from '@/store/main'
+import {useHistory} from '@/views/Home/use-history'
 
 interface ModelType {
   dbPath: string | null
@@ -54,44 +55,7 @@ export default defineComponent({
       ],
     }
 
-    const settingsStore = useSettingsStore()
-
-    // 更新历史记录
-    const updateHistory = () => {
-      if (!settingsStore.isSaveHistory) {
-        return
-      }
-      const historyList = [...settingsStore.historyList]
-      const idx = historyList.findIndex((item: any) => item.dbPath === modelRef.value.dbPath)
-      let newItem: HistoryListItem = {
-        dbPath: modelRef.value.dbPath || '',
-        keyPath: modelRef.value.keyPath || '',
-      }
-      // 删除旧的
-      if (idx > -1) {
-        const oldItem = historyList[idx]
-        newItem = {
-          ...newItem,
-          // 保留旧的lastGroupUuid，
-          lastGroupUuid: oldItem.lastGroupUuid,
-        }
-        historyList.splice(idx, 1)
-      }
-      // 放置新的
-      historyList.unshift(newItem)
-      settingsStore.historyList = historyList
-      settingsStore.lastOpenedHistoryItem = newItem
-
-      return newItem
-    }
-
-    const loadFirstHistory = () => {
-      const historyList = settingsStore.historyList
-      if (historyList.length > 0) {
-        modelRef.value.dbPath = historyList[0].dbPath
-        modelRef.value.keyPath = historyList[0].keyPath
-      }
-    }
+    const {updateHistory, loadFirstHistory} = useHistory()
 
     const handleLogin = async () => {
       await kService.openDatabase({
@@ -100,7 +64,7 @@ export default defineComponent({
         keyPath: modelRef.value.keyPath,
       })
 
-      const hItem = updateHistory()
+      const hItem = updateHistory(modelRef.value)
 
       // 传入query参数
       await checkProfile(hItem ? {groupUuid: hItem.lastGroupUuid} : {})
@@ -110,16 +74,6 @@ export default defineComponent({
       if (!(await kService.checkIsOpen())) {
         return
       }
-
-      // window.$notification.success({
-      //   content: '🎉 Database unlocked!',
-      //   meta: '',
-      //   duration: 3000,
-      //   keepAliveOnHover: true,
-      // })
-      console.info('🎉 Database unlocked!')
-
-      console.log('[query]', query)
 
       await router.replace({
         name: 'NoteView',
@@ -134,7 +88,12 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      loadFirstHistory()
+      const hItem = loadFirstHistory()
+      if (hItem) {
+        modelRef.value.dbPath = hItem.dbPath
+        modelRef.value.keyPath = hItem.keyPath
+      }
+
       await checkProfile()
       autoFocusInput()
     })

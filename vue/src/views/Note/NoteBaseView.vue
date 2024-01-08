@@ -231,7 +231,6 @@ export default defineComponent({
       keeStore.isDbOpened = false
       window.$message.success('Database successfully closed')
 
-      selectedKeys.value = []
       groupTree.value = []
 
       if (isElectron) {
@@ -360,6 +359,19 @@ export default defineComponent({
           },
         },
       },
+
+      !isElectron && {
+        type: 'divider',
+        label: 'd_logout',
+      },
+      !isElectron && {
+        label: '🏃 Logout',
+        props: {
+          onClick: () => {
+            handleLogout()
+          },
+        },
+      },
     ].filter(Boolean)
 
     const menuOptions = computed(() => {
@@ -480,10 +492,6 @@ export default defineComponent({
               </span>
             </n-button>
 
-            <n-button v-if="!isElectron" quaternary size="small" title="Menu" @click="handleLogout">
-              🏃<span class="note-title">&nbsp; Logout </span>
-            </n-button>
-
             <n-dropdown
               :options="menuOptions"
               key-field="label"
@@ -566,8 +574,10 @@ export default defineComponent({
         />
 
         <n-layout-content>
-          <CalendarView v-if="settingsStore.isCalendarView" />
-          <ListView v-else />
+          <template v-if="groupTree.length">
+            <CalendarView v-if="settingsStore.isCalendarView" />
+            <ListView v-else />
+          </template>
         </n-layout-content>
       </n-layout>
     </n-layout>
