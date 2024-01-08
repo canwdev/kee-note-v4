@@ -42,6 +42,7 @@ export default defineComponent({
   <div
     class="icon-display"
     :style="{height: size + 'px', width: size + 'px', backgroundColor: bgColor}"
+    :title="icon"
   >
     <span v-if="fgColor" class="color-fg" :style="[{background: fgColor}]"></span>
     <img :src="iconSrc" :class="{'is-pixel': isPixel}" :alt="icon" />

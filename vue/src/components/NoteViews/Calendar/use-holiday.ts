@@ -32,7 +32,7 @@ export const useCnHoliday = (dateRef) => {
       }
       const date = dateRef.value
       currentYear.value = date.getFullYear()
-      const res = await fetch(`/holiday-cn/${currentYear.value}.json`)
+      const res = await fetch(`${import.meta.env.BASE_URL}holiday-cn/${currentYear.value}.json`)
       const data = await res.json()
       const {days} = data
 
