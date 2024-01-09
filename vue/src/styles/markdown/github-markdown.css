@@ -49,7 +49,7 @@
   -webkit-text-size-adjust: 100%;
   color: #24292e;
   line-height: 1.5;
-  font-family: "Open Sans", "Source Han Sans SC", "PingFang SC", Arial, "Microsoft YaHei", "Helvetica Neue", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;
+  /*font-family: "Open Sans", "Source Han Sans SC", "PingFang SC", Arial, "Microsoft YaHei", "Helvetica Neue", "Hiragino Sans GB", "WenQuanYi Micro Hei", sans-serif;*/
   font-size: 16px;
   word-wrap: break-word;
 }

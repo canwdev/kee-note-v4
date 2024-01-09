@@ -7,6 +7,13 @@ import {create} from 'naive-ui'
 import {createPinia} from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
+// 全局设置moment地区语言
+import moment from 'moment/moment'
+import 'moment/min/locales'
+const locale =
+  navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language
+moment.locale(locale)
+
 const naive = create()
 
 const app = createApp(App)

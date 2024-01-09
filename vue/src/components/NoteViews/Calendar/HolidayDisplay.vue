@@ -6,15 +6,19 @@ export default defineComponent({
   name: 'HolidayDisplay',
   props: {
     item: {
-      type: Object as PropType<HolidayItem | null>,
-      required: true,
+      type: Object as PropType<HolidayItem>,
     },
   },
 })
 </script>
 
 <template>
-  <div v-if="item" class="holiday-display" :class="{'is-work': !item.isOffDay}">
+  <div
+    v-if="item"
+    class="holiday-display"
+    :class="{'is-work': !item.isOffDay}"
+    :title="item.name + (item.isOffDay ? '(放假)' : '(补班)')"
+  >
     {{ item.isOffDay ? item.name : '班' }}
   </div>
 </template>

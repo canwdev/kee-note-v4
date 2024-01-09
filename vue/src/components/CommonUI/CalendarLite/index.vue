@@ -1,12 +1,23 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import moment from 'moment/moment'
+
+/*
+// 如果在全局引用了，这里不需要重复引用
+// 全局设置moment地区语言
+import 'moment/min/locales'
+const locale =
+  navigator.languages && navigator.languages.length ? navigator.languages[0] : navigator.language
+moment.locale(locale)
+*/
+
 import {
   CalendarEmpty20Regular,
   CalendarLtr20Regular,
   ChevronLeft20Filled,
   ChevronRight20Filled,
 } from '@vicons/fluent'
+import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'CalendarLite',
@@ -26,21 +37,48 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     const {initDate} = toRefs(props)
-    const iDate = shallowRef(moment())
+    const iDate = shallowRef<moment.Moment>(moment())
 
     watch(iDate, (val) => {
       emit('dateChange', val)
     })
 
-    const daysOfWeek = ref(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'])
-    const monthWeeks = ref([])
+    const settingsStore = useSettingsStore()
+    watch(
+      () => settingsStore.calendarFirstDay,
+      () => {
+        setTimeout(() => {
+          generateCalendar()
+        })
+      }
+    )
+
+    // 获取当前地区的周的第一天
+    const firstDayOfWeek = computed(() => {
+      return settingsStore.calendarFirstDay < 0
+        ? moment.localeData().firstDayOfWeek()
+        : settingsStore.calendarFirstDay
+    })
+
+    const daysOfWeek = computed((): string[] => {
+      // 根据当前地区的周的第一天开始顺序生成的星期名称数组
+      // 如：['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      const weekdays: string[] = []
+      for (let i = 0; i < 7; i++) {
+        const dayIndex = (firstDayOfWeek.value + i) % 7 // 根据第一天开始顺序计算每个星期的索引
+        weekdays.push(moment.weekdaysShort(dayIndex) + ' ' + firstDayOfWeek.value)
+      }
+      return weekdays
+    })
+    const monthWeeks = ref<moment.Moment[][]>([])
     const generateCalendar = () => {
       const d = iDate.value
       const startDate = moment(d).startOf('month').startOf('week')
       const endDate = moment(d).endOf('month').endOf('week')
+
       const currentDay = moment(d).date()
-      const weeks = []
-      let week = []
+      const weeks: moment.Moment[][] = []
+      let week: moment.Moment[] = []
       for (let day = startDate.clone(); day.isSameOrBefore(endDate); day.add(1, 'day')) {
         week.push(moment(day))
 

@@ -487,7 +487,6 @@ export default defineComponent({
             <n-button quaternary size="small" title="Menu" @click="handleToggleLock">
               {{ keeStore.isDbOpened ? '🔐' : '🔓' }}
               <span class="note-title">
-                &nbsp;
                 {{ keeStore.isDbOpened ? 'Lock' : 'Unlock' }}
               </span>
             </n-button>

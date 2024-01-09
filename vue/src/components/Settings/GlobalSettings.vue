@@ -7,13 +7,12 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {ldThemeOptions} from '@/enum/settings'
 import {isElectron} from '@/utils/backend'
 import {getMyCryptKey, LsKeys} from '@/enum'
-import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {NButton} from 'naive-ui'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {RouterLink} from 'vue-router'
 import {useServerManager} from '@/components/Settings/use-server-manager'
-import {useMainStore} from '@/store/main'
+import moment from 'moment/moment'
 
 export default defineComponent({
   name: 'GlobalSettings',
@@ -61,6 +60,20 @@ export default defineComponent({
       if (settingsStore.isCalendarView) {
         calendarSettings = [
           ...calendarSettings,
+          {
+            label: 'Set First Day of Week',
+            subtitle: '设置周的第一天',
+            key: 'calendarFirstDay',
+            store: settingsStore,
+            type: StOptionType.SELECT,
+            selectOptions: [
+              {
+                label: 'Auto',
+                value: -1,
+              },
+              ...moment.weekdays().map((item, index) => ({label: item, value: index})),
+            ],
+          },
           {
             label: 'Show Lunar Day',
             subtitle:

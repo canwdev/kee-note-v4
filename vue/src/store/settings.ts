@@ -16,6 +16,7 @@ interface IStore {
 
   isCalendarView: boolean
   // 是否显示农历
+  calendarFirstDay: number
   calendarShowLunar: boolean
   calendarShowTitle: boolean
 
@@ -36,6 +37,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       lastOpenedHistoryItem: null,
 
       isCalendarView: false,
+      calendarFirstDay: -1,
       calendarShowLunar: true,
       calendarShowTitle: true,
 
