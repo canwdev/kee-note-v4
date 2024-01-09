@@ -9,11 +9,13 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AnnualHeatMap: typeof import('./src/components/NoteViews/DataVisualization/AnnualHeatMap.vue')['default']
     AttachmentBox: typeof import('./src/components/NoteViews/Detail/AttachmentBox.vue')['default']
     AttachmentPreview: typeof import('./src/components/NoteViews/Detail/AttachmentPreview.vue')['default']
     AutoRouterView: typeof import('./src/components/CommonUI/AutoRouterView.vue')['default']
     CalendarLite: typeof import('./src/components/CommonUI/CalendarLite/index.vue')['default']
     CalendarView: typeof import('./src/components/NoteViews/Calendar/CalendarView.vue')['default']
+    DataVisualization: typeof import('./src/components/NoteViews/DataVisualization/index.vue')['default']
     DialogEntryIconColor: typeof import('./src/components/NoteViews/Dialogs/DialogEntryIconColor.vue')['default']
     DialogEntryPreview: typeof import('./src/components/NoteViews/Dialogs/DialogEntryPreview.vue')['default']
     DialogGroupSelect: typeof import('./src/components/NoteViews/Dialogs/DialogGroupSelect.vue')['default']
@@ -43,6 +45,8 @@ declare module '@vue/runtime-core' {
     NFormItem: typeof import('naive-ui')['NFormItem']
     NGrid: typeof import('naive-ui')['NGrid']
     NGridItem: typeof import('naive-ui')['NGridItem']
+    NH1: typeof import('naive-ui')['NH1']
+    NH2: typeof import('naive-ui')['NH2']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']
     NInputGroup: typeof import('naive-ui')['NInputGroup']
@@ -55,6 +59,7 @@ declare module '@vue/runtime-core' {
     NList: typeof import('naive-ui')['NList']
     NListItem: typeof import('naive-ui')['NListItem']
     NModal: typeof import('naive-ui')['NModal']
+    NP: typeof import('naive-ui')['NP']
     NPageHeader: typeof import('naive-ui')['NPageHeader']
     NPopconfirm: typeof import('naive-ui')['NPopconfirm']
     NPopover: typeof import('naive-ui')['NPopover']

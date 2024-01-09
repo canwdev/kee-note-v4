@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "codemirror": "5.65.8",
     "crypto-js": "^4.1.1",
+    "echarts": "^5.4.3",
     "file-type": "^19.0.0",
     "highlight.js": "^11.9.0",
     "hypermd": "^0.3.11",

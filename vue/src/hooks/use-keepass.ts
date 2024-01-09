@@ -16,7 +16,13 @@ interface CalendarData {
 }
 
 export const useKeepassEntryList = (options?) => {
-  const {isCalendar = false, getCalendarParams, cleanupFn} = options || {}
+  const {
+    isCalendar = false,
+    // 仅限日历视图开启：
+    calendarIsMapped = true,
+    getCalendarParams,
+    cleanupFn,
+  } = options || {}
   const route = useRoute()
 
   const keeStore = useKeeStore()
@@ -67,7 +73,7 @@ export const useKeepassEntryList = (options?) => {
       }
       calendarData.value = await kService.getGroupEntriesDeep({
         groupUuid: groupUuid.value,
-        isDayMapped: true,
+        isDayMapped: calendarIsMapped,
         ...params,
       })
     } else {

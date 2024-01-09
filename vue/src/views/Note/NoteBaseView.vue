@@ -1,6 +1,6 @@
 <script lang="ts">
 import {kService} from '@/api'
-import {EntryItem, GroupItem} from '@/enum/kdbx'
+import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
 import {useKeeStore} from '@/store/kee-store'
 import DialogInput from '@/components/NoteViews/Dialogs/DialogInput.vue'
@@ -17,12 +17,14 @@ import CalendarView from '@/components/NoteViews/Calendar/CalendarView.vue'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import DialogIconChooser from '@/components/NoteViews/Dialogs/DialogIconChooser.vue'
 import {useMainStore} from '@/store/main'
-import {Settings20Filled, LockClosed20Filled} from '@vicons/fluent'
 import {
-  getEntryItemUpdateParams,
-  handleReadSelectedFile,
-  importEntryListJson,
-} from '@/utils/export-import'
+  Settings20Filled,
+  LockClosed20Filled,
+  Search20Filled,
+  LockShield20Regular,
+  Key20Regular,
+} from '@vicons/fluent'
+import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
 import {formatSiteTitle} from '@/router'
 import {HistoryListItem} from '@/enum/settings'
@@ -35,7 +37,10 @@ export default defineComponent({
     CalendarView,
     DialogIconChooser,
     Settings20Filled,
+    Search20Filled,
     LockClosed20Filled,
+    LockShield20Regular,
+    Key20Regular,
   },
   setup() {
     const router = useRouter()
@@ -477,18 +482,29 @@ export default defineComponent({
       <n-layout-header bordered>
         <n-space align="center" class="nav-header-content" justify="space-between">
           <n-space align="center" size="small">
-            <n-icon style="transform: translateY(2px)" size="20"> <LockClosed20Filled /> </n-icon>
+            <n-icon class="logo-icon" size="20">
+              <LockClosed20Filled />
+            </n-icon>
             <span class="note-title">
               {{ formatSiteTitle() }}
             </span>
           </n-space>
 
           <n-space size="small" align="center">
-            <n-button quaternary size="small" title="Menu" @click="handleToggleLock">
-              {{ keeStore.isDbOpened ? '🔐' : '🔓' }}
-              <span class="note-title">
-                {{ keeStore.isDbOpened ? 'Lock' : 'Unlock' }}
-              </span>
+            <n-button
+              quaternary
+              size="small"
+              :title="keeStore.isDbOpened ? 'Lock' : 'Unlock'"
+              @click="handleToggleLock"
+            >
+              <n-icon size="20">
+                <LockShield20Regular v-if="keeStore.isDbOpened" />
+                <Key20Regular v-else />
+              </n-icon>
+            </n-button>
+
+            <n-button disabled quaternary size="small" title="Search">
+              <n-icon size="20"> <Search20Filled /> </n-icon>
             </n-button>
 
             <n-dropdown
@@ -592,6 +608,13 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
     }
+  }
+
+  .logo-icon {
+    border: 2px solid $primary;
+    border-radius: 50%;
+    color: $primary;
+    transform: translateY(2px);
   }
 
   .note-title {

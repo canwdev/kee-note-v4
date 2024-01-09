@@ -1,8 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {useMainStore} from '@/store/main'
 import {useKeepassEntryList} from '@/hooks/use-keepass'
-import {useRouter} from 'vue-router'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogGroupSelect from '@/components/NoteViews/Dialogs/DialogGroupSelect.vue'
 import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
@@ -13,10 +11,14 @@ import {useSettingsStore} from '@/store/settings'
 import {useCnHoliday} from '@/components/NoteViews/Calendar/use-holiday'
 import {pad2Num} from '@/utils'
 import HolidayDisplay from '@/components/NoteViews/Calendar/HolidayDisplay.vue'
+import {CalendarCheckmark20Regular} from '@vicons/fluent'
+import DataVisualization from '@/components/NoteViews/DataVisualization/index.vue'
 
 export default defineComponent({
   name: 'CalendarView',
   components: {
+    DataVisualization,
+    CalendarCheckmark20Regular,
     HolidayDisplay,
     LunarDay,
     MiniList,
@@ -106,6 +108,8 @@ export default defineComponent({
       }
     }
 
+    const isShowDataVisualization = ref(true)
+
     return {
       settingsStore,
       calendarRef,
@@ -125,6 +129,7 @@ export default defineComponent({
       calendarData,
       handleCalendarDateChange,
       getHoliday,
+      isShowDataVisualization,
     }
   },
 })
@@ -132,9 +137,20 @@ export default defineComponent({
 <template>
   <div class="calendar-view-v2">
     <CalendarLite
+      v-show="!isShowDataVisualization"
       @dateChange="handleCalendarDateChange"
       @onDayContextMenu="({event, day}) => handleItemContextMenu(event, {day})"
     >
+      <template #headerLeft>
+        <n-icon
+          size="24"
+          class="cursor-pointer"
+          title="Data Visualization"
+          @click="isShowDataVisualization = true"
+        >
+          <CalendarCheckmark20Regular />
+        </n-icon>
+      </template>
       <template #day="{day}">
         <div class="mini-list-scroll">
           <MiniList
@@ -156,6 +172,8 @@ export default defineComponent({
         </span>
       </template>
     </CalendarLite>
+
+    <DataVisualization v-if="isShowDataVisualization" @onBack="isShowDataVisualization = false" />
 
     <n-dropdown
       trigger="manual"

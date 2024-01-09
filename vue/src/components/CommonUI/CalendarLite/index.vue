@@ -11,18 +11,12 @@ const locale =
 moment.locale(locale)
 */
 
-import {
-  CalendarEmpty20Regular,
-  CalendarLtr20Regular,
-  ChevronLeft20Filled,
-  ChevronRight20Filled,
-} from '@vicons/fluent'
+import {CalendarLtr20Regular, ChevronLeft20Filled, ChevronRight20Filled} from '@vicons/fluent'
 import {useSettingsStore} from '@/store/settings'
 
 export default defineComponent({
   name: 'CalendarLite',
   components: {
-    CalendarEmpty20Regular,
     ChevronLeft20Filled,
     CalendarLtr20Regular,
     ChevronRight20Filled,
@@ -157,9 +151,7 @@ export default defineComponent({
   <div class="calendar-wrap">
     <div class="cal-header">
       <div class="h-left">
-        <n-icon size="24">
-          <CalendarEmpty20Regular />
-        </n-icon>
+        <slot name="headerLeft"></slot>
         <span class="cal-title">
           {{ titleDisplay }}
         </span>

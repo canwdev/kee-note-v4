@@ -105,8 +105,8 @@ export default defineComponent({
       </n-form-item>
 
       <n-space style="display: flex; justify-content: flex-end">
-        <n-button round @click="mVisible = false"> Cancel </n-button>
-        <n-button round type="primary" @click="handleOK"> OK </n-button>
+        <n-button @click="mVisible = false"> Cancel </n-button>
+        <n-button type="primary" @click="handleOK"> OK </n-button>
       </n-space>
     </n-form>
   </n-modal>
