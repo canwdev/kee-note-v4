@@ -17,10 +17,6 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    debug: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup(props) {
     const {year, month, day} = toRefs(props)
@@ -35,14 +31,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <span
-    class="lunar-day"
-    :class="{'is-term': lunarData.term}"
-    :title="debug ? JSON.stringify(lunarData, null, 2) : ''"
-  >
-    <slot name="lunar" :data="lunarData"
-      >{{ lunarData.term ? lunarData.term : lunarData.dayCn }}
-    </slot>
+  <span class="lunar-day" :class="{'is-term': lunarData.term}">
+    <n-popover trigger="click">
+      <template #trigger>
+        <slot name="lunar" :data="lunarData">
+          <span class="cursor-pointer">{{
+            lunarData.term ? lunarData.term : lunarData.dayCn
+          }}</span>
+        </slot>
+      </template>
+      <textarea
+        style="border: none; outline: none; resize: none"
+        class="font-code"
+        readonly
+        :value="JSON.stringify(lunarData, null, 2)"
+        rows="14"
+        cols="24"
+      ></textarea>
+    </n-popover>
   </span>
 </template>
 

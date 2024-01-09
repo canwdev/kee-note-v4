@@ -3,10 +3,9 @@ import {darkTheme, GlobalThemeOverrides, NDialogProvider, NNotificationProvider}
 import AppContent from './AppContent.vue'
 import {NThemeEditor, NConfigProvider, NLoadingBarProvider, NMessageProvider} from 'naive-ui'
 import {useGlobalTheme} from './hooks/use-global-theme'
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
-import {LsKeys} from '@/enum'
 import {useGlobalShortcuts} from '@/hooks/use-global-shortcuts'
 import {useSettingsStore} from '@/store/settings'
+import moment from 'moment/moment'
 
 export default defineComponent({
   setup() {
@@ -14,6 +13,18 @@ export default defineComponent({
 
     const isEnableThemeEdit = computed(() => settingsStore.isEnableThemeEdit)
     useGlobalShortcuts()
+
+    watch(
+      () => settingsStore.calendarWeekIndex,
+      (val) => {
+        moment.updateLocale(moment.locale(), {
+          week: {
+            dow: val > -1 ? val : moment.localeData().firstDayOfWeek(),
+          },
+        })
+      },
+      {immediate: true}
+    )
 
     return {
       ...useGlobalTheme(),

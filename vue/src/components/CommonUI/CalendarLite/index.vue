@@ -34,6 +34,10 @@ export default defineComponent({
         return new Date()
       },
     },
+    showSwitch: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props, {emit}) {
     const {initDate} = toRefs(props)
@@ -45,7 +49,7 @@ export default defineComponent({
 
     const settingsStore = useSettingsStore()
     watch(
-      () => settingsStore.calendarFirstDay,
+      () => settingsStore.calendarWeekIndex,
       () => {
         setTimeout(() => {
           generateCalendar()
@@ -55,9 +59,9 @@ export default defineComponent({
 
     // 获取当前地区的周的第一天
     const firstDayOfWeek = computed(() => {
-      return settingsStore.calendarFirstDay < 0
+      return settingsStore.calendarWeekIndex < 0
         ? moment.localeData().firstDayOfWeek()
-        : settingsStore.calendarFirstDay
+        : settingsStore.calendarWeekIndex
     })
 
     const daysOfWeek = computed((): string[] => {
@@ -66,7 +70,7 @@ export default defineComponent({
       const weekdays: string[] = []
       for (let i = 0; i < 7; i++) {
         const dayIndex = (firstDayOfWeek.value + i) % 7 // 根据第一天开始顺序计算每个星期的索引
-        weekdays.push(moment.weekdaysShort(dayIndex) + ' ' + firstDayOfWeek.value)
+        weekdays.push(moment.weekdaysShort(dayIndex))
       }
       return weekdays
     })
@@ -90,7 +94,7 @@ export default defineComponent({
       monthWeeks.value = weeks
     }
 
-    onMounted(() => {
+    onBeforeMount(() => {
       iDate.value = moment(initDate.value)
       generateCalendar()
     })
@@ -161,31 +165,33 @@ export default defineComponent({
         </span>
       </div>
       <div class="h-right">
-        <n-button quaternary @click="goPrevMonth">
-          <n-icon size="20">
-            <ChevronLeft20Filled />
-          </n-icon>
-        </n-button>
-        <n-popover v-model:show="isShowPopover" placement="bottom" trigger="click">
-          <template #trigger>
-            <n-button quaternary>
-              <n-icon size="20">
-                <CalendarLtr20Regular />
-              </n-icon>
-            </n-button>
-          </template>
-          <n-date-picker
-            :default-value="Number(iDate)"
-            panel
-            type="month"
-            @confirm="(val) => goMonth(val)"
-          />
-        </n-popover>
-        <n-button quaternary @click="goNextMonth">
-          <n-icon size="20">
-            <ChevronRight20Filled />
-          </n-icon>
-        </n-button>
+        <template v-if="showSwitch">
+          <n-button quaternary @click="goPrevMonth">
+            <n-icon size="20">
+              <ChevronLeft20Filled />
+            </n-icon>
+          </n-button>
+          <n-popover v-model:show="isShowPopover" placement="bottom" trigger="click">
+            <template #trigger>
+              <n-button quaternary>
+                <n-icon size="20">
+                  <CalendarLtr20Regular />
+                </n-icon>
+              </n-button>
+            </template>
+            <n-date-picker
+              :default-value="Number(iDate)"
+              panel
+              type="month"
+              @confirm="(val) => goMonth(val)"
+            />
+          </n-popover>
+          <n-button quaternary @click="goNextMonth">
+            <n-icon size="20">
+              <ChevronRight20Filled />
+            </n-icon>
+          </n-button>
+        </template>
       </div>
     </div>
     <div class="cal-main-wrap">

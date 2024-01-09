@@ -14,9 +14,11 @@ interface IStore {
   historyList: HistoryListItem[]
   lastOpenedHistoryItem: HistoryListItem | null
 
+  // 是否启用日历
   isCalendarView: boolean
+  // 一周开始的第一天index，-1表示自动
+  calendarWeekIndex: number
   // 是否显示农历
-  calendarFirstDay: number
   calendarShowLunar: boolean
   calendarShowTitle: boolean
 
@@ -36,8 +38,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       historyList: [],
       lastOpenedHistoryItem: null,
 
-      isCalendarView: false,
-      calendarFirstDay: -1,
+      isCalendarView: true,
+      calendarWeekIndex: -1,
       calendarShowLunar: true,
       calendarShowTitle: true,
 

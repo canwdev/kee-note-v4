@@ -63,12 +63,12 @@ export default defineComponent({
           {
             label: 'Set First Day of Week',
             subtitle: '设置周的第一天',
-            key: 'calendarFirstDay',
+            key: 'calendarWeekIndex',
             store: settingsStore,
             type: StOptionType.SELECT,
             selectOptions: [
               {
-                label: 'Auto',
+                label: 'Locale Default',
                 value: -1,
               },
               ...moment.weekdays().map((item, index) => ({label: item, value: index})),
