@@ -4,7 +4,7 @@ import {EntryItem} from '@/enum/kdbx'
 import {kService} from '@/api'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 
-interface CalendarData {
+export interface CalendarData {
   // year
   [key: string]: {
     // month

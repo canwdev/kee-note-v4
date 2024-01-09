@@ -34,3 +34,39 @@ export function rgbToHex(r, g, b) {
  */
 export const getSystemIsDarkMode = () =>
   window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
+/**
+ * 将十六进制颜色转换为不同深浅的颜色
+ * @param hexColor
+ * @param numShades
+ */
+export function generateColorShades(hexColor: string, numShades = 5) {
+  const colorShades = [hexColor]
+
+  // 将十六进制颜色转换为RGB颜色
+  const rgbColor = hexToRgb(hexColor)
+
+  if (!rgbColor) {
+    console.error('Invalid hex color')
+    return colorShades
+  }
+  // 计算颜色的间隔值
+  const interval = Math.floor(255 / numShades)
+
+  // 生成不同深浅的颜色
+  for (let i = 1; i < numShades; i++) {
+    const shade = {
+      r: Math.min(rgbColor.r + interval * i, 255),
+      g: Math.min(rgbColor.g + interval * i, 255),
+      b: Math.min(rgbColor.b + interval * i, 255),
+    }
+
+    // 将RGB颜色转换为十六进制颜色
+    const hexShade = rgbToHex(shade.r, shade.g, shade.b)
+    colorShades.push(hexShade)
+  }
+
+  // 反转颜色数组
+  colorShades.reverse()
+  return colorShades
+}

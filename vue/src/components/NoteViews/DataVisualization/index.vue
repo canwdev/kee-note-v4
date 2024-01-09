@@ -1,10 +1,14 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import AnnualHeatMap from '@/components/NoteViews/DataVisualization/AnnualHeatMap.vue'
+import {CalendarData} from '@/hooks/use-keepass'
 
 export default defineComponent({
   name: 'DataVisualization',
   components: {AnnualHeatMap},
+  props: {
+    calendarData: {type: Object as PropType<CalendarData>},
+  },
 })
 </script>
 
@@ -13,7 +17,7 @@ export default defineComponent({
     <n-page-header class="nav-header" title="Data Visualization" @back="$emit('onBack')">
     </n-page-header>
     <div class="visualization-content">
-      <AnnualHeatMap />
+      <AnnualHeatMap :calendar-data="calendarData" />
     </div>
   </div>
 </template>
