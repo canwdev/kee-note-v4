@@ -1,11 +1,14 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import {defineComponent, PropType} from 'vue'
 import * as echarts from 'echarts'
-import {useKeepassEntryList} from '@/hooks/use-keepass'
+import {CalendarData, useKeepassEntryList} from '@/hooks/use-keepass'
 import moment from 'moment/moment'
+import {EntryItem} from '@/enum/kdbx'
+import {generateColorShades} from '@/utils/color'
+import {useSettingsStore} from '@/store/settings'
 
 // 把 CalendarData 拍平为数组
-function flattenObject(obj: any, result = []) {
+function flattenObject(obj: any, result: any[] = []) {
   for (const key in obj) {
     if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
       flattenObject(obj[key], result)
@@ -18,8 +21,12 @@ function flattenObject(obj: any, result = []) {
 
 export default defineComponent({
   name: 'AnnualHeatMap',
-  setup() {
-    const isLoading = ref(false)
+  props: {
+    calendarData: {type: Object as PropType<CalendarData>},
+  },
+  setup(props, {emit}) {
+    const {calendarData} = toRefs(props)
+    const settingsStore = useSettingsStore()
 
     onMounted(async () => {
       initChart()
@@ -36,9 +43,6 @@ export default defineComponent({
           left: 'left', //'center',
           text: '',
         },
-        tooltip: {
-          position: 'top',
-        },
         toolbox: {
           show: true,
           feature: {
@@ -49,14 +53,16 @@ export default defineComponent({
         },
         visualMap: {
           min: 0,
-          max: 5,
+          // max: 5,
           inRange: {
+            // color: generateColorShades(settingsStore.themeColor),
             color: ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196027'],
           },
           calculable: true,
           orient: 'horizontal',
           left: 'center',
           top: 'top',
+          show: false,
         },
         tooltip: {
           position: 'top',
@@ -98,16 +104,17 @@ export default defineComponent({
       // console.log(option)
       option.calendar = []
       option.series = []
+      let height = 0
 
       const map = calendarData.value
       let index = 0
       for (const year in map) {
+        height = index * 160
         const flatList = flattenObject(map[year])
         // console.log(year, flatList)
         option.calendar.push({
-          top: 90 + index * 160,
+          top: height,
           range: year,
-          cellSize: ['auto', 15],
           left: 70,
           right: 30,
           cellSize: 14,
@@ -122,7 +129,7 @@ export default defineComponent({
 
         let visualMapMax = 0
         const dayCountMap = {}
-        flatList.forEach((item) => {
+        flatList.forEach((item: EntryItem) => {
           const day = moment(item.creationTime).format('YYYY-MM-DD')
 
           if (!dayCountMap[day]) {
@@ -138,7 +145,7 @@ export default defineComponent({
         option.visualMap[0].max = visualMapMax
         // console.log(dayCountMap)
 
-        const seriesData = []
+        const seriesData: any[] = []
         // 提取日期范围
         let startDate = moment(`${year}-01-01`)
         const endDate = moment(`${year}-12-31`)
@@ -172,14 +179,10 @@ export default defineComponent({
 
       // 传入true强制重新渲染
       echartsInstance.value.setOption(option, true)
+      echartsInstance.value.resize({height: height + 160})
     }
 
-    const {calendarData, getEntryList} = useKeepassEntryList({
-      isCalendar: true,
-    })
-
     onMounted(async () => {
-      await getEntryList()
       updateSeriesData()
     })
 
@@ -198,6 +201,5 @@ export default defineComponent({
 .annual-heat-map {
   width: 100%;
   max-width: 800px;
-  height: 1200px;
 }
 </style>

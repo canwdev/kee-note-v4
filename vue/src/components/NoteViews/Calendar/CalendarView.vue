@@ -30,21 +30,9 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const calendarRef = ref()
-    const currentDateRef = ref(new Date())
 
     const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
       isCalendar: true,
-      getCalendarParams: () => {
-        const date = currentDateRef.value
-
-        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
-        const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0)
-
-        return {
-          startDate: firstDay.getTime(),
-          endDate: lastDay.getTime(),
-        }
-      },
     })
 
     onMounted(async () => {
@@ -108,7 +96,7 @@ export default defineComponent({
       }
     }
 
-    const isShowDataVisualization = ref(true)
+    const isShowDataVisualization = ref(false)
 
     return {
       settingsStore,
@@ -125,7 +113,6 @@ export default defineComponent({
       getMenuOptions,
       ...contextMenuEtc,
       groupUuid,
-      currentDateRef,
       calendarData,
       handleCalendarDateChange,
       getHoliday,
@@ -173,7 +160,11 @@ export default defineComponent({
       </template>
     </CalendarLite>
 
-    <DataVisualization v-if="isShowDataVisualization" @onBack="isShowDataVisualization = false" />
+    <DataVisualization
+      :calendar-data="calendarData"
+      v-if="isShowDataVisualization"
+      @onBack="isShowDataVisualization = false"
+    />
 
     <n-dropdown
       trigger="manual"
