@@ -150,7 +150,7 @@ export class KdbxHelper {
       if (!node) return
 
       node.entries.forEach((entry) => {
-        const {creationTime} = entry.times
+        creationTime = entry.times.creationTime
         // filter
         if (startDate) {
           if (startDate && creationTime < startDate) return

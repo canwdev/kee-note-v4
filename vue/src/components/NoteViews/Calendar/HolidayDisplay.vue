@@ -19,7 +19,7 @@ export default defineComponent({
     :class="{'is-work': !item.isOffDay}"
     :title="item.name + (item.isOffDay ? '(放假)' : '(补班)')"
   >
-    {{ item.isOffDay ? item.name : '班' }}
+    {{ item.isOffDay ? (item.name.length > 5 ? '休' : item.name) : '班' }}
   </div>
 </template>
 
@@ -30,6 +30,10 @@ export default defineComponent({
   color: white;
   line-height: 1;
   padding: 2px;
+  max-width: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &.is-work {
     background-color: #4caf50;
     color: white;

@@ -67,10 +67,9 @@ export default defineComponent({
           orient: 'horizontal',
           left: 'center',
           top: 'top',
-          // show: false,
+          show: false,
         },
         tooltip: {
-          position: 'top',
           formatter(params) {
             return params.name + ': ' + params.value[1]
           },
@@ -122,7 +121,7 @@ export default defineComponent({
       const map = calendarData.value
       let index = 0
       for (const year in map) {
-        height = 80 + index * 160
+        height = 30 + index * 160
         const flatList = flattenObject(map[year])
         // console.log(year, flatList)
         option.calendar.push({
@@ -192,12 +191,14 @@ export default defineComponent({
           calendarIndex: index,
           data: seriesData,
           tooltip: {
-            position: 'top',
             formatter(params) {
-              console.log(params)
               if (!params.data) return
-              if (!params.data.items) return params.name + ': ' + params.value[1]
-              return
+              if (!params.data.items) return params.name
+              let html = `<div class="text-overflow"><b>${params.name}</b></div>`
+              params.data.items.forEach((item, index) => {
+                html += `<div class="text-overflow">[${index + 1}] ${item.title}</div>`
+              })
+              return `<div class="heat-map-tooltip-titles">${html}</div>`
             },
           },
         })
@@ -211,6 +212,9 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      updateSeriesData()
+    })
+    watch(calendarData, () => {
       updateSeriesData()
     })
 
@@ -229,5 +233,11 @@ export default defineComponent({
 .annual-heat-map {
   width: 100%;
   max-width: 800px;
+}
+</style>
+
+<style lang="scss">
+.heat-map-tooltip-titles {
+  max-width: 300px;
 }
 </style>
