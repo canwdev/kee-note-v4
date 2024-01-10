@@ -62,7 +62,7 @@ export const useCommonActions = (options) => {
     }
 
     // 如果在日期上点击右键，则显示创建按钮，item.day 是moment日期类型
-    if (item.day) {
+    if (item && item.day) {
       return [
         {
           label: '🗒️ Create Note',

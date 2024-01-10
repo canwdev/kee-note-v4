@@ -144,6 +144,14 @@ export default defineComponent({
             },
           },
         },
+        {
+          label: '🦆 Edit Icon & Color',
+          props: {
+            onClick: async () => {
+              isShowIconEdit.value = true
+            },
+          },
+        },
         !editorSettingsStore.isAdvancedEditor && {
           label: '💫 Enable HyperMD Editor',
           props: {

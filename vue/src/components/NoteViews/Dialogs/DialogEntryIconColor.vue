@@ -73,6 +73,9 @@ export default defineComponent({
             v-model:value="entryDetail.bgColor"
             style="width: 150px; border-radius: 0"
             :swatches="swatches"
+            :show-alpha="false"
+            :actions="['clear']"
+            :modes="['hex']"
           />
         </template>
       </n-list-item>
@@ -83,6 +86,9 @@ export default defineComponent({
             v-model:value="entryDetail.fgColor"
             style="width: 150px; border-radius: 0"
             :swatches="swatches"
+            :show-alpha="false"
+            :actions="['clear']"
+            :modes="['hex']"
           />
         </template>
       </n-list-item>

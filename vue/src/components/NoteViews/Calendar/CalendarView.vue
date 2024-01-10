@@ -87,6 +87,7 @@ export default defineComponent({
         }
         const month = pad2Num(mm.month() + 1)
         const date = pad2Num(mm.date())
+        console.log(month, date)
         if (currentYearHolidayMap.value[month]) {
           return currentYearHolidayMap.value[month][date]
         }
@@ -97,6 +98,27 @@ export default defineComponent({
     }
 
     const isShowDataVisualization = ref(false)
+
+    const handleSeriesClick = ({date}) => {
+      // console.log(date)
+      if (calendarRef.value) {
+        calendarRef.value.goMonth(date)
+
+        // 播放高亮动画
+        setTimeout(() => {
+          const calEl = calendarRef.value.$el
+          const el = calEl.querySelector(`.day-wrap[data-date="${date}"]`)
+          if (el) {
+            el.classList.add('active')
+            setTimeout(() => {
+              el.classList.remove('active')
+            }, 1500)
+          }
+        }, 200)
+      }
+
+      isShowDataVisualization.value = false
+    }
 
     return {
       settingsStore,
@@ -117,6 +139,7 @@ export default defineComponent({
       handleCalendarDateChange,
       getHoliday,
       isShowDataVisualization,
+      handleSeriesClick,
     }
   },
 })
@@ -124,6 +147,7 @@ export default defineComponent({
 <template>
   <div class="calendar-view-v2">
     <CalendarLite
+      ref="calendarRef"
       v-show="!isShowDataVisualization"
       @dateChange="handleCalendarDateChange"
       @onDayContextMenu="({event, day}) => handleItemContextMenu(event, {day})"
@@ -162,8 +186,9 @@ export default defineComponent({
 
     <DataVisualization
       :calendar-data="calendarData"
-      v-if="isShowDataVisualization"
+      :show="isShowDataVisualization"
       @onBack="isShowDataVisualization = false"
+      @onSeriesClick="handleSeriesClick"
     />
 
     <n-dropdown
@@ -198,11 +223,22 @@ export default defineComponent({
   .mini-list-scroll {
     height: calc(100px - 30px);
     overflow-y: auto;
+    position: relative;
+    z-index: 2;
   }
   .holiday-display {
     position: absolute;
     left: 8px;
     bottom: 8px;
+    @media screen and (max-width: 450px) {
+      transform: scale(0.8);
+      transform-origin: left bottom;
+      left: unset;
+      bottom: unset;
+      top: 0;
+      right: 0;
+      z-index: 1;
+    }
   }
 }
 </style>

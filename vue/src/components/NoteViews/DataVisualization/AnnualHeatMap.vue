@@ -31,6 +31,11 @@ export default defineComponent({
     onMounted(async () => {
       initChart()
     })
+
+    onBeforeUnmount(() => {
+      echartsInstance.value?.dispose()
+    })
+
     // 基础配置Echarts
     const echartsElRef = ref()
     const echartsInstance = shallowRef()
@@ -62,7 +67,7 @@ export default defineComponent({
           orient: 'horizontal',
           left: 'center',
           top: 'top',
-          show: false,
+          // show: false,
         },
         tooltip: {
           position: 'top',
@@ -92,6 +97,14 @@ export default defineComponent({
           // },
         ],
       })
+
+      chart.on('click', 'series', (params) => {
+        console.log('[series]', params)
+        const {name, value} = params.data as any
+        const [date, count] = value || []
+        emit('onSeriesClick', {date, count})
+      })
+
       echartsInstance.value = chart
     }
 
@@ -109,7 +122,7 @@ export default defineComponent({
       const map = calendarData.value
       let index = 0
       for (const year in map) {
-        height = index * 160
+        height = 80 + index * 160
         const flatList = flattenObject(map[year])
         // console.log(year, flatList)
         option.calendar.push({
@@ -174,6 +187,7 @@ export default defineComponent({
           calendarIndex: index,
           data: seriesData,
         })
+
         index++
       }
 

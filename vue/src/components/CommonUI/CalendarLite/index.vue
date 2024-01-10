@@ -198,6 +198,7 @@ export default defineComponent({
             class="week-col day-wrap"
             @contextmenu="$emit('onDayContextMenu', {event: $event, day})"
             :class="getCellClass(day)"
+            :data-date="day.format('YYYY-MM-DD')"
           >
             <slot name="day" :day="day">
               <span class="date-title">{{ day.date() }}</span>
@@ -290,8 +291,13 @@ export default defineComponent({
         }
 
         &:hover {
-          background-color: $primary_opacity;
+          background-color: rgba(91, 85, 85, 0.05);
           transition: background-color 0s;
+        }
+
+        &.active {
+          background-color: $primary_opacity !important;
+          transition: background-color 0.5s !important;
         }
       }
 

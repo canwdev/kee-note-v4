@@ -535,10 +535,12 @@ export default defineComponent({
 
       <n-layout has-sider>
         <n-layout-sider
-          collapse-mode="width"
-          :collapsed-width="50"
-          :width="240"
-          show-trigger="arrow-circle"
+          collapse-mode="transform"
+          :collapsed-width="0"
+          :width="220"
+          show-trigger="bar"
+          trigger-style="width: 22px;right: -12px;"
+          collapsed-trigger-style="width: 22px;right: -12px;"
           bordered
           :collapsed="settingsStore.isSidebarCollapsed"
           @updateCollapsed="(val) => (settingsStore.isSidebarCollapsed = val)"

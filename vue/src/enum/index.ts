@@ -43,5 +43,4 @@ export const Palette = [
   {name: 'blue-grey', color: '#607d8b'},
   {name: 'white', color: '#ffffff'},
   {name: 'black', color: '#000000'},
-  {name: 'none', color: null},
 ]
