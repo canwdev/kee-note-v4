@@ -1,7 +1,7 @@
 import * as kdbxweb from 'kdbxweb'
 import {Kdbx} from 'kdbxweb'
 
-import {EntryItem, GroupItem} from './entry'
+import {CalendarData, EntryItem, GroupItem} from './entry'
 
 import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../utils'
 
@@ -29,10 +29,14 @@ export interface KdbxOpenOptions {
 }
 
 export class KdbxHelper {
-  db: null | Kdbx // Kdbx 数据库实例
-  dbPath: null | string // 数据库路径
-  private curEntryMap: object // 由于 kdbxweb 不能直接查询 entry，需要保存打开的 entry map
-  isChanged: boolean // 数据库是否修改
+  // Kdbx 数据库实例
+  db: null | Kdbx
+  // 数据库路径
+  dbPath: null | string
+  // 由于 kdbxweb 不能直接查询 entry，需要保存打开的 entry map
+  private curEntryMap: object
+  // 数据库是否修改
+  isChanged: boolean
 
   constructor() {
     this.resetInstance()
@@ -124,7 +128,14 @@ export class KdbxHelper {
   }
 
   getGroupEntriesDeep(params) {
-    const {groupUuid, isDayMapped} = params || {}
+    const {
+      groupUuid,
+      // enable isDayMapped for calendar view
+      isDayMapped,
+      // optional filter of start and end date, format: timestamp
+      startDate,
+      endDate,
+    } = params || {}
     if (!(this.db && groupUuid)) {
       throw new Error('Invalid db or groupUuid')
     }
@@ -133,19 +144,27 @@ export class KdbxHelper {
 
     const list = []
 
-    const dayMap = {}
+    const dayMap: CalendarData = {}
     let creationTime, year, month, date
     const traverse = (node) => {
       if (!node) return
 
       node.entries.forEach((entry) => {
+        const {creationTime} = entry.times
+        // filter
+        if (startDate) {
+          if (startDate && creationTime < startDate) return
+        }
+        if (endDate) {
+          if (endDate && creationTime > endDate) return
+        }
+
         if (isDayMapped) {
-          creationTime = entry.times.creationTime
           year = creationTime.getFullYear()
           month = creationTime.getMonth() + 1
           date = creationTime.getDate()
 
-          // 初始化
+          // init map
           if (!dayMap[year]) dayMap[year] = {}
           if (!dayMap[year][month]) dayMap[year][month] = {}
           if (!dayMap[year][month][date]) dayMap[year][month][date] = []

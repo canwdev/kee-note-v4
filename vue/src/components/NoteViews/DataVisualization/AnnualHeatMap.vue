@@ -141,18 +141,22 @@ export default defineComponent({
         })
 
         let visualMapMax = 0
-        const dayCountMap = {}
+        type DayCountMapType = {
+          [key: string]: {count: number; items: EntryItem[]}
+        }
+        const dayCountMap: DayCountMapType = {}
         flatList.forEach((item: EntryItem) => {
           const day = moment(item.creationTime).format('YYYY-MM-DD')
 
           if (!dayCountMap[day]) {
-            dayCountMap[day] = 1
+            dayCountMap[day] = {count: 1, items: [item]}
           } else {
-            dayCountMap[day]++
+            dayCountMap[day].count++
+            dayCountMap[day].items.push(item)
           }
 
-          if (dayCountMap[day] > visualMapMax) {
-            visualMapMax = dayCountMap[day]
+          if (dayCountMap[day].count > visualMapMax) {
+            visualMapMax = dayCountMap[day].count
           }
         })
         option.visualMap[0].max = visualMapMax > 5 ? 5 : visualMapMax
@@ -169,12 +173,13 @@ export default defineComponent({
           const day = startDate.format('YYYY-MM-DD')
           let count = 0
           if (dayCountMap[day]) {
-            count = dayCountMap[day]
+            count = dayCountMap[day].count
           }
 
           seriesData.push({
             name: day,
             value: [day, count],
+            items: dayCountMap[day]?.items,
           })
 
           // 增加一天，继续下一天的遍历
@@ -186,6 +191,15 @@ export default defineComponent({
           coordinateSystem: 'calendar',
           calendarIndex: index,
           data: seriesData,
+          tooltip: {
+            position: 'top',
+            formatter(params) {
+              console.log(params)
+              if (!params.data) return
+              if (!params.data.items) return params.name + ': ' + params.value[1]
+              return
+            },
+          },
         })
 
         index++

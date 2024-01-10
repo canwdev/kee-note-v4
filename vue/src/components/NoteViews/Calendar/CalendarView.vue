@@ -13,6 +13,7 @@ import {pad2Num} from '@/utils'
 import HolidayDisplay from '@/components/NoteViews/Calendar/HolidayDisplay.vue'
 import {CalendarCheckmark20Regular} from '@vicons/fluent'
 import DataVisualization from '@/components/NoteViews/DataVisualization/index.vue'
+import moment from 'moment/moment'
 
 export default defineComponent({
   name: 'CalendarView',
@@ -30,9 +31,23 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
 
     const calendarRef = ref()
+    const calendarMm = ref<moment.Moment>(moment())
 
     const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
       isCalendar: true,
+      getCalendarParams: () => {
+        const mm = calendarMm.value
+
+        // 获取上一个月的第一天
+        const firstDay = moment(mm).subtract(1, 'month').startOf('month')
+        // 获取下一个月的最后一天和最后时刻
+        const lastDay = moment(mm).add(1, 'month').endOf('month').endOf('day')
+
+        return {
+          startDate: firstDay.valueOf(),
+          endDate: lastDay.valueOf(),
+        }
+      },
     })
 
     onMounted(async () => {
@@ -73,11 +88,11 @@ export default defineComponent({
       ...contextMenuEtc
     } = useCommonActions({getEntryList})
 
-    const holidayDate = ref<Date>(new Date())
-    const {currentYearHolidayMap} = useCnHoliday(holidayDate)
-    const handleCalendarDateChange = (date) => {
-      if (date) {
-        holidayDate.value = date.toDate()
+    const {currentYearHolidayMap} = useCnHoliday(calendarMm)
+    const handleCalendarDateChange = async (date: moment.Moment) => {
+      calendarMm.value = date
+      if (keeStore.isDbOpened) {
+        await getEntryList()
       }
     }
     const getHoliday = (mm) => {
@@ -87,7 +102,6 @@ export default defineComponent({
         }
         const month = pad2Num(mm.month() + 1)
         const date = pad2Num(mm.date())
-        console.log(month, date)
         if (currentYearHolidayMap.value[month]) {
           return currentYearHolidayMap.value[month][date]
         }
@@ -185,7 +199,6 @@ export default defineComponent({
     </CalendarLite>
 
     <DataVisualization
-      :calendar-data="calendarData"
       :show="isShowDataVisualization"
       @onBack="isShowDataVisualization = false"
       @onSeriesClick="handleSeriesClick"

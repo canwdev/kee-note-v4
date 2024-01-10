@@ -87,3 +87,14 @@ export class EntryItem {
     return val.toString()
   }
 }
+
+export interface CalendarData {
+  // year
+  [key: string]: {
+    // month
+    [key: string]: {
+      // date
+      [key: string]: EntryItem[]
+    }
+  }
+}

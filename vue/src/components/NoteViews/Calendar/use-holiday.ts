@@ -1,5 +1,7 @@
 import {useSettingsStore} from '@/store/settings'
 import {useLocalStorageObject} from '@/hooks/use-local-storage'
+import moment from 'moment'
+import {Ref} from 'vue'
 
 export type HolidayItem = {
   // 节日名称
@@ -18,7 +20,7 @@ type HolidayMap = {
   }
 }
 
-export const useCnHoliday = (dateRef) => {
+export const useCnHoliday = (dateRef: Ref<moment.Moment>) => {
   const currentYearHolidayMap = ref<HolidayMap>({})
   const currentYear = ref<number>(-1)
   const settingsStore = useSettingsStore()
@@ -35,7 +37,7 @@ export const useCnHoliday = (dateRef) => {
         return
       }
       const date = dateRef.value
-      currentYear.value = date.getFullYear()
+      currentYear.value = date.year()
 
       const year = currentYear.value
       let holidayData = holidayCnCache.value[year]
@@ -84,11 +86,11 @@ export const useCnHoliday = (dateRef) => {
   })
 
   watch(dateRef, (val) => {
-    currentYear.value = val.getFullYear()
+    currentYear.value = val.year()
   })
 
   onMounted(() => {
-    currentYear.value = dateRef.value.getFullYear()
+    currentYear.value = dateRef.value.year()
   })
 
   return {
