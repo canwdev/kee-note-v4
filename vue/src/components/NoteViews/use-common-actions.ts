@@ -57,7 +57,10 @@ export const useCommonActions = (options) => {
 
       await router.push({
         name: 'NoteDetailView',
-        query: {uuid: entry.uuid},
+        query: {
+          groupUuid: groupUuid.value,
+          uuid: entry.uuid,
+        },
       })
     }
 
@@ -98,7 +101,10 @@ export const useCommonActions = (options) => {
           onClick: () => {
             router.push({
               name: 'NoteDetailView',
-              query: {uuid: item.uuid},
+              query: {
+                groupUuid: groupUuid.value,
+                uuid: item.uuid,
+              },
             })
           },
         },

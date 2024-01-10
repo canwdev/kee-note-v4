@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import AnnualHeatMap from '@/components/NoteViews/DataVisualization/AnnualHeatMap.vue'
-import {CalendarData, useKeepassEntryList} from '@/hooks/use-keepass'
+import {CalendarData, useKeeNoteEntryList} from '@/hooks/use-keenote'
 import moment from 'moment'
 
 export default defineComponent({
@@ -13,7 +13,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const {show} = toRefs(props)
 
-    const {calendarData, getEntryList} = useKeepassEntryList({
+    const {calendarData, getEntryList} = useKeeNoteEntryList({
       isCalendar: true,
     })
 

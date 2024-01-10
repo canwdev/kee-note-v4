@@ -28,6 +28,7 @@ import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
 import {formatSiteTitle} from '@/router'
 import {HistoryListItem} from '@/enum/settings'
+import {useKeeNoteGroupManage} from '@/hooks/use-keenote'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -44,233 +45,9 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
-    const route = useRoute()
 
-    const groupTree = ref<GroupItem[]>([])
-    const keeStore = useKeeStore()
     const mainStore = useMainStore()
-
     const settingsStore = useSettingsStore()
-
-    onMounted(async () => {
-      globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
-    })
-    onBeforeUnmount(() => {
-      globalEventBus.off(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
-    })
-
-    onActivated(async () => {
-      keeStore.isDbOpened = await kService.checkIsOpen()
-      if (keeStore.isDbOpened) {
-        await getGroupTree()
-      } else {
-        await handleOpenDatabase()
-      }
-    })
-
-    const groupUuid = computed(() => {
-      return route.query.groupUuid
-    })
-
-    const rootGroupUuid = computed(() => {
-      return groupTree.value[0]?.uuid
-    })
-
-    const selectedKeys = computed({
-      get(): string[] {
-        if (!groupUuid.value) {
-          return []
-        }
-        return [String(groupUuid.value)]
-      },
-      set(val: string[]) {
-        if (!val) {
-          val = []
-        }
-
-        const groupUuid = val[0]
-
-        // 如果开启了历史记录，就设置lastGroupUuid
-        if (groupUuid && settingsStore.isSaveHistory && settingsStore.lastOpenedHistoryItem) {
-          const {dbPath} = settingsStore.lastOpenedHistoryItem
-
-          // 查找，更新并替换历史记录
-          const list: HistoryListItem[] = [...settingsStore.historyList]
-          const idx = list.findIndex((item: any) => item.dbPath === dbPath)
-          if (idx > -1) {
-            const item: HistoryListItem = {
-              ...settingsStore.historyList[idx],
-              lastGroupUuid: groupUuid,
-            }
-            list.splice(idx, 1, item)
-            console.log('set groupUuid', groupUuid)
-            settingsStore.historyList = list
-          }
-        }
-
-        router.replace({
-          query: {
-            ...route.query,
-            groupUuid,
-          },
-        })
-      },
-    })
-
-    const getGroupTree = async () => {
-      const {
-        meta: {recycleBinEnabled, recycleBinUuid},
-      } = await kService.getMeta()
-      if (recycleBinEnabled && recycleBinUuid && recycleBinUuid.id) {
-        keeStore.recycleBinUuid = recycleBinUuid.id
-      } else {
-        keeStore.recycleBinUuid = null
-      }
-
-      groupTree.value = await kService.getGroupTree()
-
-      if (!selectedKeys.value.length && groupTree.value.length) {
-        selectedKeys.value = [groupTree.value[0].uuid]
-      }
-    }
-
-    const handleCreateEntry = async () => {
-      const entry = await kService.createEntry({
-        groupUuid: editingUuid.value,
-        config: {title: formatDate(new Date())},
-      })
-      await saveDatabaseAsync()
-
-      await router.push({
-        name: 'NoteDetailView',
-        query: {uuid: entry.uuid},
-      })
-    }
-
-    const handleCreateGroup = async () => {
-      await kService.createGroup({
-        groupUuid: editingUuid.value,
-        name: formatDate(new Date()),
-      })
-      await saveDatabaseAsync()
-      await getGroupTree()
-    }
-
-    const confirmRemoveGroup = (isDelete = false) => {
-      const isEmptyRecycleBin = keeStore.recycleBinUuid === editingUuid.value
-      window.$dialog.warning({
-        title: isDelete || isEmptyRecycleBin ? 'Warning!!' : 'Confirm',
-        content: isEmptyRecycleBin
-          ? 'Empty Recycle Bin? (This can not be undo)'
-          : isDelete
-          ? 'Permanent delete selected group? (This can not be undo)'
-          : 'Delete selected group? Permanently emptied if group is RecycleBin.',
-        positiveText: 'OK',
-        negativeText: 'Cancel',
-        onPositiveClick: () => {
-          handleDeleteGroup(isDelete)
-        },
-        onNegativeClick: () => {},
-      })
-    }
-
-    const handleDeleteGroup = async (isDelete = false) => {
-      if (isDelete) {
-        await kService.moveGroup({
-          uuid: editingUuid.value,
-          targetUuid: null,
-        })
-      } else {
-        await kService.removeGroup({
-          groupUuid: editingUuid.value,
-        })
-      }
-      await saveDatabaseAsync()
-      await getGroupTree()
-    }
-
-    const handleTreeDrop = async ({node, dragNode, dropPosition}: TreeDropInfo) => {
-      const {uuid} = dragNode
-      const {uuid: targetUuid} = node
-
-      await kService.moveGroup({
-        uuid,
-        targetUuid,
-      })
-      await saveDatabaseAsync()
-      await getGroupTree()
-    }
-
-    const handleGroupEdit = async (name: string) => {
-      if (!editingUuid.value) {
-        return
-      }
-
-      await kService.updateGroup({
-        uuid: editingUuid.value,
-        updates: [{path: 'name', value: name}],
-      })
-      await saveDatabaseAsync()
-      await getGroupTree()
-      editingNode.value = null
-    }
-
-    const handleSelectIcon = async (icon: number) => {
-      if (!editingUuid.value) {
-        return
-      }
-
-      await kService.updateGroup({
-        uuid: editingUuid.value,
-        updates: [{path: 'icon', value: icon}],
-      })
-      await saveDatabaseAsync()
-      await getGroupTree()
-      editingNode.value = null
-      showChooseIconModal.value = false
-    }
-
-    const handleCloseDatabase = async () => {
-      await kService.closeDatabase()
-      settingsStore.lastOpenedHistoryItem = null
-      keeStore.isDbOpened = false
-      window.$message.success('Database successfully closed')
-
-      groupTree.value = []
-
-      if (isElectron) {
-        await router.replace({
-          name: 'HomeView',
-        })
-      }
-    }
-
-    const showOpenDbModal = ref(false)
-    const handleOpenDatabase = async (password?) => {
-      if (keeStore.isDbOpened) {
-        window.$message.info('Database already opened')
-
-        return
-      } else if (isElectron) {
-        await router.replace({
-          name: 'HomeView',
-        })
-        return
-      }
-      try {
-        await kService.openDatabase({password})
-      } catch (e) {
-        console.error(e)
-        showOpenDbModal.value = true
-        keeStore.isDbOpened = false
-
-        return
-      }
-
-      keeStore.isDbOpened = true
-      window.$message.success('Database successfully opened')
-      await getGroupTree()
-    }
 
     const getMenuOptions = (option, event?: MouseEvent) => {
       let isRootSelected = option
@@ -312,7 +89,7 @@ export default defineComponent({
           props: {
             onClick: () => {
               nodeAction(option, () => {
-                showRenameModal.value = true
+                showRenameModal()
               })
             },
           },
@@ -322,7 +99,7 @@ export default defineComponent({
           props: {
             onClick: () => {
               nodeAction(option, () => {
-                showChooseIconModal.value = true
+                isShowChooseIconModal.value = true
               })
             },
           },
@@ -354,6 +131,36 @@ export default defineComponent({
 
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)
+
+    const {
+      groupTree,
+      keeStore,
+      getGroupTree,
+      selectedKeys,
+      groupUuid,
+      rootGroupUuid,
+      editingUuid,
+      handleOpenDatabase,
+      handleCreateEntry,
+      handleCreateGroup,
+      confirmRemoveGroup,
+      handleTreeDrop,
+      showRenameModal,
+      handleGroupEdit,
+      isShowChooseIconModal,
+      handleSelectIcon,
+      handleCloseDatabase,
+      handleToggleLock,
+    } = useKeeNoteGroupManage(editingNode)
+
+    onActivated(async () => {
+      keeStore.isDbOpened = await kService.checkIsOpen()
+      if (keeStore.isDbOpened) {
+        await getGroupTree()
+      } else {
+        await handleOpenDatabase()
+      }
+    })
 
     const menuOptionsBase = [
       {
@@ -404,13 +211,6 @@ export default defineComponent({
       return options
     })
 
-    const showRenameModal = ref(false)
-    const showChooseIconModal = ref(false)
-
-    const editingUuid = computed(() => {
-      return editingNode.value ? editingNode.value.uuid : groupUuid.value
-    })
-
     const handleImportJson = async () => {
       await importEntryListJson(editingUuid.value)
     }
@@ -427,36 +227,24 @@ export default defineComponent({
       })
     }
 
-    const handleToggleLock = async () => {
-      if (keeStore.isDbOpened) {
-        await handleCloseDatabase()
-      } else {
-        showOpenDbModal.value = true
-      }
-    }
-
     return {
+      formatSiteTitle,
       mainStore,
+      settingsStore,
+      keeStore,
       isElectron,
       groupTree,
-      keeStore,
       selectedKeys,
       menuOptions,
-      handleTreeDrop,
       editingNode,
       showRenameModal,
-      showChooseIconModal,
-      ...contextMenuEtc,
+      isShowChooseIconModal,
       renderPrefix({option}: {option: GroupItem}) {
         return h(IconDisplay, {
           icon: option.icon,
           size: 18,
         })
       },
-      handleGroupEdit,
-      handleSelectIcon,
-      showOpenDbModal,
-      handleOpenDatabase,
       nodeProps: ({option}: {option: any}) => {
         return {
           onClick() {
@@ -467,10 +255,13 @@ export default defineComponent({
           },
         }
       },
-      settingsStore,
+      handleTreeDrop,
+      handleGroupEdit,
+      handleSelectIcon,
+      handleOpenDatabase,
       handleLogout,
       handleToggleLock,
-      formatSiteTitle,
+      ...contextMenuEtc,
     }
   },
 })
@@ -523,16 +314,6 @@ export default defineComponent({
         </n-space>
       </n-layout-header>
 
-      <DialogInput
-        v-model:visible="showOpenDbModal"
-        :value="''"
-        @onSubmit="handleOpenDatabase"
-        dialog-title="Unlock Database"
-        input-label="Database password"
-        is-password
-        :required="false"
-      />
-
       <n-layout has-sider>
         <n-layout-sider
           collapse-mode="transform"
@@ -565,15 +346,8 @@ export default defineComponent({
             />
           </n-scrollbar>
 
-          <DialogInput
-            v-model:visible="showRenameModal"
-            :value="editingNode?.title"
-            @onSubmit="handleGroupEdit"
-            dialog-title="Rename Group"
-            input-label="Group name"
-          />
           <DialogIconChooser
-            v-model:visible="showChooseIconModal"
+            v-model:visible="isShowChooseIconModal"
             @onSelectIcon="handleSelectIcon"
           />
         </n-layout-sider>

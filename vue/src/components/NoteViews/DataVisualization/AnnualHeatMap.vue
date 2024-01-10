@@ -1,7 +1,7 @@
 <script lang="ts">
 import {defineComponent, PropType} from 'vue'
 import * as echarts from 'echarts'
-import {CalendarData, useKeepassEntryList} from '@/hooks/use-keepass'
+import {CalendarData, useKeeNoteEntryList} from '@/hooks/use-keenote'
 import moment from 'moment/moment'
 import {EntryItem} from '@/enum/kdbx'
 import {generateColorShades} from '@/utils/color'

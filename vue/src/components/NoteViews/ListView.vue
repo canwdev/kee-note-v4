@@ -4,7 +4,7 @@ import {EntryItem} from '@/enum/kdbx'
 import {useRouter} from 'vue-router'
 import {formatDate} from '@/utils'
 import DialogGroupSelect from '@/components/NoteViews/Dialogs/DialogGroupSelect.vue'
-import {useKeepassEntryList} from '@/hooks/use-keepass'
+import {useKeeNoteEntryList} from '@/hooks/use-keenote'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
@@ -18,7 +18,7 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const checkedRowKeys = ref<DataTableRowKey[]>([])
-    const {entryList, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
+    const {entryList, getEntryList, keeStore, groupUuid} = useKeeNoteEntryList({
       cleanupFn: () => {
         checkedRowKeys.value = []
       },

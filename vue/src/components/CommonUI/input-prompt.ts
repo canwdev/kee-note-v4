@@ -1,7 +1,7 @@
 import {NButton, NInput, NSpace} from 'naive-ui'
 
 export const showInputPrompt = (options: any = {}): Promise<string> => {
-  const {title = '', value = '', validateFn} = options
+  const {title = '', value = '', placeholder = '', validateFn, type = 'text'} = options
 
   return new Promise((resolve, reject) => {
     let editingValue = ref(value)
@@ -30,6 +30,8 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
             h(NInput, {
               ref: inputRef,
               value: editingValue.value,
+              placeholder,
+              type,
               clearable: true,
               'onUpdate:value': (v) => {
                 editingValue.value = v

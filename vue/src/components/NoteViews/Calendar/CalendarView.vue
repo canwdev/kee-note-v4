@@ -1,6 +1,6 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {useKeepassEntryList} from '@/hooks/use-keepass'
+import {useKeeNoteEntryList} from '@/hooks/use-keenote'
 import {useCommonActions} from '@/components/NoteViews/use-common-actions'
 import DialogGroupSelect from '@/components/NoteViews/Dialogs/DialogGroupSelect.vue'
 import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
@@ -33,7 +33,7 @@ export default defineComponent({
     const calendarRef = ref()
     const calendarMm = ref<moment.Moment>(moment())
 
-    const {calendarData, getEntryList, keeStore, groupUuid} = useKeepassEntryList({
+    const {calendarData, getEntryList, keeStore, groupUuid} = useKeeNoteEntryList({
       isCalendar: true,
       getCalendarParams: () => {
         const mm = calendarMm.value
