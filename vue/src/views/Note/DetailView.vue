@@ -1,13 +1,10 @@
 <script lang="ts">
-import {useRoute, useRouter} from 'vue-router'
 import {kService} from '@/api'
 import {EntryItem} from '@/enum/kdbx'
 import keepassIcons from '@/assets/icons'
-import {saveDatabaseAsync} from '@/utils/bus'
+import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
 import {useUnSavedChanges} from '@/hooks/use-changed'
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import MarkdownEditor from '@/components/NoteViews/Detail/MarkdownEditor.vue'
-import {LsKeys} from '@/enum'
 import DialogEntryIconColor from '@/components/NoteViews/Dialogs/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
 import DialogEntryPreview from '@/components/NoteViews/Dialogs/DialogEntryPreview.vue'
@@ -42,8 +39,6 @@ export default defineComponent({
     TextboxMore20Filled,
   },
   setup() {
-    const router = useRouter()
-    const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
     const entryDetailTimes = reactive([0, 0])
 
@@ -171,6 +166,7 @@ export default defineComponent({
     const handleBack = () => {
       const back = () => {
         keeStore.detailUuid = null
+        globalEventBus.emit(GlobalEvents.REFRESH_ENTRY_LIST)
       }
       if (isChanged.value) {
         window.$dialog.warning({

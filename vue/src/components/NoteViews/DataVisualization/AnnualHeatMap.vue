@@ -70,7 +70,6 @@ export default defineComponent({
           // show: false,
         },
         tooltip: {
-          position: 'top',
           formatter(params) {
             return params.name + ': ' + params.value[1]
           },
@@ -192,12 +191,14 @@ export default defineComponent({
           calendarIndex: index,
           data: seriesData,
           tooltip: {
-            position: 'top',
             formatter(params) {
-              console.log(params)
               if (!params.data) return
-              if (!params.data.items) return params.name + ': ' + params.value[1]
-              return
+              if (!params.data.items) return params.name
+              let html = ``
+              params.data.items.forEach((item, index) => {
+                html += `<div class="text-overflow">[${index + 1}] ${item.title}</div>`
+              })
+              return `<div class="heat-map-tooltip-titles">${html}</div>`
             },
           },
         })
@@ -229,5 +230,11 @@ export default defineComponent({
 .annual-heat-map {
   width: 100%;
   max-width: 800px;
+}
+</style>
+
+<style lang="scss">
+.heat-map-tooltip-titles {
+  max-width: 300px;
 }
 </style>

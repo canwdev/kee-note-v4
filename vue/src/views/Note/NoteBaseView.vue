@@ -365,9 +365,7 @@ export default defineComponent({
     </n-layout>
   </div>
 
-  <!-- TODO: amination -->
-  <!-- TODO: reload list when back -->
-  <transition name="fade">
+  <transition name="fade-scale">
     <DetailView v-if="Boolean(keeStore.detailUuid)" />
   </transition>
 </template>
