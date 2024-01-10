@@ -170,10 +170,8 @@ export default defineComponent({
           if (e.target.closest('.n-checkbox-box-wrapper')) {
             return
           }
-          router.push({
-            name: 'NoteDetailView',
-            query: {uuid: row.uuid},
-          })
+
+          keeStore.detailUuid = row.uuid
         },
         onContextmenu: (e: MouseEvent) => {
           handleContextmenu(e, row)

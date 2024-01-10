@@ -55,13 +55,7 @@ export const useCommonActions = (options) => {
       })
       await saveDatabaseAsync()
 
-      await router.push({
-        name: 'NoteDetailView',
-        query: {
-          groupUuid: groupUuid.value,
-          uuid: entry.uuid,
-        },
-      })
+      keeStore.detailUuid = entry.uuid
     }
 
     // 如果在日期上点击右键，则显示创建按钮，item.day 是moment日期类型
@@ -99,13 +93,7 @@ export const useCommonActions = (options) => {
         label: '✒️ Edit',
         props: {
           onClick: () => {
-            router.push({
-              name: 'NoteDetailView',
-              query: {
-                groupUuid: groupUuid.value,
-                uuid: item.uuid,
-              },
-            })
+            keeStore.detailUuid = item.uuid
           },
         },
       },

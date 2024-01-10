@@ -23,6 +23,7 @@ import {
 import AttachmentBox from '@/components/NoteViews/Detail/AttachmentBox.vue'
 import {getEntryItemUpdateParams} from '@/utils/export-import'
 import {useEditorSettingsStore} from '@/store/editor'
+import {useKeeStore} from '@/store/kee-store'
 
 export default defineComponent({
   name: 'DetailView',
@@ -45,6 +46,8 @@ export default defineComponent({
     const route = useRoute()
     const entryDetail = ref<EntryItem | null>(null)
     const entryDetailTimes = reactive([0, 0])
+
+    const keeStore = useKeeStore()
 
     const editorSettingsStore = useEditorSettingsStore()
 
@@ -80,7 +83,7 @@ export default defineComponent({
     }
 
     const getEntryDetail = async (isFocus = false) => {
-      entryDetail.value = await kService.getEntryDetail({uuid: route.query.uuid})
+      entryDetail.value = await kService.getEntryDetail({uuid: keeStore.detailUuid})
       nextTick(() => {
         isChanged.value = false
         if (isFocus) {
@@ -166,6 +169,9 @@ export default defineComponent({
     const titleInputRef = ref()
 
     const handleBack = () => {
+      const back = () => {
+        keeStore.detailUuid = null
+      }
       if (isChanged.value) {
         window.$dialog.warning({
           title: 'Confirm',
@@ -173,13 +179,13 @@ export default defineComponent({
           positiveText: 'OK',
           negativeText: 'Cancel',
           onPositiveClick: () => {
-            router.back()
+            back()
           },
           onNegativeClick: () => {},
         })
         return
       }
-      router.back()
+      back()
     }
 
     return {
@@ -363,6 +369,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .detail-view {
+  top: 0;
+  left: 0;
+  z-index: 100;
+  position: absolute;
+  width: 100%;
   height: 100%;
   $min_width: 800px;
 

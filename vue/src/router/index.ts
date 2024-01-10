@@ -35,11 +35,6 @@ const constantRoutes = [
           keepAlive: true,
         },
       },
-      {
-        name: 'NoteDetailView',
-        path: 'detail',
-        component: () => import('@/views/Note/DetailView.vue'),
-      },
     ],
   },
   {path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/PageNotFound.vue')},

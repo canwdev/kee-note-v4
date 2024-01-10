@@ -2,15 +2,10 @@
 import {kService} from '@/api'
 import {GroupItem} from '@/enum/kdbx'
 import {defineComponent} from 'vue'
-import {useKeeStore} from '@/store/kee-store'
-import DialogInput from '@/components/NoteViews/Dialogs/DialogInput.vue'
-import {useRoute, useRouter} from 'vue-router'
+import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {formatDate} from '@/utils'
-import {TreeDropInfo} from 'naive-ui'
 import {isElectron} from '@/utils/backend'
 import {useContextMenu} from '@/hooks/use-context-menu'
-import {useLocalStorageBoolean} from '@/hooks/use-local-storage'
 import {LsKeys} from '@/enum'
 import ListView from '@/components/NoteViews/ListView.vue'
 import CalendarView from '@/components/NoteViews/Calendar/CalendarView.vue'
@@ -27,13 +22,13 @@ import {
 import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
 import {formatSiteTitle} from '@/router'
-import {HistoryListItem} from '@/enum/settings'
 import {useKeeNoteGroupManage} from '@/hooks/use-keenote'
+import DetailView from '@/views/Note/DetailView.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
-    DialogInput,
+    DetailView,
     ListView,
     CalendarView,
     DialogIconChooser,
@@ -146,7 +141,6 @@ export default defineComponent({
       confirmRemoveGroup,
       handleTreeDrop,
       showRenameModal,
-      handleGroupEdit,
       isShowChooseIconModal,
       handleSelectIcon,
       handleCloseDatabase,
@@ -237,7 +231,6 @@ export default defineComponent({
       selectedKeys,
       menuOptions,
       editingNode,
-      showRenameModal,
       isShowChooseIconModal,
       renderPrefix({option}: {option: GroupItem}) {
         return h(IconDisplay, {
@@ -256,9 +249,7 @@ export default defineComponent({
         }
       },
       handleTreeDrop,
-      handleGroupEdit,
       handleSelectIcon,
-      handleOpenDatabase,
       handleLogout,
       handleToggleLock,
       ...contextMenuEtc,
@@ -373,6 +364,12 @@ export default defineComponent({
       </n-layout>
     </n-layout>
   </div>
+
+  <!-- TODO: amination -->
+  <!-- TODO: reload list when back -->
+  <transition name="fade">
+    <DetailView v-if="Boolean(keeStore.detailUuid)" />
+  </transition>
 </template>
 
 <style lang="scss" scoped>

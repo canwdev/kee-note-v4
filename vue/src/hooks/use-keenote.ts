@@ -113,6 +113,7 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
   }
 
   const showOpenDbModal = async () => {
+    // TODO: allow empty
     const password = await showInputPrompt({
       title: 'Unlock Database',
       placeholder: 'Database password',
@@ -155,10 +156,7 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     })
     await saveDatabaseAsync()
 
-    await router.push({
-      name: 'NoteDetailView',
-      query: {uuid: entry.uuid},
-    })
+    keeStore.detailUuid = entry.uuid
   }
 
   const handleCreateGroup = async () => {
@@ -212,7 +210,9 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
       placeholder: 'Group name',
       value: editingNode.value.title,
     })
-    await handleGroupEdit(name)
+    if (name !== editingNode.value.title) {
+      await handleGroupEdit(name)
+    }
   }
 
   const handleGroupEdit = async (name: string) => {

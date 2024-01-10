@@ -1,6 +1,8 @@
 type KeeStore = {
   isDbOpened: boolean
   recycleBinUuid: string | null
+  // if editing, set detailUuid
+  detailUuid: string | null
 }
 
 export const useKeeStore = defineStore('keeStore', {
@@ -8,6 +10,7 @@ export const useKeeStore = defineStore('keeStore', {
     return {
       isDbOpened: false,
       recycleBinUuid: null,
+      detailUuid: null,
     }
   },
   actions: {},
