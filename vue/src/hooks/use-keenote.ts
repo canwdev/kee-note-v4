@@ -113,12 +113,12 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
   }
 
   const showOpenDbModal = async () => {
-    // TODO: allow empty
     const password = await showInputPrompt({
       title: 'Unlock Database',
       placeholder: 'Database password',
       value: '',
       type: 'password',
+      allowEmpty: true,
     })
     await handleOpenDatabase(password)
   }
@@ -249,6 +249,8 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     await kService.closeDatabase()
     settingsStore.lastOpenedHistoryItem = null
     keeStore.isDbOpened = false
+    keeStore.detailUuid = null
+    keeStore.isChanged = false
     window.$message.success('Database successfully closed')
 
     groupTree.value = []
@@ -260,11 +262,12 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     }
   }
 
+  // 切换数据库锁定
   const handleToggleLock = async () => {
     if (keeStore.isDbOpened) {
       await handleCloseDatabase()
     } else {
-      showOpenDbModal()
+      await showOpenDbModal()
     }
   }
 

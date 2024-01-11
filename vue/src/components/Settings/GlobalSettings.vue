@@ -92,6 +92,49 @@ export default defineComponent({
       }
 
       return [
+        isElectron
+          ? serverManagerOption.value
+          : {
+              label: 'Web UI Config',
+              key: 'webui',
+              children: [
+                {
+                  label: 'KN_HTTP_CRYPT_KEY',
+                  subtitle: 'Change this will refresh page',
+                  key: 'kn_http_crypt_key',
+                  actionRender: h(
+                    NButton,
+                    {
+                      type: 'primary',
+                      size: 'small',
+                      onClick: () => {
+                        isShowMyCryptKeyDialog.value = true
+                      },
+                    },
+                    {
+                      default: () => 'Edit',
+                    }
+                  ),
+                },
+                {
+                  label: '.env generator',
+                  key: 'env_generator',
+                  actionRender: h(
+                    RouterLink,
+                    {
+                      to: '/gen',
+                      // target: '_blank',
+                      onClick: () => {
+                        mVisible.value = false
+                      },
+                    },
+                    {
+                      default: () => 'Go',
+                    }
+                  ),
+                },
+              ],
+            },
         {
           label: 'Personalization',
           key: 'personalization',
@@ -149,49 +192,6 @@ export default defineComponent({
           key: 'calendar',
           children: calendarSettings,
         },
-        isElectron
-          ? serverManagerOption.value
-          : {
-              label: 'Web UI Config',
-              key: 'webui',
-              children: [
-                {
-                  label: 'KN_HTTP_CRYPT_KEY',
-                  subtitle: 'Change this will refresh page',
-                  key: 'kn_http_crypt_key',
-                  actionRender: h(
-                    NButton,
-                    {
-                      type: 'primary',
-                      size: 'small',
-                      onClick: () => {
-                        isShowMyCryptKeyDialog.value = true
-                      },
-                    },
-                    {
-                      default: () => 'Edit',
-                    }
-                  ),
-                },
-                {
-                  label: '.env generator',
-                  key: 'env_generator',
-                  actionRender: h(
-                    RouterLink,
-                    {
-                      to: '/gen',
-                      // target: '_blank',
-                      onClick: () => {
-                        mVisible.value = false
-                      },
-                    },
-                    {
-                      default: () => 'Go',
-                    }
-                  ),
-                },
-              ],
-            },
       ].filter(Boolean)
     })
 

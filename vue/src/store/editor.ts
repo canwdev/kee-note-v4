@@ -15,7 +15,7 @@ export const useEditorSettingsStore = defineStore('editorSettingsStore', {
       isEditWYSIWYG: true,
       editorFontFamily: 'inherit',
       editorTheme: '',
-      isShowMore: true,
+      isShowMore: false,
       isAdvancedEditor: true,
     }
   },

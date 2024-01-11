@@ -127,6 +127,24 @@ export default defineComponent({
     const {editingNode, nodeAction, handleContextmenu, ...contextMenuEtc} =
       useContextMenu(getMenuOptions)
 
+    onMounted(() => {
+      window.addEventListener('keydown', listenShortcuts)
+    })
+    onBeforeUnmount(() => {
+      window.removeEventListener('keydown', listenShortcuts)
+    })
+    const listenShortcuts = (event) => {
+      if (event.ctrlKey || event.metaKey) {
+        const key = event.key.toLowerCase()
+        if (key === 'l') {
+          event.preventDefault()
+          if (!keeStore.isChanged) {
+            handleToggleLock()
+          }
+        }
+      }
+    }
+
     const {
       groupTree,
       keeStore,

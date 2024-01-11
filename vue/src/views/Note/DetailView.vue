@@ -3,7 +3,7 @@ import {kService} from '@/api'
 import {EntryItem} from '@/enum/kdbx'
 import keepassIcons from '@/assets/icons'
 import globalEventBus, {GlobalEvents, saveDatabaseAsync} from '@/utils/bus'
-import {useUnSavedChanges} from '@/hooks/use-changed'
+import {useBeforeUnload, useUnSavedChanges} from '@/hooks/use-changed'
 import MarkdownEditor from '@/components/NoteViews/Detail/MarkdownEditor.vue'
 import DialogEntryIconColor from '@/components/NoteViews/Dialogs/DialogEntryIconColor.vue'
 import IconDisplay from '@/components/NoteViews/IconDisplay.vue'
@@ -48,13 +48,13 @@ export default defineComponent({
 
     onMounted(() => {
       getEntryDetail(true)
-      window.addEventListener('keydown', handleKeyDown)
+      window.addEventListener('keydown', listenShortcuts)
     })
     onBeforeUnmount(() => {
-      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keydown', listenShortcuts)
     })
 
-    const handleKeyDown = (event) => {
+    const listenShortcuts = (event) => {
       if (event.ctrlKey || event.metaKey) {
         const key = String.fromCharCode(event.which).toLowerCase()
         switch (key) {
@@ -80,14 +80,14 @@ export default defineComponent({
     const getEntryDetail = async (isFocus = false) => {
       entryDetail.value = await kService.getEntryDetail({uuid: keeStore.detailUuid})
       nextTick(() => {
-        isChanged.value = false
+        keeStore.isChanged = false
         if (isFocus) {
           titleInputRef.value.focus()
         }
       })
     }
 
-    const {isChanged} = useUnSavedChanges()
+    useBeforeUnload(() => keeStore.isChanged)
 
     watch(entryDetail, (val) => {
       if (!val) {
@@ -101,7 +101,7 @@ export default defineComponent({
     watch(
       entryDetail,
       () => {
-        isChanged.value = true
+        keeStore.isChanged = true
       },
       {deep: true}
     )
@@ -123,9 +123,11 @@ export default defineComponent({
       await syncAndSave()
     }
 
+    const isBackRefresh = ref(false)
     const syncAndSave = async () => {
       await getEntryDetail()
       await saveDatabaseAsync()
+      isBackRefresh.value = true
     }
 
     const complexEditorRef = ref()
@@ -166,9 +168,11 @@ export default defineComponent({
     const handleBack = () => {
       const back = () => {
         keeStore.detailUuid = null
-        globalEventBus.emit(GlobalEvents.REFRESH_ENTRY_LIST)
+        if (isBackRefresh.value) {
+          globalEventBus.emit(GlobalEvents.REFRESH_ENTRY_LIST)
+        }
       }
-      if (isChanged.value) {
+      if (keeStore.isChanged) {
         window.$dialog.warning({
           title: 'Confirm',
           content: 'Discard Changes?',
@@ -185,11 +189,11 @@ export default defineComponent({
     }
 
     return {
+      keeStore,
       editorSettingsStore,
       entryDetail,
       handleBack,
       entryDetailTimes,
-      isChanged,
       handleSave,
       keepassIcons,
       complexEditorRef,
@@ -228,12 +232,12 @@ export default defineComponent({
                   :bg-color="entryDetail.bgColor"
                   :fg-color="entryDetail.fgColor"
                 />
-                <span v-if="isChanged">* </span>
+                <span v-if="keeStore.isChanged">* </span>
               </n-button>
             </n-dropdown>
           </div>
 
-          <n-button quaternary :disabled="!isChanged" @click="handleSave">
+          <n-button quaternary :disabled="!keeStore.isChanged" @click="handleSave">
             <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;Save</n-button
           >
         </n-space>
@@ -248,7 +252,7 @@ export default defineComponent({
                   size="small"
                   v-model:value="entryDetailTimes[0]"
                   type="datetime"
-                  @update:value="isChanged = true"
+                  @update:value="keeStore.isChanged = true"
                   title="Create Time"
                 >
                   <template #date-icon>
