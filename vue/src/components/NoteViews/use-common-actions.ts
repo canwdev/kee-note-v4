@@ -56,6 +56,7 @@ export const useCommonActions = (options) => {
       await saveDatabaseAsync()
 
       keeStore.detailUuid = entry.uuid
+      globalEventBus.emit(GlobalEvents.REFRESH_ENTRY_LIST)
     }
 
     // 如果在日期上点击右键，则显示创建按钮，item.day 是moment日期类型

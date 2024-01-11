@@ -50,12 +50,6 @@ export default defineComponent({
       },
     })
 
-    onMounted(async () => {
-      if (keeStore.isDbOpened) {
-        await getEntryList()
-      }
-    })
-
     const getAttributes = (mm) => {
       try {
         const year = mm.year()

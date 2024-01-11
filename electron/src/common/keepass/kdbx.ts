@@ -213,6 +213,9 @@ export class KdbxHelper {
     }
     this.curEntryMap = {}
     const group: any = this.db.getGroup(groupUuid)
+    if (!group) {
+      throw new Error(`group ${groupUuid} not found`)
+    }
 
     const list = []
 
