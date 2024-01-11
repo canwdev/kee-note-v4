@@ -43,7 +43,7 @@ export default defineComponent({
     const settingsStore = useSettingsStore()
     const {serverManagerOption} = useServerManager()
     const {webuiOption} = useWebui(mVisible)
-    const {kdbxConfigOption} = useKdbxOptions()
+    const {kdbxConfigOption} = useKdbxOptions(mVisible)
 
     const optionList = computed((): StOptionItem[] => {
       let calendarSettings: StOptionItem[] = [

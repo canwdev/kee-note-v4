@@ -41,6 +41,11 @@ export class KeepassController {
     return this.kdbxHelper.close()
   }
 
+  @Post('change-credentials')
+  changeCredentials(@Body() params) {
+    return this.kdbxHelper.changeCredentials(params)
+  }
+
   @Post('save-database')
   saveDatabase() {
     return this.kdbxHelper.save()

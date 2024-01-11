@@ -6,6 +6,12 @@ export const openDatabase = (params?: any) => {
 export const closeDatabase = () => {
   return service.post('close-database')
 }
+export const changeCredentials = (params?: any) => {
+  return service.post('change-credentials', params)
+}
+export const createCredentialKey = (params?: any) => {
+  return service.post('create-credential-key', params)
+}
 export const saveDatabase = () => {
   return service.post('save-database')
 }
@@ -112,6 +118,10 @@ export const renameAttachment = (params: any) => {
 
 export const electronOpenFileDialog = (params: any) => {
   return service.post('open-file-dialog', params)
+}
+
+export const electronOpenSaveDialog = (params: any) => {
+  return service.post('open-save-dialog', params)
 }
 
 export const electronToggleServer = (params: any) => {

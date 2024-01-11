@@ -10,6 +10,7 @@ export const GlobalEvents = {
   SAVE_DATABASE: 'SAVE_DATABASE',
   REFRESH_GROUP_TREE: 'REFRESH_GROUP',
   REFRESH_ENTRY_LIST: 'REFRESH_ENTRY_LIST',
+  CLOSE_DATABASE: 'CLOSE_DATABASE',
 }
 
 export const saveDatabaseAsync = () => {

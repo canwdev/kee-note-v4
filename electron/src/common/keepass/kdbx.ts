@@ -49,6 +49,7 @@ export class KdbxHelper {
     this.isChanged = false
   }
 
+  // 打开数据库
   async open(options: KdbxOpenOptions) {
     const {dbPath, password, keyPath} = options || {}
     if (!dbPath) {
@@ -73,11 +74,54 @@ export class KdbxHelper {
     // console.log(db)
   }
 
+  // 关闭数据库
   close() {
     console.log('[db] closing database...')
     // this.db.close()
     this.resetInstance()
     console.log('[db] database closed')
+  }
+
+  // 更改数据库密码和key
+  async changeCredentials(params: any = {}) {
+    const {password, keyPath} = params
+    if (!this.db) {
+      throw new Error('[db] instance is not exist')
+    }
+
+    if (password) {
+      console.log('changing password')
+      await this.db.credentials.setPassword(kdbxweb.ProtectedValue.fromString(password))
+    }
+
+    if (keyPath) {
+      console.log('changing keyPath', keyPath)
+      const randomKeyFile = await kdbxweb.Credentials.createRandomKeyFile()
+      console.log('[randomKeyFile]', randomKeyFile)
+      const keyFileArrayBuffer = await readFileAsArrayBuffer(keyPath)
+      console.log('[keyFileArrayBuffer]', keyFileArrayBuffer)
+      // Uint8Array
+      await this.db.credentials.setKeyFile(keyFileArrayBuffer)
+    }
+
+    if (password || keyPath) {
+      await this.save()
+      console.log('[db] change credentials success')
+    }
+  }
+
+  // 创建随机密钥
+  async createCredentialKey(params: any = {}) {
+    const {keyPath} = params
+
+    const randomKeyFile = await kdbxweb.Credentials.createRandomKeyFile()
+
+    // write to key file
+    if (!keyPath) {
+      throw new Error('[keyPath] is required')
+    }
+    await saveFileFromArrayBuffer(keyPath, randomKeyFile)
+    console.log('[db] key file created', keyPath)
   }
 
   async save() {

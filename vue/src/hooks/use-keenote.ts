@@ -244,6 +244,7 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     settingsStore.lastOpenedHistoryItem = null
     keeStore.isDbOpened = false
     keeStore.detailUuid = null
+    keeStore.dbInfo = null
     keeStore.isChanged = false
     window.$message.success('Database successfully closed')
 
@@ -267,9 +268,11 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
 
   onMounted(async () => {
     globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
+    globalEventBus.on(GlobalEvents.CLOSE_DATABASE, handleCloseDatabase)
   })
   onBeforeUnmount(() => {
     globalEventBus.off(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
+    globalEventBus.off(GlobalEvents.CLOSE_DATABASE, handleCloseDatabase)
   })
 
   return {
