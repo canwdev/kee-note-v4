@@ -419,8 +419,10 @@ export class KdbxHelper {
   getMeta() {
     const meta: any = (this.db && this.db.meta) || {}
     return {
-      // header: kInstance.db.header,
+      // header: this.db.header,
+      dbPath: this.dbPath.replace(/\\/g, '/'),
       meta: {
+        name: meta.name,
         recycleBinEnabled: meta.recycleBinEnabled,
         recycleBinUuid: meta.recycleBinUuid,
       },

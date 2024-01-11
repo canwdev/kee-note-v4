@@ -13,6 +13,10 @@ import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {RouterLink} from 'vue-router'
 import {useServerManager} from '@/components/Settings/use-server-manager'
 import moment from 'moment/moment'
+import {showInputPrompt} from '@/components/CommonUI/input-prompt'
+import {useKeeStore} from '@/store/kee-store'
+import {useWebui} from '@/components/Settings/use-webui'
+import {useKdbxOptions} from '@/components/Settings/use-kdbx-options'
 
 export default defineComponent({
   name: 'GlobalSettings',
@@ -36,17 +40,10 @@ export default defineComponent({
       isShowGlobalStyleDialog.value = false
     }
 
-    const isShowMyCryptKeyDialog = ref(false)
-    const myCryptKey = ref(getMyCryptKey())
-    const handleMyCryptKeyChange = (value) => {
-      isShowMyCryptKeyDialog.value = false
-      myCryptKey.value = value
-      localStorage.setItem(LsKeys.LS_KEY_KN_HTTP_CRYPT_KEY, String(value))
-      location.reload()
-    }
-
     const settingsStore = useSettingsStore()
     const {serverManagerOption} = useServerManager()
+    const {webuiOption} = useWebui(mVisible)
+    const {kdbxConfigOption} = useKdbxOptions()
 
     const optionList = computed((): StOptionItem[] => {
       let calendarSettings: StOptionItem[] = [
@@ -92,49 +89,8 @@ export default defineComponent({
       }
 
       return [
-        isElectron
-          ? serverManagerOption.value
-          : {
-              label: 'Web UI Config',
-              key: 'webui',
-              children: [
-                {
-                  label: 'KN_HTTP_CRYPT_KEY',
-                  subtitle: 'Change this will refresh page',
-                  key: 'kn_http_crypt_key',
-                  actionRender: h(
-                    NButton,
-                    {
-                      type: 'primary',
-                      size: 'small',
-                      onClick: () => {
-                        isShowMyCryptKeyDialog.value = true
-                      },
-                    },
-                    {
-                      default: () => 'Edit',
-                    }
-                  ),
-                },
-                {
-                  label: '.env generator',
-                  key: 'env_generator',
-                  actionRender: h(
-                    RouterLink,
-                    {
-                      to: '/gen',
-                      // target: '_blank',
-                      onClick: () => {
-                        mVisible.value = false
-                      },
-                    },
-                    {
-                      default: () => 'Go',
-                    }
-                  ),
-                },
-              ],
-            },
+        isElectron ? serverManagerOption.value : webuiOption.value,
+        kdbxConfigOption.value,
         {
           label: 'Personalization',
           key: 'personalization',
@@ -202,9 +158,6 @@ export default defineComponent({
         return h(Settings20Filled)
       },
       isElectron,
-      isShowMyCryptKeyDialog,
-      myCryptKey,
-      handleMyCryptKeyChange,
       isShowGlobalStyleDialog,
       globalStyleText,
       handleSaveGlobalStyle,
@@ -230,15 +183,6 @@ export default defineComponent({
     @onSave="handleSaveGlobalStyle"
     title="Global CSS Editor"
     class="font-code"
-  />
-  <DialogTextEdit
-    v-model:visible="isShowMyCryptKeyDialog"
-    :text="myCryptKey"
-    @onSave="handleMyCryptKeyChange"
-    title="Edit KN_HTTP_CRYPT_KEY"
-    placeholder="keep default"
-    class="font-code"
-    clearable
   />
 </template>
 

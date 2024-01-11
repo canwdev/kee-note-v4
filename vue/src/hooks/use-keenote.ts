@@ -84,14 +84,8 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
   })
 
   const getGroupTree = async () => {
-    const {
-      meta: {recycleBinEnabled, recycleBinUuid},
-    } = await kService.getMeta()
-    if (recycleBinEnabled && recycleBinUuid && recycleBinUuid.id) {
-      keeStore.recycleBinUuid = recycleBinUuid.id
-    } else {
-      keeStore.recycleBinUuid = null
-    }
+    const info = await kService.getMeta()
+    keeStore.dbInfo = info
 
     groupTree.value = await kService.getGroupTree()
 

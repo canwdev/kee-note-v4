@@ -1,6 +1,17 @@
+type DbInfo = {
+  dbPath: string
+  meta: {
+    name: string
+    recycleBinEnabled: boolean
+    recycleBinUuid: {
+      id: string | null
+    }
+  }
+}
+
 type KeeStore = {
   isDbOpened: boolean
-  recycleBinUuid: string | null
+  dbInfo: DbInfo | null
   // if editing, set detailUuid
   detailUuid: string | null
   // 前端本地是否有未保存的修改
@@ -11,10 +22,18 @@ export const useKeeStore = defineStore('keeStore', {
   state: (): KeeStore => {
     return {
       isDbOpened: false,
-      recycleBinUuid: null,
+      dbInfo: null,
       detailUuid: null,
       isChanged: false,
     }
+  },
+  getters: {
+    recycleBinUuid: (state): string | null => {
+      if (state.dbInfo) {
+        return state.dbInfo.meta?.recycleBinUuid?.id || null
+      }
+      return null
+    },
   },
   actions: {},
 })

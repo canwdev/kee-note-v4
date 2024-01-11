@@ -19,7 +19,11 @@ export const showInputPrompt = (options: any = {}): Promise<string> => {
         return
       }
       if (typeof validateFn === 'function') {
-        await validateFn(editingValue.value)
+        const message = await validateFn(editingValue.value)
+        if (typeof message === 'string') {
+          window.$message.error(message)
+          return
+        }
       }
       resolve(editingValue.value)
       d.destroy()
