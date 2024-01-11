@@ -223,7 +223,7 @@ export default defineComponent({
     <n-layout-content>
       <n-card
         class="card-wrap"
-        :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database (KDBX3)`"
+        :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database (KDBX4)`"
       >
         <template #header-extra>
           <n-space size="small">

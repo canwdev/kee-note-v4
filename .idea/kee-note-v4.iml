@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/electron/dist" />
       <excludeFolder url="file://$MODULE_DIR$/nest/dist-frontend" />
       <excludeFolder url="file://$MODULE_DIR$/nest/test" />
+      <excludeFolder url="file://$MODULE_DIR$/electron/src/common/keepass/support" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

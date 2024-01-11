@@ -1,14 +1,14 @@
 {
   "name": "kee-note",
   "appName": "KeeNote",
-  "version": "4.1.2",
+  "version": "4.2.0",
   "description": "An encrypted note editor powered by KeePass.",
   "license": "GPLV3",
   "author": "canwdev",
   "main": "dist-src/main.js",
   "scripts": {
     "build-src": "cross-env rimraf ./dist-src/* && tsc",
-    "watch-src": "tsc -w",
+    "watch-src": "cross-env npm run copy-files && tsc -w",
     "dev": "cross-env NODE_ENV=development electron ./dist-src/main.js",
     "start": "electron ./dist-src/main.js",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
@@ -16,7 +16,8 @@
     "build-nest": "npm run build-src -- -p tsconfig-nest-only.json",
     "watch-nest": "npm run watch-src -- -p tsconfig-nest-only.json",
     "dev-nest": "cross-env NODE_ENV=development nodemon ./dist-src/nest/index.js",
-    "start-nest": "node ./dist-src/nest/index.js"
+    "start-nest": "node ./dist-src/nest/index.js",
+    "copy-files": "copyfiles -u 1 src/common/keepass/support/argon2/argon2-asm.min.js dist-src"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
@@ -28,6 +29,7 @@
     "@types/passport-local": "^1.0.35",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.61.0",
+    "copyfiles": "^2.4.1",
     "electron": "^27.1.3",
     "electron-builder": "^24.9.1",
     "eslint": "8.22.0",
@@ -49,10 +51,12 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.3.12",
     "@nestjs/serve-static": "^3.0.1",
+    "@xmldom/xmldom": "^0.7.4",
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.1.1",
     "electron-store": "^8.1.0",
+    "fflate": "^0.7.1",
     "file-type": "^16.5.3",
     "fs-extra": "^10.1.0",
     "kdbxweb": "^2.1.1",

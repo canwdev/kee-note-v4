@@ -4,6 +4,9 @@ import {Kdbx} from 'kdbxweb'
 import {CalendarData, EntryItem, GroupItem} from './entry'
 
 import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../utils'
+import {argon2} from './support/argon2/argon2'
+
+kdbxweb.CryptoEngine.setArgon2Impl(argon2)
 
 /**
  * 递归遍历数据库 groups
@@ -91,9 +94,9 @@ export class KdbxHelper {
     )
 
     const db = kdbxweb.Kdbx.create(credentials, 'My new db')
-    // TODO: KDBX4: Error invoking remote method 'create-database': KdbxError: Error NotImplemented: argon2 not implemented
+    // if KDBX4: Error invoking remote method 'create-database': KdbxError: Error NotImplemented: argon2 not implemented
     // downgrade to KDBX3
-    db.setVersion(3)
+    // db.setVersion(3)
     const buffer = await db.save()
     await saveFileFromArrayBuffer(dbPath, buffer)
     console.log('[db] create success', dbPath)
@@ -487,8 +490,15 @@ export class KdbxHelper {
 
   getMeta() {
     const meta: any = (this.db && this.db.meta) || {}
+    const header: any = (this.db && this.db.header) || {}
     return {
-      // header: this.db.header,
+      header: {
+        compression: header.compression,
+        crsAlgorithm: header.crsAlgorithm,
+        endPos: header.endPos,
+        versionMajor: header.versionMajor,
+        versionMinor: header.versionMinor,
+      },
       dbPath: this.dbPath.replace(/\\/g, '/'),
       meta: {
         name: meta.name,
