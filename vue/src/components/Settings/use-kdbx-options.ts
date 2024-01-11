@@ -105,8 +105,13 @@ export const useKdbxOptions = (mVisible) => {
                         onClick: async () => {
                           const {filePath} = await kService.electronOpenSaveDialog({
                             defaultPath: 'new.key',
+                            filters: [
+                              {
+                                name: 'Key File',
+                                extensions: ['key'],
+                              },
+                            ],
                           })
-
                           await createCredentialKey({keyPath: filePath})
                           window.$message.success('Key file created: ' + filePath)
                         },

@@ -150,9 +150,9 @@ export default defineComponent({
                 class="font-code"
             /></n-input-group>
           </n-form-item>
-          <n-space justify="end">
+          <n-space size="small" justify="end">
+            <n-button @click="handleSettings"> Settings </n-button>
             <n-button type="primary" @click="handleValidateButtonClick"> Login </n-button>
-            <n-button secondary @click="handleSettings"> Settings </n-button>
           </n-space>
         </n-form>
       </n-card>

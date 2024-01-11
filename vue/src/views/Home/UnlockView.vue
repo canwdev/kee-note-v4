@@ -5,19 +5,19 @@ import {kService} from '@/api'
 import {useRouter} from 'vue-router'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
-import {getLocalStorageObject, LsKeys, setLocalStorageObject} from '@/enum'
 import {
   Folder16Regular,
   DatabasePerson20Regular,
   Key16Regular,
   KeyMultiple20Regular,
-  History16Regular,
+  History20Regular,
+  Add20Filled,
+  ArrowLeft20Regular,
 } from '@vicons/fluent'
-import {useSettingsStore} from '@/store/settings'
 import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
-import {HistoryListItem} from '@/enum/settings'
 import {useMainStore} from '@/store/main'
 import {useHistory} from '@/views/Home/use-history'
+import {createCredentialKey, createDatabase} from '@/api/keepass'
 
 interface ModelType {
   dbPath: string | null
@@ -32,7 +32,9 @@ export default defineComponent({
     DatabasePerson20Regular,
     Key16Regular,
     KeyMultiple20Regular,
-    History16Regular,
+    History20Regular,
+    Add20Filled,
+    ArrowLeft20Regular,
   },
   setup() {
     const mainStore = useMainStore()
@@ -70,6 +72,19 @@ export default defineComponent({
       await checkProfile(hItem ? {groupUuid: hItem.lastGroupUuid} : {})
     }
 
+    const handleCreate = async () => {
+      await kService.createDatabase({
+        dbPath: modelRef.value.dbPath,
+        password: modelRef.value.password,
+        keyPath: modelRef.value.keyPath,
+      })
+      window.$message.success('Database created: ' + modelRef.value.dbPath)
+      isCreateMode.value = false
+      modelRef.value.password = ''
+
+      autoFocusInput()
+    }
+
     const checkProfile = async (query = {}) => {
       if (!(await kService.checkIsOpen())) {
         return
@@ -98,6 +113,35 @@ export default defineComponent({
       autoFocusInput()
     })
 
+    // 选择要创建的文件
+    const handleChooseCreateFile = async (type) => {
+      const {filePath} = await kService.electronOpenSaveDialog({
+        defaultPath: type === 'dbPath' ? 'new.kdbx' : 'new.key',
+        filters: [
+          type === 'dbPath'
+            ? {
+                name: 'KeePass Database',
+                extensions: ['kdbx'],
+              }
+            : {
+                name: 'Key File',
+                extensions: ['key'],
+              },
+        ],
+      })
+
+      // 创建key
+      if (type === 'keyPath') {
+        await createCredentialKey({keyPath: filePath})
+        window.$message.success('Key file created: ' + filePath)
+      }
+
+      if (filePath) {
+        modelRef.value[type] = filePath
+      }
+    }
+
+    // 选择已存在的文件
     const handleChooseFile = async (type) => {
       const {filePaths} = await kService.electronOpenFileDialog({
         filters: [
@@ -108,7 +152,7 @@ export default defineComponent({
               }
             : {
                 name: 'Key File',
-                extensions: ['*'],
+                extensions: ['key', '*'],
               },
         ],
       })
@@ -124,6 +168,16 @@ export default defineComponent({
       isShowHistoryDialog.value = false
     }
 
+    const isCreateMode = ref(false)
+    const toggleCreate = () => {
+      if (!isCreateMode.value) {
+        modelRef.value.dbPath = ''
+        modelRef.value.password = ''
+        modelRef.value.keyPath = ''
+      }
+      isCreateMode.value = !isCreateMode.value
+    }
+
     return {
       mainStore,
       isElectron,
@@ -137,6 +191,10 @@ export default defineComponent({
             message.error('Invalid Form!')
             return
           }
+          if (isCreateMode.value) {
+            handleCreate()
+            return
+          }
           handleLogin()
         })
       },
@@ -144,10 +202,13 @@ export default defineComponent({
       handleSettings() {
         globalEventBus.emit(GlobalEvents.SHOW_SETTINGS)
       },
+      handleChooseCreateFile,
       handleChooseFile,
       isShowHistoryDialog,
       handleHistoryItemClick,
       inputPwdRef,
+      isCreateMode,
+      toggleCreate,
     }
   },
 })
@@ -160,11 +221,33 @@ export default defineComponent({
       v-model:visible="isShowHistoryDialog"
     />
     <n-layout-content>
-      <n-card class="card-wrap" title="Open Kdbx Database">
+      <n-card
+        class="card-wrap"
+        :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database (KDBX3)`"
+      >
         <template #header-extra>
-          <n-button quaternary size="small" @click="isShowHistoryDialog = true" title="History">
-            <n-icon size="20"><History16Regular /></n-icon>
-          </n-button>
+          <n-space size="small">
+            <n-button
+              size="small"
+              quaternary
+              :title="isCreateMode ? 'Back' : 'Create Database'"
+              @click="toggleCreate"
+            >
+              <n-icon size="20">
+                <ArrowLeft20Regular v-if="isCreateMode" />
+                <Add20Filled v-else />
+              </n-icon>
+            </n-button>
+            <n-button
+              v-if="!isCreateMode"
+              quaternary
+              size="small"
+              @click="isShowHistoryDialog = true"
+              title="History"
+            >
+              <n-icon size="20"><History20Regular /></n-icon>
+            </n-button>
+          </n-space>
         </template>
 
         <n-form ref="formRef" :model="model" :rules="rules">
@@ -178,8 +261,12 @@ export default defineComponent({
                 @keyup.enter="handleValidateButtonClick"
                 clearable
                 placeholder="Input or select file path"
+                class="font-code"
               />
-              <n-button secondary @click="handleChooseFile('dbPath')">
+              <n-button v-if="isCreateMode" @click="handleChooseCreateFile('dbPath')">
+                <n-icon size="16"><Add20Filled /></n-icon>
+              </n-button>
+              <n-button v-else @click="handleChooseFile('dbPath')">
                 <n-icon size="16"><Folder16Regular /></n-icon>
               </n-button>
             </n-input-group>
@@ -215,19 +302,26 @@ export default defineComponent({
                 placeholder="Input or select file path"
                 class="font-code"
               />
-              <n-button secondary @click="handleChooseFile('keyPath')">
+              <n-button v-if="isCreateMode" @click="handleChooseCreateFile('keyPath')">
+                <n-icon size="16"><Add20Filled /></n-icon>
+              </n-button>
+              <n-button @click="handleChooseFile('keyPath')">
                 <n-icon size="16"><Folder16Regular /></n-icon>
               </n-button>
             </n-input-group>
           </n-form-item>
-          <n-space style="display: flex; justify-content: flex-end">
+          <n-space v-if="isCreateMode" justify="end" size="small">
+            <n-button strong type="primary" @click="handleValidateButtonClick" style="color: white">
+              Create
+            </n-button>
+          </n-space>
+          <n-space v-else justify="end" size="small">
+            <n-badge :show="mainStore.isServerRunning" dot type="success" :offset="[-2, 3]">
+              <n-button @click="handleSettings"> Settings </n-button>
+            </n-badge>
             <n-button strong type="primary" @click="handleValidateButtonClick" style="color: white">
               Unlock
             </n-button>
-
-            <n-badge :show="mainStore.isServerRunning" dot type="success" :offset="[-2, 3]">
-              <n-button tertiary @click="handleSettings"> Settings </n-button>
-            </n-badge>
           </n-space>
         </n-form>
       </n-card>

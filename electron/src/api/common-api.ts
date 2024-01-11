@@ -15,9 +15,10 @@ ipcMain.handle('open-file-dialog', async (event, config) => {
 // 打开系统的文件保存窗口
 ipcMain.handle('open-save-dialog', async (event, config) => {
   // get save filename
-  const {defaultPath = ''} = config
+  const {filters = [], defaultPath = ''} = config
   return await dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
     defaultPath,
+    filters,
   })
 })
 

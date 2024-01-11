@@ -74,6 +74,31 @@ export class KdbxHelper {
     // console.log(db)
   }
 
+  // 创建数据库
+  async createDatabase(options: KdbxOpenOptions) {
+    const {dbPath, password, keyPath} = options || {}
+    if (!dbPath) {
+      throw new Error('[db] dbPath is required!')
+    }
+    let keyFileArrayBuffer
+    if (keyPath) {
+      keyFileArrayBuffer = await readFileAsArrayBuffer(keyPath)
+    }
+
+    const credentials = new kdbxweb.Credentials(
+      kdbxweb.ProtectedValue.fromString(password),
+      keyFileArrayBuffer
+    )
+
+    const db = kdbxweb.Kdbx.create(credentials, 'My new db')
+    // TODO: KDBX4: Error invoking remote method 'create-database': KdbxError: Error NotImplemented: argon2 not implemented
+    // downgrade to KDBX3
+    db.setVersion(3)
+    const buffer = await db.save()
+    await saveFileFromArrayBuffer(dbPath, buffer)
+    console.log('[db] create success', dbPath)
+  }
+
   // 关闭数据库
   close() {
     console.log('[db] closing database...')
