@@ -224,10 +224,7 @@ export default defineComponent({
       v-model:visible="isShowHistoryDialog"
     />
     <n-layout-content>
-      <n-card
-        class="card-wrap"
-        :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database (KDBX4)`"
-      >
+      <n-card class="card-wrap" :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database`">
         <template #header-extra>
           <n-space size="small">
             <n-button
