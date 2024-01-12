@@ -1,4 +1,11 @@
 type DbInfo = {
+  header: {
+    compression: number
+    crsAlgorithm: number
+    endPos: number
+    versionMajor: number
+    versionMinor: number
+  }
   dbPath: string
   meta: {
     name: string

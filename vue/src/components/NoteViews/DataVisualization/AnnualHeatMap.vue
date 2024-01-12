@@ -43,22 +43,19 @@ export default defineComponent({
       let chart = echarts.init(echartsElRef.value)
       // 把配置和数据放这里
       chart.setOption({
-        title: {
-          top: 5,
-          left: 'left', //'center',
-          text: '',
-        },
         toolbox: {
           show: true,
           feature: {
             saveAsImage: {
               show: true,
             },
+            restore: {},
+            // dataView: {},
           },
         },
         visualMap: {
           min: 0,
-          // max: 5,
+          max: 5,
           inRange: {
             // color: generateColorShades(settingsStore.themeColor),
             color: ['#ebedf0', '#c6e48b', '#7bc96f', '#239a3b', '#196027'],
@@ -66,8 +63,8 @@ export default defineComponent({
           calculable: true,
           orient: 'horizontal',
           left: 'center',
-          top: 'top',
-          show: false,
+          top: 0,
+          // show: false,
         },
         tooltip: {
           formatter(params) {
@@ -114,6 +111,11 @@ export default defineComponent({
       // 单独更新 legend 值会导致数据更新异常，所以要获取原始值后重新设置
       const option = echartsInstance.value.getOption()
       // console.log(option)
+      option.title = {
+        top: 5,
+        left: 'left',
+        text: 'Heatmap of year2',
+      }
       option.calendar = []
       option.series = []
       let height = 0
@@ -121,7 +123,7 @@ export default defineComponent({
       const map = calendarData.value
       let index = 0
       for (const year in map) {
-        height = 30 + index * 160
+        height = 90 + index * 160
         const flatList = flattenObject(map[year])
         // console.log(year, flatList)
         option.calendar.push({
@@ -158,7 +160,7 @@ export default defineComponent({
             visualMapMax = dayCountMap[day].count
           }
         })
-        option.visualMap[0].max = visualMapMax > 5 ? 5 : visualMapMax
+        // option.visualMap[0].max = visualMapMax > 5 ? 5 : visualMapMax
         // console.log(dayCountMap)
 
         const seriesData: any[] = []
@@ -204,6 +206,17 @@ export default defineComponent({
         })
 
         index++
+      }
+
+      // set option title like 2023 - 2024
+      if (option.calendar.length > 1) {
+        option.title.text = `${option.calendar[0].range} - ${
+          option.calendar[option.calendar.length - 1].range
+        }`
+      } else if (option.calendar.length > 0) {
+        option.title.text = option.calendar[0].range
+      } else {
+        option.title.text = 'No data'
       }
 
       // 传入true强制重新渲染

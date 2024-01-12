@@ -25,6 +25,7 @@ export const useKdbxOptions = (mVisible) => {
       children: [
         {
           label: 'Database Info',
+          subtitle: `KDBX Version: ${keeStore.dbInfo.header.versionMajor}`,
           key: 'info',
           actionRender: h(
             NButton,

@@ -29,6 +29,7 @@ export interface KdbxOpenOptions {
   dbPath: string
   password: string
   keyPath: string
+  name?: string
 }
 
 export class KdbxHelper {
@@ -79,7 +80,7 @@ export class KdbxHelper {
 
   // 创建数据库
   async createDatabase(options: KdbxOpenOptions) {
-    const {dbPath, password, keyPath} = options || {}
+    const {dbPath, password, keyPath, name} = options || {}
     if (!dbPath) {
       throw new Error('[db] dbPath is required!')
     }
@@ -93,7 +94,7 @@ export class KdbxHelper {
       keyFileArrayBuffer
     )
 
-    const db = kdbxweb.Kdbx.create(credentials, 'My new db')
+    const db = kdbxweb.Kdbx.create(credentials, name || 'My new db')
     // if KDBX4: Error invoking remote method 'create-database': KdbxError: Error NotImplemented: argon2 not implemented
     // downgrade to KDBX3
     // db.setVersion(3)

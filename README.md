@@ -14,7 +14,7 @@ Open a kdbx database:
 
 ![screenshot](./electron/test/screenshot1.jpg)
 
-Tree view + list view:
+Tree view + list view (dark mode):
 
 ![screenshot](./electron/test/screenshot2.jpg)
 
@@ -22,9 +22,21 @@ Calendar view:
 
 ![screenshot](./electron/test/screenshot4.jpg)
 
-Editing view:
+Editing view (HyperMD):
 
 ![screenshot](./electron/test/screenshot3.jpg)
+
+Data Visualization (echarts):
+
+![screenshot](./electron/test/screenshot5.jpg)
+
+Full customizable settings:
+
+![screenshot](./electron/test/screenshot6.jpg)
+
+Running in browser (safe & secure):
+
+![screenshot](./electron/test/screenshot7.jpg)
 
 ## Feats · 功能
 
