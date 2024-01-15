@@ -18,6 +18,7 @@ import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
 import {useMainStore} from '@/store/main'
 import {useHistory} from '@/views/Home/use-history'
 import {createCredentialKey, createDatabase} from '@/api/keepass'
+import moment from 'moment/moment'
 
 interface ModelType {
   dbPath: string | null
@@ -77,6 +78,7 @@ export default defineComponent({
         dbPath: modelRef.value.dbPath,
         password: modelRef.value.password,
         keyPath: modelRef.value.keyPath,
+        name: `New Database`,
       })
       window.$message.success('Database created: ' + modelRef.value.dbPath)
       isCreateMode.value = false
@@ -115,8 +117,9 @@ export default defineComponent({
 
     // 选择要创建的文件
     const handleChooseCreateFile = async (type) => {
+      const newFilename = moment().format('YYYY-MM-DD')
       const {filePath} = await kService.electronOpenSaveDialog({
-        defaultPath: type === 'dbPath' ? 'new.kdbx' : 'new.key',
+        defaultPath: type === 'dbPath' ? `${newFilename}.kdbx` : `${newFilename}.key`,
         filters: [
           type === 'dbPath'
             ? {
@@ -221,10 +224,7 @@ export default defineComponent({
       v-model:visible="isShowHistoryDialog"
     />
     <n-layout-content>
-      <n-card
-        class="card-wrap"
-        :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database (KDBX4)`"
-      >
+      <n-card class="card-wrap" :title="`${isCreateMode ? 'Create' : 'Open'} Kdbx Database`">
         <template #header-extra>
           <n-space size="small">
             <n-button

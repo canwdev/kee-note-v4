@@ -17,6 +17,7 @@ import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {useKeeStore} from '@/store/kee-store'
 import {useWebui} from '@/components/Settings/use-webui'
 import {useKdbxOptions} from '@/components/Settings/use-kdbx-options'
+import {formatSiteTitle} from '@/router'
 
 export default defineComponent({
   name: 'GlobalSettings',
@@ -147,6 +148,28 @@ export default defineComponent({
           label: 'Calendar',
           key: 'calendar',
           children: calendarSettings,
+        },
+        {
+          label: 'About',
+          key: 'about',
+          children: [
+            {
+              label: formatSiteTitle(),
+              subtitle: 'https://github.com/canwdev/kee-note-v4',
+              key: 'github',
+              actionRender: h(
+                'a',
+                {
+                  href: 'https://github.com/canwdev/kee-note-v4',
+                  target: '_blank',
+                  rel: 'nofollow noopener',
+                },
+                {
+                  default: () => 'Github',
+                }
+              ),
+            },
+          ],
         },
       ].filter(Boolean)
     })
