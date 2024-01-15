@@ -153,6 +153,34 @@ export class KdbxHelper {
     console.log('[db] key file created', keyPath)
   }
 
+  // 维护数据库
+  async maintenanceDatabase(params: any = {}) {
+    if (!this.db) {
+      throw new Error('[db] instance is not exist')
+    }
+
+    const {cleanup = false, upgrade = false, setVersion = null} = params
+    if (upgrade) {
+      console.log('[db] maintenance: upgrade to latest')
+      // upgrade the db to latest version (currently KDBX4)
+      this.db.upgrade()
+    } else if (setVersion) {
+      console.log(`[db] maintenance: setVersion to ${setVersion}`)
+      // downgrade to KDBX3 (setVersion=3)
+      this.db.setVersion(setVersion)
+    }
+    if (cleanup) {
+      console.log(`[db] maintenance: cleanup`)
+      this.db.cleanup({
+        historyRules: true,
+        customIcons: true,
+        binaries: true,
+      })
+    }
+    await this.save()
+    console.log('[db] maintenance: save success')
+  }
+
   async save() {
     if (!this.db) {
       throw new Error('[db] instance is not exist')

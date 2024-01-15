@@ -12,6 +12,9 @@ export const changeCredentials = (params?: any) => {
 export const createCredentialKey = (params?: any) => {
   return service.post('create-credential-key', params)
 }
+export const maintenanceDatabase = (params?: any) => {
+  return service.post('maintenance-database', params)
+}
 export const createDatabase = (params?: any) => {
   return service.post('create-database', params)
 }

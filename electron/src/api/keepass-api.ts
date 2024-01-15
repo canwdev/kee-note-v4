@@ -15,6 +15,7 @@ const apiList = [
   {key: 'close-database', handler: () => kdbxHelper.close()},
   {key: 'change-credentials', handler: (params) => kdbxHelper.changeCredentials(params)},
   {key: 'create-credential-key', handler: (params) => kdbxHelper.createCredentialKey(params)},
+  {key: 'maintenance-database', handler: (params) => kdbxHelper.maintenanceDatabase(params)},
   {key: 'create-database', handler: (params) => kdbxHelper.createDatabase(params)},
   {key: 'save-database', handler: () => kdbxHelper.save()},
   {key: 'check-is-open', handler: () => kdbxHelper.isOpen},
