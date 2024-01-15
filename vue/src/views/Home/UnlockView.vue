@@ -17,7 +17,7 @@ import {
 import HistoryDialog from '@/components/NoteViews/HistoryDialog.vue'
 import {useMainStore} from '@/store/main'
 import {useHistory} from '@/views/Home/use-history'
-import {createCredentialKey, createDatabase} from '@/api/keepass'
+import {checkDatabaseIsOpen, createCredentialKey, createDatabase} from '@/api/keepass'
 import moment from 'moment/moment'
 
 interface ModelType {
@@ -88,7 +88,7 @@ export default defineComponent({
     }
 
     const checkProfile = async (query = {}) => {
-      if (!(await kService.checkIsOpen())) {
+      if (!(await kService.checkDatabaseIsOpen())) {
         return
       }
 

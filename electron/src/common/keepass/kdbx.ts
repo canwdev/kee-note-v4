@@ -524,6 +524,7 @@ export class KdbxHelper {
     const meta: any = (this.db && this.db.meta) || {}
     const header: any = (this.db && this.db.header) || {}
     return {
+      isChanged: this.isChanged
       header: {
         compression: header.compression,
         crsAlgorithm: header.crsAlgorithm,

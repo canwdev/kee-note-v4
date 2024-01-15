@@ -21,10 +21,10 @@ export const createDatabase = (params?: any) => {
 export const saveDatabase = () => {
   return service.post('save-database')
 }
-export const checkIsOpen = () => {
+export const checkDatabaseIsOpen = () => {
   return service.post('check-is-open')
 }
-export const checkIsChanged = () => {
+export const checkDatabaseIsChanged = () => {
   return service.post('check-is-changed')
 }
 export const getMeta = () => {

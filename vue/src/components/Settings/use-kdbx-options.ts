@@ -1,4 +1,4 @@
-import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {NButton, NSpace} from 'naive-ui'
 import {useKeeStore} from '@/store/kee-store'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
@@ -11,10 +11,12 @@ import {
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import {kService} from '@/api'
+import {useSettingsStore} from '@/store/settings'
 
 const KDBX_LATEST_VERSION = 4
 
 export const useKdbxOptions = (mVisible) => {
+  const settingsStore = useSettingsStore()
   const keeStore = useKeeStore()
 
   const kdbxConfigOption = computed((): StOptionItem => {
@@ -32,6 +34,13 @@ export const useKdbxOptions = (mVisible) => {
       label: 'Kdbx Config',
       key: 'kdbx',
       children: [
+        // {
+        //   label: 'Auto Save',
+        //   subtitle: `Automatically write to local database`,
+        //   key: 'enableAutoSave',
+        //   store: settingsStore,
+        //   type: StOptionType.SWITCH,
+        // },
         {
           label: 'Database Info',
           subtitle: `KDBX Version: ${dbVersion}`,

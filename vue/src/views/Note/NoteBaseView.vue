@@ -21,9 +21,9 @@ import {
 } from '@vicons/fluent'
 import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
-import {formatSiteTitle} from '@/router'
 import {useKeeNoteGroupManage} from '@/hooks/use-keenote'
 import DetailView from '@/views/Note/DetailView.vue'
+import {checkDatabaseIsOpen} from '@/api/keepass'
 
 export default defineComponent({
   name: 'NoteLayout',
@@ -166,7 +166,7 @@ export default defineComponent({
     } = useKeeNoteGroupManage(editingNode)
 
     onActivated(async () => {
-      keeStore.isDbOpened = await kService.checkIsOpen()
+      keeStore.isDbOpened = await kService.checkDatabaseIsOpen()
       if (keeStore.isDbOpened) {
         await getGroupTree()
       } else {
@@ -240,7 +240,6 @@ export default defineComponent({
     }
 
     return {
-      formatSiteTitle,
       mainStore,
       settingsStore,
       keeStore,
@@ -285,9 +284,7 @@ export default defineComponent({
             <n-icon class="logo-icon" size="20">
               <LockClosed20Filled />
             </n-icon>
-            <span class="note-title">
-              {{ formatSiteTitle() }}
-            </span>
+            <span class="note-title"> KeeNote </span>
           </n-space>
 
           <n-space size="small" align="center">

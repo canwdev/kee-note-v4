@@ -23,6 +23,9 @@ interface IStore {
   calendarShowTitle: boolean
 
   isSidebarCollapsed: boolean
+
+  // 自动保存
+  enableAutoSave: boolean
 }
 
 export const useSettingsStore = defineStore('settingsStore', {
@@ -44,6 +47,7 @@ export const useSettingsStore = defineStore('settingsStore', {
       calendarShowTitle: true,
 
       isSidebarCollapsed: false,
+      enableAutoSave: true,
     }
   },
   actions: {},
