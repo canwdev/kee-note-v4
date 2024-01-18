@@ -21,4 +21,10 @@ export default {
       return Promise.reject(error)
     }
   },
+  on(channel, listener) {
+    window.$electronAPI.on(channel, listener)
+  },
+  off(channel, listener) {
+    window.$electronAPI.off(channel, listener)
+  },
 }

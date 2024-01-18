@@ -45,3 +45,8 @@ ipcMain.handle('open-link', async (event, config) => {
   const {url = ''} = config
   shell.openExternal(url)
 })
+
+// 关闭当前窗口
+ipcMain.handle('close-window', async (event, config) => {
+  BrowserWindow.getFocusedWindow().close()
+})

@@ -137,3 +137,7 @@ export const electronToggleServer = (params: any) => {
 export const electronOpenLink = (params: any) => {
   return service.post('open-link', params)
 }
+
+export const electronCloseWindow = () => {
+  return service.post('close-window')
+}

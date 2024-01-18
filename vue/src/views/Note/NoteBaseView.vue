@@ -22,7 +22,7 @@ import {
 } from '@vicons/fluent'
 import {importEntryListJson} from '@/utils/export-import'
 import {useSettingsStore} from '@/store/settings'
-import {useKeeNoteGroupManage} from '@/hooks/use-keenote'
+import {useKeeNoteGroupManage, useKeeNoteSaveClose} from '@/hooks/use-keenote'
 import DetailView from '@/views/Note/DetailView.vue'
 import {checkDatabaseIsOpen} from '@/api/keepass'
 
@@ -144,10 +144,12 @@ export default defineComponent({
             handleToggleLock()
           }
         } else if (key === 's') {
-          event.preventDefault()
-          if (keeStore.isNotSave) {
-            // TODO: 处理快速重复按键，避免重复请求
-            handleManualSave()
+          if (!keeStore.detailUuid) {
+            event.preventDefault()
+            if (keeStore.isNotSave) {
+              // TODO: 处理快速重复按键，避免重复请求
+              commonSaveDatabase()
+            }
           }
         }
       }
@@ -171,8 +173,9 @@ export default defineComponent({
       handleSelectIcon,
       handleCloseDatabase,
       handleToggleLock,
-      handleManualSave,
     } = useKeeNoteGroupManage(editingNode)
+
+    const {commonSaveDatabase} = useKeeNoteSaveClose()
 
     onActivated(async () => {
       keeStore.isDbOpened = await kService.checkDatabaseIsOpen()
@@ -278,7 +281,7 @@ export default defineComponent({
       handleSelectIcon,
       handleLogout,
       handleToggleLock,
-      handleManualSave,
+      commonSaveDatabase,
       ...contextMenuEtc,
     }
   },
@@ -302,7 +305,8 @@ export default defineComponent({
               v-if="keeStore.isNotSave"
               type="primary"
               size="small"
-              @click="handleManualSave"
+              @click="commonSaveDatabase"
+              title="Save (ctrl+s)"
             >
               <n-icon size="20">
                 <Save20Regular />

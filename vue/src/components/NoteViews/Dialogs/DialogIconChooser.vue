@@ -45,10 +45,10 @@ export default defineComponent({
     preset="dialog"
     title="Choose Icon"
   >
-    <n-grid :x-gap="4" :y-gap="4" :cols="5">
+    <n-grid :y-gap="5" :cols="5">
       <n-grid-item v-for="(item, index) in keepassIcons" :key="index" style="text-align: center">
-        <n-button @click="onSelectIcon(index)">
-          <IconDisplay :icon="Number(index)" />
+        <n-button size="large" quaternary @click="onSelectIcon(index)">
+          <IconDisplay size="32" :icon="Number(index)" />
         </n-button>
       </n-grid-item>
     </n-grid>

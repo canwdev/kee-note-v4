@@ -21,6 +21,8 @@ import AttachmentBox from '@/components/NoteViews/Detail/AttachmentBox.vue'
 import {getEntryItemUpdateParams} from '@/utils/export-import'
 import {useEditorSettingsStore} from '@/store/editor'
 import {useKeeStore} from '@/store/kee-store'
+import {useSettingsStore} from '@/store/settings'
+import {useKeeNoteSaveClose} from '@/hooks/use-keenote'
 
 export default defineComponent({
   name: 'DetailView',
@@ -43,8 +45,11 @@ export default defineComponent({
     const entryDetailTimes = reactive([0, 0])
 
     const keeStore = useKeeStore()
+    const settingsStore = useSettingsStore()
 
     const editorSettingsStore = useEditorSettingsStore()
+
+    const {commonSaveDatabase} = useKeeNoteSaveClose()
 
     onMounted(() => {
       getEntryDetail(true)
@@ -110,18 +115,50 @@ export default defineComponent({
       if (!entryDetail.value) {
         return
       }
+      if (keeStore.isChanged) {
+        entryDetail.value.creationTime = new Date(entryDetailTimes[0])
 
-      entryDetail.value.creationTime = new Date(entryDetailTimes[0])
+        const params = getEntryItemUpdateParams({
+          uuid: entryDetail.value.uuid,
+          entryDetail: entryDetail.value,
+          isSetModTime: false,
+        })
 
-      const params = getEntryItemUpdateParams({
-        uuid: entryDetail.value.uuid,
-        entryDetail: entryDetail.value,
-        isSetModTime: false,
-      })
+        await kService.updateEntry(params)
+        await syncAndSave()
 
-      await kService.updateEntry(params)
-      await syncAndSave()
+        return
+      }
+      if (keeStore.isNotSave) {
+        await commonSaveDatabase()
+        return
+      }
     }
+
+    // 处理不同保存条件下的按钮样式
+    const saveBtnInfo = computed(() => {
+      if (settingsStore.enableAutoSave || keeStore.isChanged) {
+        return {
+          quaternary: true,
+          disabled: !keeStore.isChanged,
+          label: settingsStore.enableAutoSave ? 'Save' : 'Done',
+        }
+      }
+      if (keeStore.isNotSave) {
+        return {
+          secondary: true,
+          strong: true,
+          type: 'primary',
+          disabled: false,
+          label: 'Save',
+        }
+      }
+      return {
+        quaternary: true,
+        disabled: true,
+        label: 'Done',
+      }
+    })
 
     const isBackRefresh = ref(false)
     const syncAndSave = async () => {
@@ -190,11 +227,13 @@ export default defineComponent({
 
     return {
       keeStore,
+      settingsStore,
       editorSettingsStore,
       entryDetail,
       handleBack,
       entryDetailTimes,
       handleSave,
+      commonSaveDatabase,
       keepassIcons,
       complexEditorRef,
       showEditorSettings() {
@@ -205,6 +244,7 @@ export default defineComponent({
       isShowPreviewModal,
       titleInputRef,
       syncAndSave,
+      saveBtnInfo,
     }
   },
 })
@@ -237,13 +277,34 @@ export default defineComponent({
             </n-dropdown>
           </div>
 
-          <n-button quaternary :disabled="!keeStore.isChanged" @click="handleSave">
-            <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;Save
-          </n-button>
+          <n-space size="small" align="center">
+            <!--            保存当前编辑的内容-->
+            <n-button
+              :type="saveBtnInfo.type"
+              :secondary="saveBtnInfo.secondary"
+              :quaternary="saveBtnInfo.quaternary"
+              :strong="saveBtnInfo.strong"
+              :disabled="saveBtnInfo.disabled"
+              @click="handleSave"
+            >
+              <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;{{ saveBtnInfo.label }}
+            </n-button>
+
+            <!--            保存数据库-->
+            <!--            <n-button-->
+            <!--              strong-->
+            <!--              secondary-->
+            <!--              v-if="!settingsStore.enableAutoSave && keeStore.isNotSave && !keeStore.isChanged"-->
+            <!--              type="primary"-->
+            <!--              @click="commonSaveDatabase"-->
+            <!--            >-->
+            <!--              <n-icon size="20"> <Save20Regular /></n-icon>&nbsp;Save-->
+            <!--            </n-button>-->
+          </n-space>
         </n-space>
       </n-layout-header>
 
-      <div v-if="entryDetail" class="detail-card-wrap">
+      <div v-if="entryDetail && 'fieldsV2' in entryDetail" class="detail-card-wrap">
         <div class="detail-card">
           <n-space vertical class="detail-infos">
             <n-space justify="space-between">

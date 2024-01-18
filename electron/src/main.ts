@@ -44,6 +44,7 @@ function createWindow() {
     electronStore.set('winBounds', mainWindow.getBounds())
     electronStore.set('maximized', mainWindow.isMaximized())
     if (kdbxHelper.isNotSave) {
+      console.log('[IPC_APP_CLOSING] not allow close')
       e.preventDefault() // Prevents the window from closing
       mainWindow.webContents.send('IPC_APP_CLOSING')
     }

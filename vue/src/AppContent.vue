@@ -6,6 +6,9 @@ import {kService} from '@/api'
 import {useSettingsStore} from '@/store/settings'
 import {useKeeStore} from '@/store/kee-store'
 import {useBeforeUnload, useUnSavedChanges} from '@/hooks/use-changed'
+import {isElectron} from '@/utils/backend'
+import electronService from '@/utils/backend/electron'
+import {useKeeNoteSaveClose} from '@/hooks/use-keenote'
 
 export default defineComponent({
   components: {
@@ -22,13 +25,27 @@ export default defineComponent({
     window.$dialog = useDialog()
     window.$loadingBar = useLoadingBar()
 
+    const {commonCloseDatabase} = useKeeNoteSaveClose()
+
+    const handleClose = () => {
+      commonCloseDatabase({isCloseApp: true})
+    }
+
     onMounted(() => {
       globalEventBus.on(GlobalEvents.SHOW_SETTINGS, handleShowSettings)
       globalEventBus.on(GlobalEvents.SAVE_DATABASE, saveAction)
+
+      if (isElectron) {
+        electronService.on('IPC_APP_CLOSING', handleClose)
+      }
     })
     onBeforeUnmount(() => {
       globalEventBus.off(GlobalEvents.SHOW_SETTINGS, handleShowSettings)
       globalEventBus.off(GlobalEvents.SAVE_DATABASE, saveAction)
+
+      if (isElectron) {
+        electronService.off('IPC_APP_CLOSING', handleClose)
+      }
     })
 
     const settingsVisible = ref(false)

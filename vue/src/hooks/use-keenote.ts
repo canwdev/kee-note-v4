@@ -8,7 +8,8 @@ import {useSettingsStore} from '@/store/settings'
 import {isElectron} from '@/utils/backend'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {formatDate} from '@/utils'
-import {TreeDropInfo} from 'naive-ui'
+import {NButton, NSpace, TreeDropInfo} from 'naive-ui'
+import {electronCloseWindow} from '@/api/keepass'
 
 export interface CalendarData {
   // year
@@ -243,22 +244,14 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     isShowChooseIconModal.value = false
   }
 
+  const {commonSaveDatabase, commonCloseDatabase} = useKeeNoteSaveClose()
+
   const handleCloseDatabase = async () => {
-    await kService.closeDatabase()
-    settingsStore.lastOpenedHistoryItem = null
-    keeStore.isDbOpened = false
-    keeStore.detailUuid = null
-    keeStore.dbInfo = null
-    keeStore.isChanged = false
-    window.$message.success('Database successfully closed')
-
-    groupTree.value = []
-
-    if (isElectron) {
-      await router.replace({
-        name: 'HomeView',
-      })
-    }
+    await commonCloseDatabase({
+      cleanupFn: () => {
+        groupTree.value = []
+      },
+    })
   }
 
   // 切换数据库锁定
@@ -267,17 +260,6 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
       await handleCloseDatabase()
     } else {
       await showOpenDbModal()
-    }
-  }
-
-  // 手动保存
-  const handleManualSave = async () => {
-    if (keeStore.isDbOpened) {
-      await kService.saveDatabase()
-      keeStore.isNotSave = false
-      console.info('Database saved!')
-    } else {
-      console.error('database is not opened')
     }
   }
 
@@ -311,7 +293,6 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     handleCloseDatabase,
     showOpenDbModal,
     handleToggleLock,
-    handleManualSave,
   }
 }
 
@@ -389,5 +370,121 @@ export const useKeeNoteEntryList = (options?) => {
     getEntryList,
     keeStore,
     groupUuid,
+  }
+}
+
+export const useKeeNoteSaveClose = () => {
+  const keeStore = useKeeStore()
+  const settingsStore = useSettingsStore()
+  const router = useRouter()
+
+  // 手动保存
+  const commonSaveDatabase = async () => {
+    if (keeStore.isDbOpened) {
+      await kService.saveDatabase()
+      keeStore.isNotSave = false
+      console.info('Database saved!')
+    } else {
+      console.error('database is not opened')
+    }
+  }
+
+  const dialogRef = ref()
+
+  onBeforeUnmount(() => {
+    if (dialogRef.value) {
+      dialogRef.value.destroy()
+      dialogRef.value = null
+    }
+  })
+
+  // 关闭数据库
+  const commonCloseDatabase = async (options: any = {}) => {
+    const {cleanupFn, isCloseApp = false} = options
+    console.log(options)
+    const doClose = async () => {
+      await kService.closeDatabase()
+      settingsStore.lastOpenedHistoryItem = null
+      keeStore.isDbOpened = false
+      keeStore.detailUuid = null
+      keeStore.dbInfo = null
+      keeStore.isChanged = false
+      keeStore.isNotSave = false
+      window.$message.success('Database successfully closed')
+
+      if (typeof cleanupFn === 'function') {
+        cleanupFn()
+      }
+
+      if (isCloseApp) {
+        electronCloseWindow()
+      } else if (isElectron) {
+        await router.replace({
+          name: 'HomeView',
+        })
+      }
+    }
+
+    if (keeStore.isNotSave) {
+      // 防止重复弹窗
+      if (dialogRef.value) {
+        // dialogRef.value?.destroy()
+        return
+      }
+      dialogRef.value = window.$dialog.warning({
+        title: `Data not saved!`,
+        content: `Do you want to close without saving?`,
+        positiveText: 'OK',
+        negativeText: 'Cancel',
+        onPositiveClick: async () => {
+          await doClose()
+        },
+        onAfterLeave: () => {
+          dialogRef.value = null
+        },
+
+        action: () =>
+          h(NSpace, {size: 'small'}, () => [
+            h(
+              NButton,
+              {
+                type: 'primary',
+                onClick: async () => {
+                  await commonSaveDatabase()
+                  await doClose()
+                  dialogRef.value?.destroy()
+                },
+              },
+              () => 'Save and Close'
+            ),
+            h(
+              NButton,
+              {
+                onClick: async () => {
+                  await doClose()
+                  dialogRef.value?.destroy()
+                },
+              },
+              () => 'Close Without Save'
+            ),
+            h(
+              NButton,
+              {
+                onClick: () => {
+                  dialogRef.value?.destroy()
+                },
+              },
+              () => 'Cancel'
+            ),
+          ]),
+      })
+      return
+    }
+    await doClose()
+  }
+
+  return {
+    commonSaveDatabase,
+    commonCloseDatabase,
   }
 }
