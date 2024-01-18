@@ -24,8 +24,8 @@ export const saveDatabase = () => {
 export const checkDatabaseIsOpen = () => {
   return service.post('check-is-open')
 }
-export const checkDatabaseIsChanged = () => {
-  return service.post('check-is-changed')
+export const checkDatabaseIsNotSave = () => {
+  return service.post('check-is-not-save')
 }
 export const getMeta = () => {
   return service.post('get-meta')

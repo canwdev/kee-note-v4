@@ -1,4 +1,7 @@
+import {checkDatabaseIsNotSave} from '@/api/keepass'
+
 type DbInfo = {
+  isNotSave: boolean
   header: {
     compression: number
     crsAlgorithm: number
@@ -17,7 +20,11 @@ type DbInfo = {
 }
 
 type KeeStore = {
+  // 数据库是否开启（服务端）
   isDbOpened: boolean
+  // 数据库是否修改并且没有保存（服务端）
+  isNotSave: boolean
+  // 数据库信息
   dbInfo: DbInfo | null
   // if editing, set detailUuid
   detailUuid: string | null
@@ -29,6 +36,7 @@ export const useKeeStore = defineStore('keeStore', {
   state: (): KeeStore => {
     return {
       isDbOpened: false,
+      isNotSave: false,
       dbInfo: null,
       detailUuid: null,
       isChanged: false,

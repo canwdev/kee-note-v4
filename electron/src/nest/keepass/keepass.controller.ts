@@ -56,9 +56,9 @@ export class KeepassController {
     return this.kdbxHelper.isOpen
   }
 
-  @Post('check-is-changed')
+  @Post('check-is-not-save')
   getIsChanged() {
-    return this.kdbxHelper.isChanged
+    return this.kdbxHelper.isNotSave
   }
 
   @Post('get-meta')

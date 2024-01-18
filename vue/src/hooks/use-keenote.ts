@@ -84,8 +84,8 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
   })
 
   const getGroupTree = async () => {
-    const info = await kService.getMeta()
-    keeStore.dbInfo = info
+    keeStore.dbInfo = await kService.getMeta()
+    keeStore.isNotSave = keeStore.dbInfo?.isNotSave || false
 
     groupTree.value = await kService.getGroupTree()
 
@@ -115,6 +115,10 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
       allowEmpty: true,
     })
     await handleOpenDatabase(password)
+  }
+
+  const checkIsNotSave = async () => {
+    const val = await kService.checkDatabaseIsNotSave()
   }
 
   const handleOpenDatabase = async (password?) => {
@@ -266,6 +270,17 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     }
   }
 
+  // 手动保存
+  const handleManualSave = async () => {
+    if (keeStore.isDbOpened) {
+      await kService.saveDatabase()
+      keeStore.isNotSave = false
+      console.info('Database saved!')
+    } else {
+      console.error('database is not opened')
+    }
+  }
+
   onMounted(async () => {
     globalEventBus.on(GlobalEvents.REFRESH_GROUP_TREE, getGroupTree)
     globalEventBus.on(GlobalEvents.CLOSE_DATABASE, handleCloseDatabase)
@@ -296,6 +311,7 @@ export const useKeeNoteGroupManage = (editingNode: Ref<GroupItem | null>) => {
     handleCloseDatabase,
     showOpenDbModal,
     handleToggleLock,
+    handleManualSave,
   }
 }
 

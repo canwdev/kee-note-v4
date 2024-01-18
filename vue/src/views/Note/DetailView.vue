@@ -238,8 +238,8 @@ export default defineComponent({
           </div>
 
           <n-button quaternary :disabled="!keeStore.isChanged" @click="handleSave">
-            <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;Save</n-button
-          >
+            <n-icon size="18"> <Save20Regular /> </n-icon>&nbsp;Save
+          </n-button>
         </n-space>
       </n-layout-header>
 

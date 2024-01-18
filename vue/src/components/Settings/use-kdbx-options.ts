@@ -34,13 +34,13 @@ export const useKdbxOptions = (mVisible) => {
       label: 'Kdbx Config',
       key: 'kdbx',
       children: [
-        // {
-        //   label: 'Auto Save',
-        //   subtitle: `Automatically write to local database`,
-        //   key: 'enableAutoSave',
-        //   store: settingsStore,
-        //   type: StOptionType.SWITCH,
-        // },
+        {
+          label: 'Auto Save',
+          subtitle: `Automatically write to local database file`,
+          key: 'enableAutoSave',
+          store: settingsStore,
+          type: StOptionType.SWITCH,
+        },
         {
           label: 'Database Info',
           subtitle: `KDBX Version: ${dbVersion}`,

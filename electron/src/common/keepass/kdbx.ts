@@ -39,8 +39,8 @@ export class KdbxHelper {
   dbPath: null | string
   // 由于 kdbxweb 不能直接查询 entry，需要保存打开的 entry map
   private curEntryMap: object
-  // 数据库是否修改
-  isChanged: boolean
+  // 数据库是否修改并且没有保存
+  isNotSave: boolean
 
   constructor() {
     this.resetInstance()
@@ -50,7 +50,7 @@ export class KdbxHelper {
     this.db = null
     this.dbPath = null
     this.curEntryMap = {}
-    this.isChanged = false
+    this.isNotSave = false
   }
 
   // 打开数据库
@@ -189,7 +189,7 @@ export class KdbxHelper {
     console.log('[db] saving database...')
     const buffer = await this.db.save()
     await saveFileFromArrayBuffer(this.dbPath, buffer)
-    this.isChanged = false
+    this.isNotSave = false
     console.log('[db] database saved')
   }
 
@@ -353,7 +353,7 @@ export class KdbxHelper {
     if (isAutoUpdateTime) {
       entry.times.update()
     }
-    this.isChanged = true
+    this.isNotSave = true
     return new EntryItem(entry, true)
   }
 
@@ -367,7 +367,7 @@ export class KdbxHelper {
       const {path, value} = obj
       setValDot(group, path, value)
     })
-    this.isChanged = true
+    this.isNotSave = true
     return new GroupItem(group)
   }
 
@@ -407,7 +407,7 @@ export class KdbxHelper {
       entry.times.lastModTime = new Date(lastModTime)
     }
 
-    this.isChanged = true
+    this.isNotSave = true
 
     this.curEntryMap[entry.uuid.id] = entry
 
@@ -423,7 +423,7 @@ export class KdbxHelper {
 
     const group = this.db.getGroup(groupUuid)
     const newGroup = this.db.createGroup(group, name)
-    this.isChanged = true
+    this.isNotSave = true
 
     return new GroupItem(newGroup)
   }
@@ -440,7 +440,7 @@ export class KdbxHelper {
     } else {
       this.db.remove(items)
     }
-    this.isChanged = true
+    this.isNotSave = true
   }
 
   /**
@@ -469,7 +469,7 @@ export class KdbxHelper {
       checkIllegal(items)
       this.db.move(items, target)
     }
-    this.isChanged = true
+    this.isNotSave = true
   }
 
   /**
@@ -524,7 +524,7 @@ export class KdbxHelper {
     const meta: any = (this.db && this.db.meta) || {}
     const header: any = (this.db && this.db.header) || {}
     return {
-      isChanged: this.isChanged
+      isNotSave: this.isNotSave,
       header: {
         compression: header.compression,
         crsAlgorithm: header.crsAlgorithm,

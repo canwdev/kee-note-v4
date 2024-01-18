@@ -15,6 +15,7 @@ import {useMainStore} from '@/store/main'
 import {
   Settings20Filled,
   LockClosed20Filled,
+  Save20Regular,
   Search20Filled,
   LockShield20Regular,
   Key20Regular,
@@ -35,6 +36,7 @@ export default defineComponent({
     Settings20Filled,
     Search20Filled,
     LockClosed20Filled,
+    Save20Regular,
     LockShield20Regular,
     Key20Regular,
   },
@@ -141,6 +143,12 @@ export default defineComponent({
           if (!keeStore.isChanged) {
             handleToggleLock()
           }
+        } else if (key === 's') {
+          event.preventDefault()
+          if (keeStore.isNotSave) {
+            // TODO: 处理快速重复按键，避免重复请求
+            handleManualSave()
+          }
         }
       }
     }
@@ -163,6 +171,7 @@ export default defineComponent({
       handleSelectIcon,
       handleCloseDatabase,
       handleToggleLock,
+      handleManualSave,
     } = useKeeNoteGroupManage(editingNode)
 
     onActivated(async () => {
@@ -269,6 +278,7 @@ export default defineComponent({
       handleSelectIcon,
       handleLogout,
       handleToggleLock,
+      handleManualSave,
       ...contextMenuEtc,
     }
   },
@@ -284,7 +294,20 @@ export default defineComponent({
             <n-icon class="logo-icon" size="20">
               <LockClosed20Filled />
             </n-icon>
-            <span class="note-title"> KeeNote </span>
+            <span class="note-title"> KeeNote {{ keeStore.isNotSave ? '*' : '' }}</span>
+
+            <n-button
+              strong
+              secondary
+              v-if="keeStore.isNotSave"
+              type="primary"
+              size="small"
+              @click="handleManualSave"
+            >
+              <n-icon size="20">
+                <Save20Regular />
+              </n-icon>
+            </n-button>
           </n-space>
 
           <n-space size="small" align="center">
