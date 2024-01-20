@@ -1,24 +1,12 @@
+import moment from 'moment/moment'
+
 export function pad2Num(num: number, len = 2) {
   return num.toString().padStart(len, '0')
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date) {
   if (!date) {
-    return ''
+    return '-'
   }
-  const year = date.getFullYear() + '-'
-  const month = pad2Num(date.getMonth() + 1) + '-'
-  const day = pad2Num(date.getDate())
-  const hours = ' ' + pad2Num(date.getHours()) + ':'
-  const minutes = pad2Num(date.getMinutes())
-  return [year, month, day, hours, minutes].join('')
-}
-
-export const copyToClipboard = (text: string) => {
-  const input = document.createElement('textarea')
-  input.value = text
-  document.body.appendChild(input)
-  input.select()
-  document.execCommand('Copy')
-  document.body.removeChild(input)
+  return moment(date).format('YYYY-MM-DD HH:mm')
 }

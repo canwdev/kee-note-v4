@@ -3,24 +3,51 @@ import {Kdbx} from 'kdbxweb'
 
 import {CalendarData, EntryItem, GroupItem} from './entry'
 
-import {readFileAsArrayBuffer, saveFileFromArrayBuffer, setValDot} from '../utils'
+import {
+  getFieldString,
+  getMapValue,
+  readFileAsArrayBuffer,
+  saveFileFromArrayBuffer,
+  setValDot,
+} from '../utils'
 import {argon2} from './support/argon2/argon2'
+import {KdbxGroup} from 'kdbxweb/dist/types/format/kdbx-group'
+import {KdbxEntry} from 'kdbxweb/dist/types/format/kdbx-entry'
 
 kdbxweb.CryptoEngine.setArgon2Impl(argon2)
 
 /**
  * 递归遍历数据库 groups
- * usage: getGroupTree(db.groups)
+ * usage: traverseGroupTree(db.groups)
  * return: customized group list
  */
-function traverseGroupTree(node, counter = 0): GroupItem[] {
+function traverseGroupTree(groups: KdbxGroup[], counter = 0): GroupItem[] {
   const list = []
-  if (!node || node.length === 0) return list
+  if (!groups || groups.length === 0) return list
 
-  node.forEach((group) => {
+  groups.forEach((group) => {
     const children = group.groups
 
     list.push(new GroupItem(group, traverseGroupTree(children, counter + 1)))
+  })
+  return list
+}
+
+function traverseGroupSearch(
+  groups: KdbxGroup[],
+  searchFn: (entry: KdbxEntry) => boolean
+): KdbxEntry[] {
+  const list: KdbxEntry[] = []
+  if (!groups || groups.length === 0) return list
+
+  groups.forEach((group) => {
+    group.entries.forEach((entry) => {
+      if (searchFn(entry)) {
+        list.push(entry)
+      }
+    })
+
+    traverseGroupTree(group.groups)
   })
   return list
 }
@@ -198,7 +225,7 @@ export class KdbxHelper {
       throw new Error('Database may not be open')
     }
 
-    const group = groupUuid ? this.db.getGroup(groupUuid) : this.db.groups
+    const group = groupUuid ? [this.db.getGroup(groupUuid)] : this.db.groups
 
     return traverseGroupTree(group)
   }
@@ -586,5 +613,29 @@ export class KdbxHelper {
     }
     entry.binaries.set(newFilename, file)
     entry.binaries.delete(filename)
+  }
+
+  async searchDatabase(params) {
+    const {keyword, groupUuid} = params || {}
+
+    let groups = this.db.groups
+    if (groupUuid) {
+      const group = this.db.getGroup(groupUuid)
+      groups = [group]
+    }
+
+    const entries = traverseGroupSearch(groups, (entry) => {
+      const title = getMapValue(entry.fields, 'Title') || ''
+      const notes = getFieldString(entry, 'Notes') || ''
+      return title.indexOf(keyword) !== -1 || notes.indexOf(keyword) !== -1
+    })
+
+    const list = []
+    entries.forEach((entry) => {
+      this.curEntryMap[entry.uuid.id] = entry
+      list.push(new EntryItem(entry))
+    })
+
+    return list
   }
 }

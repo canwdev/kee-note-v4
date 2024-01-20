@@ -25,10 +25,12 @@ import {useSettingsStore} from '@/store/settings'
 import {useKeeNoteGroupManage, useKeeNoteSaveClose} from '@/hooks/use-keenote'
 import DetailView from '@/views/Note/DetailView.vue'
 import {checkDatabaseIsOpen} from '@/api/keepass'
+import DialogSearch from '@/components/NoteViews/DataSearch/DialogSearch.vue'
 
 export default defineComponent({
   name: 'NoteLayout',
   components: {
+    DialogSearch,
     DetailView,
     ListView,
     CalendarView,
@@ -251,6 +253,8 @@ export default defineComponent({
       })
     }
 
+    const isShowSearchDialog = ref(false)
+
     return {
       mainStore,
       settingsStore,
@@ -282,6 +286,7 @@ export default defineComponent({
       handleLogout,
       handleToggleLock,
       commonSaveDatabase,
+      isShowSearchDialog,
       ...contextMenuEtc,
     }
   },
@@ -327,7 +332,7 @@ export default defineComponent({
               </n-icon>
             </n-button>
 
-            <n-button disabled quaternary size="small" title="Search">
+            <n-button quaternary size="small" title="Search" @click="isShowSearchDialog = true">
               <n-icon size="20"> <Search20Filled /> </n-icon>
             </n-button>
 
@@ -410,6 +415,8 @@ export default defineComponent({
   <transition name="fade-scale">
     <DetailView v-if="Boolean(keeStore.detailUuid)" />
   </transition>
+
+  <DialogSearch v-model:visible="isShowSearchDialog" />
 </template>
 
 <style lang="scss" scoped>

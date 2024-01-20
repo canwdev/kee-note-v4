@@ -57,6 +57,7 @@ const apiList = [
     },
   },
   {key: 'rename-attachment', handler: (params) => kdbxHelper.renameAttachment(params)},
+  {key: 'search-database', handler: (params) => kdbxHelper.searchDatabase(params)},
 ]
 
 apiList.forEach(({key, handler}) => {

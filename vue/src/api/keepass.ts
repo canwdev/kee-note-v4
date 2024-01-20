@@ -119,6 +119,9 @@ export const uploadAttachment = async (uuid: string, files: File[]) => {
 export const renameAttachment = (params: any) => {
   return service.post('rename-attachment', params)
 }
+export const searchDatabase = (params: any) => {
+  return service.post('search-database', params)
+}
 
 /* ----- electron common api ----- */
 

@@ -1,6 +1,4 @@
-import {useMainStore} from '@/store/main'
 import {isElectron} from '@/utils/backend'
-import {copyToClipboard} from '@/utils'
 import {electronOpenLink} from '@/api/keepass'
 
 function handleClick(event) {

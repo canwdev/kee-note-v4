@@ -60,7 +60,6 @@ export default defineComponent({
           ...calendarSettings,
           {
             label: 'Set First Day of Week',
-            subtitle: '设置周的第一天',
             key: 'calendarWeekIndex',
             store: settingsStore,
             type: StOptionType.SELECT,

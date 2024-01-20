@@ -47,7 +47,6 @@ export default defineComponent({
 
 <template>
   <n-modal
-    class="global-settings"
     v-model:show="mVisible"
     preset="dialog"
     :icon="dialogIconRender"

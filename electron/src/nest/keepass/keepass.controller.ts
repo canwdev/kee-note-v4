@@ -172,4 +172,9 @@ export class KeepassController {
   renameAttachment(@Body() params) {
     return this.kdbxHelper.renameAttachment(params)
   }
+
+  @Post('search-database')
+  searchDatabase(@Body() params) {
+    return this.kdbxHelper.searchDatabase(params)
+  }
 }

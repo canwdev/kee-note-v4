@@ -1,11 +1,5 @@
 import * as kdbxweb from 'kdbxweb'
-
-function getMapValue(obj, val) {
-  if (obj instanceof Map) {
-    return obj.get(val)
-  }
-  return obj[val]
-}
+import {getFieldString, getMapValue} from '../utils'
 
 export interface GroupItem {
   uuid: string
@@ -61,7 +55,7 @@ export class EntryItem {
       this.fieldsV2 = {}
 
       for (const key of entry.fields.keys()) {
-        this.fieldsV2[key] = this._getFieldString(entry, key)
+        this.fieldsV2[key] = getFieldString(entry, key)
       }
 
       // this._origin = entry
@@ -74,17 +68,6 @@ export class EntryItem {
       return kdbxweb.ProtectedValue.fromString(password)
     }
     return password.getText()
-  }
-
-  _getFieldString(entry, field) {
-    const val = entry.fields.get(field)
-    if (!val) {
-      return ''
-    }
-    if (val instanceof kdbxweb.ProtectedValue) {
-      return val.getText()
-    }
-    return val.toString()
   }
 }
 

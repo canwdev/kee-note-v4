@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra'
+import * as kdbxweb from 'kdbxweb'
 
 export async function readFileAsArrayBuffer(path) {
   const file = await fs.readFile(path)
@@ -53,3 +54,21 @@ export function setValDot(obj, strPath, val) {
 }
 
 export const isDev = process.env.NODE_ENV === 'development'
+
+export function getMapValue(obj, val) {
+  if (obj instanceof Map) {
+    return obj.get(val)
+  }
+  return obj[val]
+}
+
+export function getFieldString(entry, field) {
+  const val = entry.fields.get(field)
+  if (!val) {
+    return ''
+  }
+  if (val instanceof kdbxweb.ProtectedValue) {
+    return val.getText()
+  }
+  return val.toString()
+}
