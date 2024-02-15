@@ -1,5 +1,5 @@
 import {CallHandler, ExecutionContext, Injectable, NestInterceptor} from '@nestjs/common'
-import {AppService} from './app.service'
+import {AppService} from '../../app.service'
 import {Observable} from 'rxjs'
 import {map} from 'rxjs/operators'
 

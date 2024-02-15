@@ -1,13 +1,13 @@
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common'
 import {AppController} from './app.controller'
 import {AppService} from './app.service'
-import {KeepassModule} from './keepass/keepass.module'
-import {AuthModule} from './auth/auth.module'
-import {UsersModule} from './users/users.module'
+import {KeepassModule} from './modules/keepass/keepass.module'
+import {AuthModule} from './modules/auth/auth.module'
+import {UsersModule} from './modules/users/users.module'
 import {APP_GUARD, APP_INTERCEPTOR} from '@nestjs/core'
-import {JwtAuthGuard} from './auth/guards/jwt-auth.guard'
-import {CryptMiddleware} from './crypt.middleware'
-import {CryptInterceptor} from './crypt.interceptor'
+import {JwtAuthGuard} from './modules/auth/jwt-auth.guard'
+import {CryptMiddleware} from './modules/crypt/crypt.middleware'
+import {CryptInterceptor} from './modules/crypt/crypt.interceptor'
 import {ServeStaticModule} from '@nestjs/serve-static'
 import {join} from 'path'
 
@@ -28,8 +28,8 @@ import {join} from 'path'
       provide: APP_INTERCEPTOR,
       useClass: CryptInterceptor,
     },
-    // 在当前 module 下都开启路由守卫
-    // 若要开启一个路由都访问权限，请使用 @SkipAuth() 装饰器
+    // 在当前 module 下都开启JwtAuth守卫
+    // 若要开启一个路由无需登录即可访问的权限，请使用 @SkipAuth() 装饰器
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

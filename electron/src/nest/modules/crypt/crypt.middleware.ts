@@ -1,5 +1,5 @@
 import {Injectable, NestMiddleware} from '@nestjs/common'
-import {AppService} from './app.service'
+import {AppService} from '../../app.service'
 
 @Injectable()
 export class CryptMiddleware implements NestMiddleware {

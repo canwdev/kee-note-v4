@@ -2,13 +2,14 @@ import {Module} from '@nestjs/common'
 import {AuthService} from './auth.service'
 import {UsersModule} from '../users/users.module'
 import {PassportModule} from '@nestjs/passport'
-import {LocalStrategy} from './strategies/local.strategy'
+import {LocalStrategy} from './local.strategy'
 import {JwtModule} from '@nestjs/jwt'
-import {JwtStrategy} from './strategies/jwt.strategy'
+import {JwtStrategy} from './jwt.strategy'
 import {ConfigModule} from '@nestjs/config'
-import {APP_JWT_SECRET_FALLBACK} from '../enum'
+import {APP_JWT_SECRET_FALLBACK} from '../../enum'
 
-import {isDev} from '../../common/utils'
+import {isDev} from '../../../common/utils'
+import {AuthController} from './auth.controller'
 const envFilePath = isDev
   ? ['.env.development', '.env.development.local']
   : ['.env.production', '.env']
@@ -32,5 +33,6 @@ console.log('[envFilePath]', envFilePath)
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}
