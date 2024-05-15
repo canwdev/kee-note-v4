@@ -9,7 +9,8 @@ import {isElectron} from '@/utils/backend'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {formatDate} from '@/utils'
 import {NButton, NSpace, TreeDropInfo} from 'naive-ui'
-import {electronCloseWindow} from '@/api/keepass'
+
+import {electronCommonApi} from '@/api/electron'
 
 export interface CalendarData {
   // year
@@ -329,14 +330,14 @@ export const useKeeNoteEntryList = (options?) => {
       } else {
         entryList.value = []
       }
-    }
+    },
   )
 
   watch(
     () => groupUuid.value,
     (val) => {
       getEntryList()
-    }
+    },
   )
 
   const getEntryList = async () => {
@@ -417,7 +418,7 @@ export const useKeeNoteSaveClose = () => {
       }
 
       if (isCloseApp) {
-        electronCloseWindow()
+        electronCommonApi.electronCloseWindow()
       } else if (isElectron) {
         await router.replace({
           name: 'HomeView',
@@ -455,7 +456,7 @@ export const useKeeNoteSaveClose = () => {
                   dialogRef.value?.destroy()
                 },
               },
-              () => 'Save and Close'
+              () => 'Save and Close',
             ),
             h(
               NButton,
@@ -465,7 +466,7 @@ export const useKeeNoteSaveClose = () => {
                   dialogRef.value?.destroy()
                 },
               },
-              () => 'Close Without Save'
+              () => 'Close Without Save',
             ),
             h(
               NButton,
@@ -474,7 +475,7 @@ export const useKeeNoteSaveClose = () => {
                   dialogRef.value?.destroy()
                 },
               },
-              () => 'Cancel'
+              () => 'Cancel',
             ),
           ]),
       })

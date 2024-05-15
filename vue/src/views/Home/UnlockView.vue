@@ -19,6 +19,7 @@ import {useMainStore} from '@/store/main'
 import {useHistory} from '@/views/Home/use-history'
 import {checkDatabaseIsOpen, createCredentialKey, createDatabase} from '@/api/keepass'
 import moment from 'moment/moment'
+import {electronCommonApi} from '@/api/electron'
 
 interface ModelType {
   dbPath: string | null
@@ -118,7 +119,7 @@ export default defineComponent({
     // 选择要创建的文件
     const handleChooseCreateFile = async (type) => {
       const newFilename = moment().format('YYYY-MM-DD')
-      const {filePath} = await kService.electronOpenSaveDialog({
+      const {filePath} = await electronCommonApi.electronOpenSaveDialog({
         defaultPath: type === 'dbPath' ? `${newFilename}.kdbx` : `${newFilename}.key`,
         filters: [
           type === 'dbPath'
@@ -146,7 +147,7 @@ export default defineComponent({
 
     // 选择已存在的文件
     const handleChooseFile = async (type) => {
-      const {filePaths} = await kService.electronOpenFileDialog({
+      const {filePaths} = await electronCommonApi.electronOpenFileDialog({
         filters: [
           type === 'dbPath'
             ? {

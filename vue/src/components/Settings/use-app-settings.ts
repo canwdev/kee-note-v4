@@ -1,10 +1,10 @@
 import {NButton} from 'naive-ui'
 import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {isElectron} from '@/utils/backend'
-import {electronToggleServer} from '@/api/keepass'
 import {marked} from 'marked'
 import {useMainStore} from '@/store/main'
 import {useSettingsStore} from '@/store/settings'
+import {electronCommonApi} from '@/api/electron'
 
 export const useAppSettings = () => {
   const mainStore = useMainStore()
@@ -57,7 +57,7 @@ export const useAppSettings = () => {
   const doToggleServer = async (params) => {
     try {
       isLoading.value = true
-      const res = await electronToggleServer(params)
+      const res = await electronCommonApi.electronToggleServer(params)
       mainStore.isServerRunning = res.running
       serverLogMessage.value = marked.parse(res.logMessage)
     } catch (e) {

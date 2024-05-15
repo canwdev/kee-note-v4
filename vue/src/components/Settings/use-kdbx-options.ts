@@ -2,16 +2,12 @@ import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {NButton, NSpace} from 'naive-ui'
 import {useKeeStore} from '@/store/kee-store'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
-import {
-  changeCredentials,
-  createCredentialKey,
-  electronOpenSaveDialog,
-  maintenanceDatabase,
-} from '@/api/keepass'
+import {changeCredentials, createCredentialKey, maintenanceDatabase} from '@/api/keepass'
 import globalEventBus, {GlobalEvents} from '@/utils/bus'
 import {isElectron} from '@/utils/backend'
 import {kService} from '@/api'
 import {useSettingsStore} from '@/store/settings'
+import {electronCommonApi} from '@/api/electron'
 
 const KDBX_LATEST_VERSION = 4
 
@@ -71,10 +67,10 @@ export const useKdbxOptions = (mVisible) => {
                   },
                   {
                     default: () => 'View',
-                  }
+                  },
                 ),
               ],
-            }
+            },
           ),
         },
         {
@@ -113,7 +109,7 @@ export const useKdbxOptions = (mVisible) => {
             },
             {
               default: () => 'Change',
-            }
+            },
           ),
         },
         isElectron
@@ -130,7 +126,7 @@ export const useKdbxOptions = (mVisible) => {
                       {
                         size: 'small',
                         onClick: async () => {
-                          const {filePath} = await kService.electronOpenSaveDialog({
+                          const {filePath} = await electronCommonApi.electronOpenSaveDialog({
                             defaultPath: 'new.key',
                             filters: [
                               {
@@ -148,7 +144,7 @@ export const useKdbxOptions = (mVisible) => {
                       },
                       {
                         default: () => 'Create',
-                      }
+                      },
                     ),
                     h(
                       NButton,
@@ -156,7 +152,7 @@ export const useKdbxOptions = (mVisible) => {
                         type: 'primary',
                         size: 'small',
                         onClick: async () => {
-                          const {filePaths} = await kService.electronOpenFileDialog({
+                          const {filePaths} = await electronCommonApi.electronOpenFileDialog({
                             filters: [
                               {
                                 name: 'Key File',
@@ -186,10 +182,10 @@ export const useKdbxOptions = (mVisible) => {
                       },
                       {
                         default: () => 'Change',
-                      }
+                      },
                     ),
                   ],
-                }
+                },
               ),
             }
           : null,
@@ -237,7 +233,7 @@ export const useKdbxOptions = (mVisible) => {
                       },
                       {
                         default: () => (isUpgrade ? 'Upgrade' : 'Downgrade'),
-                      }
+                      },
                     ),
                     h(
                       NButton,
@@ -264,10 +260,10 @@ export const useKdbxOptions = (mVisible) => {
                       },
                       {
                         default: () => 'Cleanup',
-                      }
+                      },
                     ),
                   ],
-                }
+                },
               ),
             }
           : null,

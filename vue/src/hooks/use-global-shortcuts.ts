@@ -1,5 +1,6 @@
 import {isElectron} from '@/utils/backend'
-import {electronOpenLink} from '@/api/keepass'
+
+import {electronCommonApi} from '@/api/electron'
 
 function handleClick(event) {
   // 在外部打开链接
@@ -7,7 +8,7 @@ function handleClick(event) {
     if (event.target.tagName === 'A' && event.target.href.startsWith('http')) {
       // console.log(event.target.href)
       event.preventDefault()
-      electronOpenLink({url: event.target.href})
+      electronCommonApi.electronOpenLink({url: event.target.href})
     }
   }
 }

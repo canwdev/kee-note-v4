@@ -6,8 +6,8 @@ import {useGlobalTheme} from './hooks/use-global-theme'
 import {useGlobalShortcuts} from '@/hooks/use-global-shortcuts'
 import {useSettingsStore} from '@/store/settings'
 import moment from 'moment/moment'
-import {electronSetContentProtection} from '@/api/keepass'
 import {isElectron} from '@/utils/backend'
+import {electronCommonApi} from '@/api/electron'
 
 export default defineComponent({
   setup() {
@@ -32,14 +32,14 @@ export default defineComponent({
       () => settingsStore.isContentProtection,
       (val) => {
         if (isElectron) {
-          electronSetContentProtection({enable: val})
+          electronCommonApi.electronSetContentProtection({enable: val})
         }
       },
     )
 
     onMounted(() => {
       if (isElectron) {
-        electronSetContentProtection({enable: settingsStore.isContentProtection})
+        electronCommonApi.electronSetContentProtection({enable: settingsStore.isContentProtection})
       }
     })
 

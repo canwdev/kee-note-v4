@@ -122,29 +122,3 @@ export const renameAttachment = (params: any) => {
 export const searchDatabase = (params: any) => {
   return service.post('search-database', params)
 }
-
-/* ----- electron common api ----- */
-
-export const electronOpenFileDialog = (params: any) => {
-  return service.post('open-file-dialog', params)
-}
-
-export const electronOpenSaveDialog = (params: any) => {
-  return service.post('open-save-dialog', params)
-}
-
-export const electronToggleServer = (params: any) => {
-  return service.post('toggle-server', params)
-}
-
-export const electronOpenLink = (params: any) => {
-  return service.post('open-link', params)
-}
-
-export const electronCloseWindow = () => {
-  return service.post('close-window')
-}
-
-export const electronSetContentProtection = (params: any) => {
-  return service.post('set-content-protection', params)
-}
