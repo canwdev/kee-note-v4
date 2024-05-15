@@ -56,7 +56,7 @@ export const useGlobalTheme = () => {
     () => settingsStore.themeColor,
     () => {
       updateThemeColor()
-    }
+    },
   )
 
   watch(
@@ -70,7 +70,7 @@ export const useGlobalTheme = () => {
     },
     {
       immediate: true,
-    }
+    },
   )
 
   onBeforeUnmount(() => {
@@ -128,13 +128,14 @@ export const useGlobalStyle = () => {
     () => settingsStore.enableGlobalCss,
     (val) => {
       applyGlobalStyle()
-    }
+    },
   )
 
   onMounted(() => {
     styleEl.value = createOrFindStyleNode(LsKeys.GLOBAL_STYLE)
     globalStyleText.value =
-      localStorage.getItem(LsKeys.GLOBAL_STYLE) || 'body {font-family: "LXGW WenKai", "楷体";}'
+      localStorage.getItem(LsKeys.GLOBAL_STYLE) ||
+      'body {font-family: "宋体";}\n* {border-radius: 0 !important}'
 
     applyGlobalStyle()
   })

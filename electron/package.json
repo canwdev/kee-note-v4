@@ -1,23 +1,23 @@
 {
   "name": "kee-note",
   "appName": "KeeNote",
-  "version": "4.2.3",
+  "version": "4.2.4",
   "description": "An encrypted note editor powered by KeePass.",
   "license": "GPLV3",
   "author": "canwdev",
   "main": "dist-src/main.js",
   "scripts": {
-    "build-src": "cross-env rimraf ./dist-src/* && npm run copy-files && tsc",
-    "watch-src": "cross-env npm run copy-files && tsc -w",
+    "build:electron-src": "cross-env rimraf ./dist-src/* && npm run copy-files && tsc",
+    "watch:electron-src": "cross-env npm run copy-files && tsc -w",
     "dev:electron": "cross-env NODE_ENV=development electron ./dist-src/main.js",
-    "start": "electron ./dist-src/main.js",
-    "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "build": "npm run build-src && electron-builder --dir",
-    "build-nest": "npm run build-src -- -p tsconfig-nest-only.json",
-    "watch-nest": "npm run watch-src -- -p tsconfig-nest-only.json",
-    "dev-nest": "cross-env NODE_ENV=development nodemon ./dist-src/nest/index.js",
-    "start-nest": "node ./dist-src/nest/index.js",
-    "copy-files": "copyfiles -u 1 src/common/keepass/support/argon2/argon2-asm.min.js dist-src"
+    "build:electron": "npm run build:electron-src && electron-builder --dir",
+    "start:electron": "electron ./dist-src/main.js",
+    "build:nest": "npm run build:electron-src -- -p tsconfig-nest-only.json",
+    "watch:nest": "npm run watch:electron-src -- -p tsconfig-nest-only.json",
+    "dev:nest": "cross-env NODE_ENV=development nodemon ./dist-src/nest/index.js",
+    "start:nest": "node ./dist-src/nest/index.js",
+    "copy-files": "copyfiles -u 1 src/common/keepass/support/argon2/argon2-asm.min.js dist-src",
+    "lint": "eslint -c .eslintrc --ext .ts ./src"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.5",
@@ -67,8 +67,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.8.0"
   },
+  "_build_comment": "https://github.com/electron-userland/electron-builder/issues/3573#issuecomment-450145085",
   "build": {
-    "_files_comment": "https://github.com/electron-userland/electron-builder/issues/3573#issuecomment-450145085",
     "files": [
       "!node_modules/electron/**/*"
     ]
