@@ -9,7 +9,7 @@
   "scripts": {
     "build-src": "cross-env rimraf ./dist-src/* && npm run copy-files && tsc",
     "watch-src": "cross-env npm run copy-files && tsc -w",
-    "dev": "cross-env NODE_ENV=development electron ./dist-src/main.js",
+    "dev:electron": "cross-env NODE_ENV=development electron ./dist-src/main.js",
     "start": "electron ./dist-src/main.js",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "build": "npm run build-src && electron-builder --dir",

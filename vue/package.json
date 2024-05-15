@@ -4,8 +4,8 @@
   "version": "4.2.3",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build --emptyOutDir",
+    "dev:frontend": "vite",
+    "build:frontend": "vite build --emptyOutDir",
     "build:strict": "vue-tsc --noEmit && vite build",
     "preview": "vite preview"
   },
