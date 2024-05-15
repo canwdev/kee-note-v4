@@ -17,6 +17,7 @@ export interface StOptionItem {
   children?: StOptionItem[] | any
   // 图标
   icon?: string
+  iconRender?: any
   // 小标题
   subtitle?: string
   placeholder?: string
@@ -24,6 +25,17 @@ export interface StOptionItem {
   cls?: string
   // action渲染函数
   actionRender?: any
+  // 点击item执行函数
+  clickFn?: any
+
+  // 当类型为 StOptionType.INPUT_NUMBER 时，可以设置最小值和最大值
+  min?: number
+  max?: number
+  step?: number
+  marks?: {[markValue: number]: string}
+  precision?: number
+  parseFn?: Function
+  formatFn?: Function
 }
 
 // 选项的类型
@@ -33,7 +45,9 @@ export enum StOptionType {
   SLIDER = 'slider',
   SELECT = 'select',
   INPUT = 'input',
+  INPUT_NUMBER = 'input_number',
   COLOR_PICKER = 'color_picker',
+  DYNAMIC_TAGS = 'dynamic_tags',
 }
 
 export type SwitchOption = {

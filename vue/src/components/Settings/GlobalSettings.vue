@@ -11,7 +11,7 @@ import {NButton} from 'naive-ui'
 import DialogTextEdit from '@/components/CommonUI/DialogTextEdit.vue'
 import {useGlobalStyle} from '@/hooks/use-global-theme'
 import {RouterLink} from 'vue-router'
-import {useServerManager} from '@/components/Settings/use-server-manager'
+import {useAppSettings} from '@/components/Settings/use-app-settings'
 import moment from 'moment/moment'
 import {showInputPrompt} from '@/components/CommonUI/input-prompt'
 import {useKeeStore} from '@/store/kee-store'
@@ -42,7 +42,7 @@ export default defineComponent({
     }
 
     const settingsStore = useSettingsStore()
-    const {serverManagerOption} = useServerManager()
+    const {serverManagerOption} = useAppSettings()
     const {webuiOption} = useWebui(mVisible)
     const {kdbxConfigOption} = useKdbxOptions(mVisible)
 
@@ -124,7 +124,7 @@ export default defineComponent({
                 },
                 {
                   default: () => 'Edit',
-                }
+                },
               ),
             },
             // {
@@ -165,7 +165,7 @@ export default defineComponent({
                 },
                 {
                   default: () => 'Github',
-                }
+                },
               ),
             },
           ],

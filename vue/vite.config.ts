@@ -12,6 +12,9 @@ export default ({mode}) => {
   process.env = {...process.env, ...loadEnv(mode, process.cwd())}
 
   return defineConfig({
+    define: {
+      BUILD_TIMESTAMP: Date.now(),
+    },
     base: './',
     build: {
       outDir: '../electron/dist-frontend',
@@ -45,6 +48,8 @@ export default ({mode}) => {
         ],
       }),
       Components({
+        // 传入空数组表示不要自动添加开发中的组件，所有自定义组件需要手动引入
+        dirs: [],
         resolvers: [NaiveUiResolver()],
       }),
     ],

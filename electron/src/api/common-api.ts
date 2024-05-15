@@ -50,3 +50,10 @@ ipcMain.handle('open-link', async (event, config) => {
 ipcMain.handle('close-window', async (event, config) => {
   BrowserWindow.getFocusedWindow().close()
 })
+
+// 关闭当前窗口
+ipcMain.handle('set-content-protection', async (event, config) => {
+  const {enable} = config
+  // 保护App不能被截屏或录像
+  BrowserWindow.getFocusedWindow().setContentProtection(enable)
+})

@@ -6,6 +6,8 @@ import {useGlobalTheme} from './hooks/use-global-theme'
 import {useGlobalShortcuts} from '@/hooks/use-global-shortcuts'
 import {useSettingsStore} from '@/store/settings'
 import moment from 'moment/moment'
+import {electronSetContentProtection} from '@/api/keepass'
+import {isElectron} from '@/utils/backend'
 
 export default defineComponent({
   setup() {
@@ -23,8 +25,23 @@ export default defineComponent({
           },
         })
       },
-      {immediate: true}
+      {immediate: true},
     )
+
+    watch(
+      () => settingsStore.isContentProtection,
+      (val) => {
+        if (isElectron) {
+          electronSetContentProtection({enable: val})
+        }
+      },
+    )
+
+    onMounted(() => {
+      if (isElectron) {
+        electronSetContentProtection({enable: settingsStore.isContentProtection})
+      }
+    })
 
     return {
       ...useGlobalTheme(),
@@ -67,14 +84,14 @@ export default defineComponent({
                             },
                             {
                               default: () => h(AppContent),
-                            }
+                            },
                           ),
-                      }
+                      },
                     ),
                 }),
-            }
+            },
           ),
-      }
+      },
     )
     if (this.isEnableThemeEdit) {
       return h(NThemeEditor, null, {

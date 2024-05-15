@@ -23,6 +23,8 @@ interface IStore {
   calendarShowTitle: boolean
 
   isSidebarCollapsed: boolean
+  // 是否阻止截屏或录像App画面
+  isContentProtection: boolean
 
   // 自动保存
   enableAutoSave: boolean
@@ -47,6 +49,8 @@ export const useSettingsStore = defineStore('settingsStore', {
       calendarShowTitle: true,
 
       isSidebarCollapsed: false,
+      isContentProtection: true,
+
       enableAutoSave: true,
     }
   },

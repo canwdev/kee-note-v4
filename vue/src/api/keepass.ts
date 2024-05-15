@@ -144,3 +144,7 @@ export const electronOpenLink = (params: any) => {
 export const electronCloseWindow = () => {
   return service.post('close-window')
 }
+
+export const electronSetContentProtection = (params: any) => {
+  return service.post('set-content-protection', params)
+}

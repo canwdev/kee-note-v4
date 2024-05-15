@@ -1,19 +1,29 @@
 import {NButton} from 'naive-ui'
-import {StOptionItem} from '@/components/CommonUI/OptionUI/enum'
+import {StOptionItem, StOptionType} from '@/components/CommonUI/OptionUI/enum'
 import {isElectron} from '@/utils/backend'
 import {electronToggleServer} from '@/api/keepass'
 import {marked} from 'marked'
 import {useMainStore} from '@/store/main'
+import {useSettingsStore} from '@/store/settings'
 
-export const useServerManager = () => {
+export const useAppSettings = () => {
   const mainStore = useMainStore()
+  const settingsStore = useSettingsStore()
   const isLoading = ref(false)
   const serverLogMessage = ref('')
+
   const serverManagerOption = computed((): StOptionItem => {
     return {
       label: 'Electron App Config',
       key: 'electron',
       children: [
+        {
+          label: 'Window Content Protection',
+          subtitle: 'Prevents the window contents from being captured by other apps.',
+          key: 'isContentProtection',
+          store: settingsStore,
+          type: StOptionType.SWITCH,
+        },
         {
           label: 'Nest.js Server',
           subtitle: mainStore.isServerRunning
@@ -37,7 +47,7 @@ export const useServerManager = () => {
                 }
                 return mainStore.isServerRunning ? 'Stop' : 'Start'
               },
-            }
+            },
           ),
         },
       ],
